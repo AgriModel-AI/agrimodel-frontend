@@ -1,5 +1,5 @@
 import React from 'react';
-import { DrawerProvider } from './context/DrawerContext'; 
+// import { DrawerProvider } from '../src/components/context/DrawerContext';
 import { Provider } from 'react-redux';
 import store from './redux/store'; 
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
@@ -14,7 +14,7 @@ import HomePage from './pages/home';
 function App() {
   return (
     <Provider store={store}>
-      <DrawerProvider>
+     
         <Router>
           <Routes>
             {/*routes */}
@@ -27,7 +27,6 @@ function App() {
             <Route path="/home" element={<HomePage />} />
           </Routes>
         </Router>
-      </DrawerProvider>
     </Provider>
   );
 }

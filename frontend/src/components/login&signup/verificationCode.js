@@ -4,11 +4,8 @@ import { useNavigate } from 'react-router-dom';
 
 const imageUrl = './assets/adult-harvesting-coffee.jpg';
 
-
 const VerificationCode = () => {
-
-    const navigate = useNavigate();
-
+  const navigate = useNavigate();
   const [code, setCode] = useState(new Array(4).fill('')); // Initialize with an array of 4 empty strings
 
   const handleChange = (value, index) => {
@@ -21,118 +18,143 @@ const VerificationCode = () => {
     <Box
       sx={{
         display: 'flex',
-        height: '100vh', // Use the full height of the viewport
-        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        height: '100vh', // Full viewport height for vertical centering
+        width: '100vw', // Full viewport width
+        overflow: 'hidden',
       }}
     >
-      {/* Box for the image */}
-      <Paper
-        elevation={3}
+      {/* Main content box */}
+      <Box
         sx={{
-          flex: 1, // Use flexible width
-          backgroundImage: `url(${imageUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      />
-
-      {/* Box for the VerificationCode form */}
-      <Paper
-        elevation={3}
-        sx={{
-          padding: 3,
-          flex: 1,
           display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center', // Center items horizontally
+          height: '80%', // Adjust as needed
+          width: '60%',  // Adjust as needed
+          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', // Optional shadow for aesthetics
+          borderRadius: '12px', // Rounded corners
+          overflow: 'hidden', // Prevents overflow from content
         }}
       >
-        <Typography
-          variant="h6"
-          align="center"
-          gutterBottom
-          sx={{ fontWeight: 'Semibold', fontSize: '2rem', color: '#005700' }}
-        >
-          Enter Verification Code
-        </Typography>
-
-        <Typography
-          variant="h6"
-          align="center"
-          gutterBottom
-          sx={{ fontWeight: 'Semibold', fontSize: '0.875rem', mt: -2 }}
-        >
-          We have sent a code to your e-mail XXXXXXXXX
-        </Typography>
-
-        {/* Four square-sized TextField boxes for the verification code */}
+        {/* Box for the image */}
         <Box
           sx={{
+            flex: 1,
+            backgroundImage: `url(${imageUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            borderTopLeftRadius: '12px', // Rounded corners
+            borderBottomLeftRadius: '12px',
+          }}
+        />
+
+        {/* Box for the Verification Code form */}
+        <Box
+          sx={{
+            flex: 1,
+            padding: 3,
             display: 'flex',
+            flexDirection: 'column',
             justifyContent: 'center',
-            gap: 2, // Space between text fields
-            mt: 4,
-            mb: 10
+            alignItems: 'center',
+            borderTopRightRadius: '12px', // Rounded corners
+            borderBottomRightRadius: '12px',
+            backgroundColor: '#fff', // White background for the form
+            overflow: 'hidden',
+            maxWidth: '100%', // Prevents content from exceeding box width
+            maxHeight: '100%', // Prevents content from exceeding box height
           }}
         >
-          {code.map((digit, index) => (
-            <TextField
-              key={index}
-              value={digit}
-              onChange={(e) => handleChange(e.target.value, index)}
-              inputProps={{
-                maxLength: 1,
-                style: {
-                  textAlign: 'center',
-                  fontSize: '1.5rem',
-                  padding: 0,
-                  width: '62px',
-                  height: '45px',
-                },
-              }}
-              sx={{
-                '& .MuiOutlinedInput-root': {
-                  borderRadius: '8px',
-                },
-                backgroundColor: '#fff',
-              }}
-            />
-          ))}
+          <Typography
+            variant="h6"
+            align="center"
+            gutterBottom
+            sx={{ fontWeight: 'bold', fontSize: '1.6rem', color: '#005700' }}
+          >
+            Enter Verification Code
+          </Typography>
+
+          <Typography
+            variant="subtitle1"
+            align="center"
+            gutterBottom
+            sx={{ fontWeight: 'semibold', fontSize: '0.875rem', color: 'black' }}
+          >
+            We have sent a code to your e-mail XXXXXXXXX
+          </Typography>
+
+          {/* Four square-sized TextField boxes for the verification code */}
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'center',
+              gap: 2, // Space between text fields
+              mt: 4,
+              mb: 10,
+            }}
+          >
+            {code.map((digit, index) => (
+              <TextField
+                key={index}
+                value={digit}
+                onChange={(e) => handleChange(e.target.value, index)}
+                inputProps={{
+                  maxLength: 1,
+                  style: {
+                    textAlign: 'center',
+                    fontSize: '1.5rem',
+                    padding: 0,
+                    width: '62px',
+                    height: '45px',
+                  },
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: '8px',
+                    
+                  },
+                  backgroundColor: '#fff',
+                }}
+              />
+            ))}
+          </Box>
+
+          {/* Verify Button */}
+          <Button
+            sx={{
+              backgroundColor: "#008000",
+              color: "#fff",
+              marginTop: 2,
+              width: '100%',
+              maxWidth: '300px',
+              '&:hover': {
+                backgroundColor: "#005700",
+              },
+            }}
+            onClick={() => navigate('/reset-password')}
+          >
+            Verify
+          </Button>
+
+          {/* Resend Code Button */}
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{
+              fontWeight: 'semiBold',
+              fontSize: '0.85rem',
+              color: 'black',
+              mt: 2,
+              cursor: 'pointer',
+              '&:hover': {
+                color: 'blue',
+              },
+            }}
+          >
+            Didn't receive code? Resend Code
+          </Typography>
         </Box>
-
-        <Button
-          sx={{
-            backgroundColor: '#008000',
-            color: '#fff',
-            marginTop: 2,
-            width: '300px',
-            '&:hover': {
-              backgroundColor: '#005700',
-            },
-          }}
-          onClick={() => navigate('/reset-password')}
-        >
-          Verify
-        </Button>
-
-        <Typography
-          variant="h6"
-          gutterBottom
-          sx={{
-            fontWeight: 'semiBold',
-            fontSize: '0.85rem',
-            color: 'black',
-            mt: 2,
-            cursor: 'pointer',
-            '&:hover': {
-              color: 'blue',
-            },
-          }}
-        >
-          Didn't receive code? Resend Code
-        </Typography>
-      </Paper>
+      </Box>
     </Box>
   );
 };

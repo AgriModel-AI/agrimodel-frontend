@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, TextField, Button, Typography, Paper, InputAdornment } from '@mui/material';
+import { Box, TextField, Button, Typography, InputAdornment } from '@mui/material';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import { useNavigate } from 'react-router-dom';
@@ -31,175 +31,204 @@ const ResetPassword = () => {
     <Box
       sx={{
         display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
         height: '100vh',
-        width: '100%',
+        width: '100vw',
+        overflow: 'hidden',
       }}
     >
-      {/* Box for the image */}
-      <Paper
-        elevation={3}
+      {/* Main content box */}
+      <Box
         sx={{
-          flex: 1,
-          backgroundImage: `url(${imageUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      />
-
-      {/* Box for the ResetPassword form */}
-      <Paper
-        elevation={3}
-        sx={{
-          padding: 3,
-          flex: 1,
           display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
+          height: '80%',
+          width: '60%',
+          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+          borderRadius: '12px',
+          overflow: 'hidden',
         }}
       >
-        <Typography
-          variant="h6"
-          align="center"
-          gutterBottom
-          sx={{ fontWeight: 'bold', fontSize: '2rem', color: '#005700' }}
-        >
-          Reset Your Password
-        </Typography>
-        <Typography
-          variant="h6"
-          align="center"
-          gutterBottom
-          sx={{ fontWeight: 'semibold', fontSize: '0.875rem', mt: -2, mb: 4 }}
-        >
-          Enter your new password to reset your account
-        </Typography>
-
-        {/* New Password TextField */}
-        <TextField
-          label="Enter your new password"
-          type={showNewPassword ? 'text' : 'password'}
-          variant="outlined"
-          margin="normal"
-          value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
-          onFocus={() => setIsNewPasswordFocused(true)}
-          onBlur={() => setIsNewPasswordFocused(false)}
+        {/* Box for the image */}
+        <Box
           sx={{
-            width: '300px',
-            height: '40px',
-            '& .MuiInputBase-root': {
-              borderRadius: '8px',
-              height: '100%',
-            },
-            '& .MuiOutlinedInput-root': {
-              height: '100%',
-              '& input': {
-                padding: '10px',
-                fontSize: '0.875rem',
-              },
-            },
-            '& .MuiInputLabel-root': {
-              fontSize: '0.875rem',
-              transform: isNewPasswordFocused || newPassword ? 'translate(14px, -10px) scale(0.75)' : 'translate(14px, 10px) scale(1)',
-              transition: 'transform 0.2s ease-in-out',
-            },
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'gray',
-            },
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment
-                position="end"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={handleClickShowNewPassword}
-                sx={{ cursor: 'pointer' }}
-              >
-                {showNewPassword ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
-              </InputAdornment>
-            ),
+            flex: 1,
+            backgroundImage: `url(${imageUrl})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            borderTopLeftRadius: '12px',
+            borderBottomLeftRadius: '12px',
           }}
         />
 
-        {/* Confirm Password TextField */}
-        <TextField
-          label="Confirm password"
-          type={showConfirmPassword ? 'text' : 'password'}
-          variant="outlined"
-          margin="normal"
-          value={confirmPassword}
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          onFocus={() => setIsConfirmPasswordFocused(true)}
-          onBlur={() => setIsConfirmPasswordFocused(false)}
+        {/* Box for the Reset Password form */}
+        <Box
           sx={{
-            width: '300px',
-            height: '40px',
-            '& .MuiInputBase-root': {
-              borderRadius: '8px',
-              height: '100%',
-            },
-            '& .MuiOutlinedInput-root': {
-              height: '100%',
-              '& input': {
-                padding: '10px',
-                fontSize: '0.875rem',
+            flex: 1,
+            padding: 3,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderTopRightRadius: '12px',
+            borderBottomRightRadius: '12px',
+            backgroundColor: '#fff',
+            overflow: 'hidden',
+            maxWidth: '100%',
+            maxHeight: '100%',
+          }}
+        >
+          <Typography
+            variant="h6"
+            align="center"
+            gutterBottom
+            sx={{ fontWeight: 'bold', fontSize: '1.6rem', color: '#005700' }}
+          >
+            Reset Your Password
+          </Typography>
+
+          <Typography
+            variant="subtitle1"
+            align="center"
+            gutterBottom
+            sx={{ fontWeight: 'semibold', fontSize: '0.875rem', color: 'black', mt:-1, mb: 4 }}
+          >
+            Enter your new password to reset your account
+          </Typography>
+
+          {/* New Password TextField */}
+          <TextField
+            label="Enter your new password"
+            type={showNewPassword ? 'text' : 'password'}
+            variant="outlined"
+            margin="normal"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            onFocus={() => setIsNewPasswordFocused(true)}
+            onBlur={() => setIsNewPasswordFocused(false)}
+            sx={{
+              width: '100%',
+              maxWidth: '300px',
+              height: '40px',
+              mb: -0.5,
+              '& .MuiInputBase-root': {
+                borderRadius: '8px',
+                height: '100%',
               },
-            },
-            '& .MuiInputLabel-root': {
-              fontSize: '0.875rem',
-              transform: isConfirmPasswordFocused || confirmPassword ? 'translate(14px, -10px) scale(0.75)' : 'translate(14px, 10px) scale(1)',
-              transition: 'transform 0.2s ease-in-out',
-            },
-            '& .MuiOutlinedInput-notchedOutline': {
-              borderColor: 'gray',
-            },
-          }}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment
-                position="end"
-                onMouseDown={(e) => e.preventDefault()}
-                onClick={handleClickShowConfirmPassword}
-                sx={{ cursor: 'pointer' }}
-              >
-                {showConfirmPassword ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
-              </InputAdornment>
-            ),
-          }}
-        />
+              '& .MuiOutlinedInput-root': {
+                height: '100%',
+                '& input': {
+                  padding: '10px',
+                  fontSize: '0.875rem',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                fontSize: '0.875rem',
+                transform: isNewPasswordFocused || newPassword ? 'translate(14px, -10px) scale(0.75)' : 'translate(14px, 10px) scale(1)',
+                transition: 'transform 0.2s ease-in-out',
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'gray',
+              },
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment
+                  position="end"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={handleClickShowNewPassword}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  {showNewPassword ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
+                </InputAdornment>
+              ),
+            }}
+          />
 
-        <Button
-          sx={{
-            backgroundColor: "#008000",
-            color: "#fff",
-            marginTop: 2,
-            width: '300px',
-            '&:hover': {
-              backgroundColor: "#005700",
-            },
-          }}
-          onClick={() => navigate('/reset-password-successful')}
-        >
-          Continue
-        </Button>
+          {/* Confirm Password TextField */}
+          <TextField
+            label="Confirm password"
+            type={showConfirmPassword ? 'text' : 'password'}
+            variant="outlined"
+            margin="normal"
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            onFocus={() => setIsConfirmPasswordFocused(true)}
+            onBlur={() => setIsConfirmPasswordFocused(false)}
+            sx={{
+              width: '100%',
+              maxWidth: '300px',
+              height: '40px',
+              '& .MuiInputBase-root': {
+                borderRadius: '8px',
+                height: '100%',
+              },
+              '& .MuiOutlinedInput-root': {
+                height: '100%',
+                '& input': {
+                  padding: '10px',
+                  fontSize: '0.875rem',
+                },
+              },
+              '& .MuiInputLabel-root': {
+                fontSize: '0.875rem',
+                transform: isConfirmPasswordFocused || confirmPassword ? 'translate(14px, -10px) scale(0.75)' : 'translate(14px, 10px) scale(1)',
+                transition: 'transform 0.2s ease-in-out',
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'gray',
+              },
+            }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment
+                  position="end"
+                  onMouseDown={(e) => e.preventDefault()}
+                  onClick={handleClickShowConfirmPassword}
+                  sx={{ cursor: 'pointer' }}
+                >
+                  {showConfirmPassword ? <VisibilityOutlinedIcon /> : <VisibilityOffOutlinedIcon />}
+                </InputAdornment>
+              ),
+            }}
+          />
 
-        <Button
-          sx={{
-            backgroundColor: "white",
-            color: "#008000",
-            border: "1px solid #008000",
-            marginTop: 2,
-            width: '300px',
-            '&:hover': {
-              backgroundColor: "#f0f0f0",
-            },
-          }}
-          onClick={() => navigate('/verification-code')}
-        >
-          Cancel
-        </Button>
-      </Paper>
+          {/* Continue Button */}
+          <Button
+            sx={{
+              backgroundColor: "#008000",
+              color: "#fff",
+              marginTop: 2,
+              width: '100%',
+              maxWidth: '300px',
+              '&:hover': {
+                backgroundColor: "#005700",
+              },
+            }}
+            onClick={() => navigate('/reset-password-successful')}
+          >
+            Continue
+          </Button>
+
+          {/* Cancel Button */}
+          <Button
+            sx={{
+              backgroundColor: "white",
+              color: "#008000",
+              border: "1px solid #008000",
+              marginTop: 1,
+              width: '100%',
+              maxWidth: '300px',
+              '&:hover': {
+                backgroundColor: "#f5f5f5",
+              },
+            }}
+            onClick={() => navigate('/verification-code')}
+          >
+            Cancel
+          </Button>
+        </Box>
+      </Box>
     </Box>
   );
 };
