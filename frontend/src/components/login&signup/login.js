@@ -185,6 +185,7 @@ const handleClickShowPassword = (e) => {
         backgroundColor: "#005700",
       },
     }}
+    onClick={() => navigate('/home')}
   >
     Login
   </Button>

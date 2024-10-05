@@ -125,7 +125,7 @@ const [isUsernameFocused, setIsUsernameFocused] = useState(false);
         backgroundColor: "#005700",
       },
     }}
-    onClick={() => navigate('/reset-password')}
+    onClick={() => navigate('/verification-code')}
   >
     Continue
   </Button>
