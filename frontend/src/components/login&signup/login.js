@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, TextField, Button, Typography, InputAdornment } from '@mui/material';
 import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import GoogleIcon from '@mui/icons-material/Google'; // Import Google icon
 import { useNavigate } from 'react-router-dom';
+import { login, logout } from '../../redux/slices/userSlice';
+import axiosInstance from '../../utils/axiosConfig';
+import { useDispatch } from 'react-redux';
 
 const imageUrl = './assets/adult-harvesting-coffee.jpg';
 
@@ -16,6 +19,35 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isUsernameFocused, setIsUsernameFocused] = useState(false); // State to manage email focus
   const [isPasswordFocused, setIsPasswordFocused] = useState(false); // State to manage password focus
+  const dispatch = useDispatch();
+
+  useEffect(()=> {
+    dispatch(logout());
+  });
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    try {
+      // Send login request
+      const response = await axiosInstance.post('/auth/login', {
+        email: email,
+        password: password
+      });
+
+      const { access_token } = response.data;
+      
+      dispatch(login({ access_token }));
+      // Handle successful login (e.g., redirect to another page)
+      // setNotification({message: 'Login Successful', type:'success'})
+      navigate('/home')
+      // Optional: Redirect or other actions
+    } catch (error) {
+      // setNotification({message: 'Login Failed. Check Username or Password', type: 'error'})
+      // Handle login failure (e.g., show error message to the user)
+    }
+  };
+
 
   const handleClickShowPassword = (e) => {
     e.preventDefault(); // Prevent focus on the input
@@ -196,7 +228,7 @@ const Login = () => {
                 backgroundColor: "#005700",
               },
             }}
-            onClick={() => navigate('/home')}
+            onClick={handleSubmit}
           >
             Login
           </Button>

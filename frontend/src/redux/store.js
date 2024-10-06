@@ -1,6 +1,17 @@
-import { createStore } from 'redux';
+import { configureStore } from '@reduxjs/toolkit';
 import rootReducer from './reducer';
 
-const store = createStore(rootReducer);
+export const store = configureStore({
+  reducer: rootReducer,
+});
+
+const jwtToken = localStorage.getItem('jwtToken');
+
+if (jwtToken) {
+  store.dispatch({
+    type: 'user/login',
+    payload: { jwtToken },
+  });
+}
 
 export default store;

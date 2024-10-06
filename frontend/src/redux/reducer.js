@@ -1,17 +1,16 @@
+import { combineReducers } from 'redux';
+import userReducer from './slices/userSlice';
 
-const initialState = {
-    user: null,
-};
 
-const rootReducer = (state = initialState, action) => {
-    switch (action.type) {
-        case 'SET_USER':
-            return { ...state, user: action.payload };
-        case 'LOGOUT':
-            return { ...state, user: null };
-        default:
-            return state;
-    }
+const appReducer = combineReducers({
+  user: userReducer,
+});
+
+const rootReducer = (state, action) => {
+  if (action.type === 'user/logout') {
+    state = undefined;
+  }
+  return appReducer(state, action);
 };
 
 export default rootReducer;
