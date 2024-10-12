@@ -288,7 +288,7 @@ const Signup = () => {
           >
             Already have an account?{' '}
             <span
-              onClick={() => navigate('/signin')}
+              onClick={() => navigate('/login')}
               style={{ cursor: 'pointer', color: '#008000', fontWeight: 'bold' }}
             >
               Login

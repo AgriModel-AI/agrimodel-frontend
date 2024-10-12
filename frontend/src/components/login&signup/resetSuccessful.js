@@ -100,7 +100,7 @@ const ResetSuccessful = () => {
                                 backgroundColor: "#005700",
                             },
                         }}
-                        onClick={() => navigate('/signin')}
+                        onClick={() => navigate('/login')}
                     >
                         Continue
                     </Button>

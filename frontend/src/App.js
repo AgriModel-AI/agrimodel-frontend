@@ -23,7 +23,7 @@ function App() {
         <Router>
           <Routes>
             {/*routes */}
-            <Route path="/signin" element={<Signin />} />
+            <Route path="/login" element={<Signin />} />
             <Route path="/forgot-password" element={<ForgotPass />} />
             <Route path="/verification-code" element={<CodeVerification />} />
             <Route path="/signup" element={<SignUp />} />
