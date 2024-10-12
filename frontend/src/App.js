@@ -9,7 +9,7 @@ import Resetpassword from './pages/authentication/resetPassword';
 import CodeVerification from './pages/authentication/codeVerification';
 import ResetPasswordSuccessful from './pages/authentication/resetPasswordSuccessful';
 import ForgotPass from './pages/authentication/forgot';
-import HomePage from './pages/home';
+import Dashboard from './pages/dashboard';
 
 function App() {
   return (
@@ -24,7 +24,7 @@ function App() {
             <Route path="/signup" element={<SignUp />} />
             <Route path="/reset-password" element={<Resetpassword />} />
             <Route path="/reset-password-successful" element={<ResetPasswordSuccessful />} />
-            <Route path="/home" element={<HomePage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
         </Router>
     </Provider>
