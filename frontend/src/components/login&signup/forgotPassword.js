@@ -10,6 +10,29 @@ const ForgotPassword = () => {
   const [email, setEmail] = useState('');
   const [isUsernameFocused, setIsUsernameFocused] = useState(false);
 
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleContinue = () => {
+    // Reset error message
+    setErrorMessage('');
+
+    // Check if email is empty
+    if (!email) {
+      setErrorMessage('Please enter your email address.');
+      return;
+    }
+
+    // Check if email has a valid format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
+
+    // If valid, navigate to verification code page
+    navigate('/verification-code');
+  };
+
   return (
     <Box
       sx={{
@@ -93,6 +116,13 @@ const ForgotPassword = () => {
             <LockResetIcon sx={{ fontSize: '120px', color: '#005700' }} />
           </Box>
 
+          {/* Error Message */}
+          {errorMessage && (
+            <Typography variant="body2" color="error" sx={{ mt: 1 }}>
+              {errorMessage}
+            </Typography>
+          )}
+
           {/* Email TextField */}
           <TextField
             label="Enter your email"
@@ -128,6 +158,8 @@ const ForgotPassword = () => {
             }}
           />
 
+           
+
           {/* Continue Button */}
           <Button
             sx={{
@@ -140,7 +172,7 @@ const ForgotPassword = () => {
                 backgroundColor: "#005700",
               },
             }}
-            onClick={() => navigate('/verification-code')}
+            onClick={handleContinue}
           >
             Continue
           </Button>

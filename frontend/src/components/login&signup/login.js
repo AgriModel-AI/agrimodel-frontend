@@ -19,6 +19,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isUsernameFocused, setIsUsernameFocused] = useState(false); // State to manage email focus
   const [isPasswordFocused, setIsPasswordFocused] = useState(false); // State to manage password focus
+  const [errorMessage, setErrorMessage] = useState(''); // State for error message
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -27,20 +28,47 @@ const Login = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    
+    // Reset error message
+    setErrorMessage('');
+
+     // Check if both email and password is empty
+     if (!email  && !password) {
+      setErrorMessage('Please enter your email and password.');
+      return;
+    }
+
+    // Check if email empty
+    if (!email ) {
+      setErrorMessage('Please enter your email address.');
+      return;
+    }
+
+    // Check if email has a valid format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
+
+     // Check if  password is empty
+    if (!password) {
+      setErrorMessage('Please enter your password.');
+      return;
+    }
+    
 
     try {
-      // Send login request
       const response = await axiosInstance.post('/auth/login', {
         email: email,
         password: password
       });
 
       const { access_token } = response.data;
-      
       dispatch(login({ access_token }));
       navigate('/dashboard');
     } catch (error) {
-      // Handle login failure (e.g., show error message to the user)
+      setErrorMessage('Login failed. Please try again.'); // Handle login failure
     }
   };
 
@@ -105,6 +133,13 @@ const Login = () => {
           >
             Sign In 
           </Typography>
+
+          {/* Error Message */}
+          {errorMessage && (
+            <Typography variant="body2" color="error" sx={{ mb: 2 }}>
+              {errorMessage}
+            </Typography>
+          )}
 
           {/* Email TextField */}
           <TextField

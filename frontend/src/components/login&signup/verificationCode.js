@@ -89,7 +89,7 @@ const VerificationCode = () => {
               display: 'flex',
               justifyContent: 'center',
               gap: 2, // Space between text fields
-              mt: 4,
+              mt: 1,
               mb: 10,
             }}
           >
@@ -104,7 +104,7 @@ const VerificationCode = () => {
                     textAlign: 'center',
                     fontSize: '1.5rem',
                     padding: 0,
-                    width: '62px',
+                    width: '55px',
                     height: '45px',
                   },
                 }}
