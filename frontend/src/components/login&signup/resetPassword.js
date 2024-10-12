@@ -42,8 +42,8 @@ const ResetPassword = () => {
       <Box
         sx={{
           display: 'flex',
-          height: '80%',
-          width: '60%',
+          height: '450px', // Fixed height
+          width: '650px',  // Fixed width
           boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
           borderRadius: '12px',
           overflow: 'hidden',

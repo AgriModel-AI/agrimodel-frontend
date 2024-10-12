@@ -41,8 +41,8 @@ const Signup = () => {
       <Box
         sx={{
           display: 'flex',
-          height: '80%', // Adjust as needed
-          width: '60%', // Adjust as needed
+          height: '450px', // Fixed height
+          width: '650px',  // Fixed width
           boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', // Optional shadow for aesthetics
           borderRadius: '12px', // Rounded corners
           overflow: 'hidden', // Prevents overflow from content

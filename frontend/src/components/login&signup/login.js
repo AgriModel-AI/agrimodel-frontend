@@ -21,9 +21,9 @@ const Login = () => {
   const [isPasswordFocused, setIsPasswordFocused] = useState(false); // State to manage password focus
   const dispatch = useDispatch();
 
-  useEffect(()=> {
+  useEffect(() => {
     dispatch(logout());
-  });
+  }, [dispatch]);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -38,16 +38,11 @@ const Login = () => {
       const { access_token } = response.data;
       
       dispatch(login({ access_token }));
-      // Handle successful login (e.g., redirect to another page)
-      // setNotification({message: 'Login Successful', type:'success'})
-      navigate('/home')
-      // Optional: Redirect or other actions
+      navigate('/dashboard');
     } catch (error) {
-      // setNotification({message: 'Login Failed. Check Username or Password', type: 'error'})
       // Handle login failure (e.g., show error message to the user)
     }
   };
-
 
   const handleClickShowPassword = (e) => {
     e.preventDefault(); // Prevent focus on the input
@@ -65,12 +60,12 @@ const Login = () => {
         overflow: 'hidden',
       }}
     >
-      {/* Main content box */}
+      {/* Main content box with fixed size */}
       <Box
         sx={{
           display: 'flex',
-          height: '80%', // Adjust as needed
-          width: '60%',  // Adjust as needed
+          height: '450px', // Fixed height
+          width: '650px',  // Fixed width
           boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)', // Optional shadow for aesthetics
           borderRadius: '12px', // Rounded corners
           overflow: 'hidden', // Prevents overflow from content
@@ -100,16 +95,13 @@ const Login = () => {
             borderTopRightRadius: '12px', // Rounded corners
             borderBottomRightRadius: '12px',
             backgroundColor: '#fff', // White background for the form
-            overflow: 'hidden',
-            maxWidth: '100%', // Prevents content from exceeding box width
-            maxHeight: '100%', // Prevents content from exceeding box height
           }}
         >
           <Typography
             variant="h6"
             align="center"
             gutterBottom
-            sx={{ fontWeight: 'bold', fontSize: '2rem', color: '#005700', mb:-1 }}
+            sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#005700', mb: 1 }}
           >
             Sign In 
           </Typography>
@@ -125,7 +117,6 @@ const Login = () => {
             onBlur={() => setIsUsernameFocused(false)}
             sx={{
               width: '100%', // Ensure it fits within the box
-              maxWidth: '300px',
               height: '40px',
               '& .MuiInputBase-root': {
                 borderRadius: '8px',
@@ -161,7 +152,6 @@ const Login = () => {
             onBlur={() => setIsPasswordFocused(false)}
             sx={{
               width: '100%', // Ensure it fits within the box
-              maxWidth: '300px',
               height: '40px',
               '& .MuiInputBase-root': {
                 borderRadius: '8px',
@@ -205,8 +195,8 @@ const Login = () => {
               fontWeight: 'semiBold',
               fontSize: '0.85rem',
               color: 'black',
-              ml: 24,
               cursor: 'pointer',
+              ml:24,
               '&:hover': {
                 color: '#008000',
               },
@@ -223,7 +213,6 @@ const Login = () => {
               color: "#fff",
               marginTop: 2,
               width: '100%',
-              maxWidth: '300px',
               '&:hover': {
                 backgroundColor: "#005700",
               },
@@ -244,7 +233,7 @@ const Login = () => {
               onClick={() => navigate('/signup')}
               style={{ cursor: 'pointer', color: '#008000', fontWeight: 'bold' }}
             >
-              SignUp
+              Sign Up
             </span>
           </Typography>
 
@@ -271,7 +260,7 @@ const Login = () => {
             startIcon={<GoogleIcon />}
             sx={{
               marginTop: 2,
-              width: '300px',
+              width: '100%', // Full width
               borderColor: '#D32F2F', // Color for the border
               color: '#D32F2F', // Color for the text
               '&:hover': {
@@ -280,7 +269,7 @@ const Login = () => {
               },
             }}
           >
-            Sigin with Google
+            Sign in with Google
           </Button>
         </Box>
       </Box>
