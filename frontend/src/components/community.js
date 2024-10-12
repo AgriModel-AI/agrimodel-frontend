@@ -11,6 +11,7 @@ import {
   Paper,
   TextField,
   Button,
+  Box
 } from '@mui/material';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import SearchIcon from '@mui/icons-material/Search';
@@ -69,22 +70,7 @@ const Community = ({ data = initialData, width = '100%', maxHeight = '400px' }) 
 
   return (
     <Paper sx={{ width, margin: 'auto', padding: 4, mt: 1, boxShadow: 'none' }} elevation={0}>
-      <Button
-        variant="contained"
-        sx={{
-          backgroundColor: 'green',
-          '&:hover': {
-            backgroundColor: 'darkgreen',
-          },
-          mt: -5,
-          padding: '4px 12px', // Adjust padding for height and width
-          textTransform: 'none', // Prevent text from being transformed to uppercase
-          alignItems: 'center', // Center the icon and text vertically
-        }}
-      >
-        <AddIcon sx={{ marginRight: '8px' }} />
-        Create new community
-      </Button>
+      
       <TextField
         placeholder="Search..."
         variant="outlined"
@@ -95,11 +81,38 @@ const Community = ({ data = initialData, width = '100%', maxHeight = '400px' }) 
               <SearchIcon />
             </IconButton>
           ),
-          sx: { height: '35px', width: '300px', mt: -5, ml: 6 },
+          sx: { height: '35px', width: '300px', mt: -5},
         }}
         value={search}
         onChange={handleSearchChange}
       />
+
+<Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'flex-end', // Aligns the button to the right
+       padding:2,
+        mt:-8,
+        mr:-2
+      }}
+    >
+      <Button
+        variant="contained"
+        sx={{
+          backgroundColor: 'green',
+          '&:hover': {
+            backgroundColor: 'darkgreen',
+          },
+          padding: '4px 12px', // Adjust padding for height and width
+          textTransform: 'none', // Prevent text from being transformed to uppercase
+          display: 'flex', // Make the button a flex container
+          alignItems: 'center', // Center the icon and text vertically
+        }}
+      >
+        <AddIcon sx={{ marginRight: '8px' }} />
+        Create new community
+      </Button>
+    </Box>
       
       <TableContainer sx={{ maxHeight }}>
         <Table size="small">
