@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, CssBaseline, Typography } from '@mui/material';
+import { Box, CssBaseline } from '@mui/material';
 import { SideBar } from '../components/sidebar';
 import Header from '../components/header';
 
@@ -10,11 +10,11 @@ function Dashboard() {
       <SideBar 
       />
       <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
-     
+      <Header/>
       
         <Box sx={{ flexGrow: 1, overflow: 'auto', mt: 0 }}>
           {
-           <Header/>
+           
           }
         </Box>
       </Box>
