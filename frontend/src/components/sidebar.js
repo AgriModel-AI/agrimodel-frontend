@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocation, Link } from 'react-router-dom'; // Import Link and useLocation
 import {
   AppBar,
   Toolbar,
@@ -10,7 +11,6 @@ import {
   Box,
   Avatar
 } from '@mui/material';
-import { Link } from 'react-router-dom'; // Import Link
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CoronavirusIcon from '@mui/icons-material/Coronavirus';
 import BiotechIcon from '@mui/icons-material/Biotech';
@@ -36,17 +36,18 @@ const data = [
 ];
 
 export function SideBar() {
-  const [active, setActive] = useState('Dashboard');
+  const location = useLocation(); // Get the current location
+  const currentPath = location.pathname; // Extract the current path
   const { name, email } = usersData[0];
 
   const links = data.map((item) => {
     const Icon = item.icon; // Get the component reference
+    const isActive = currentPath === item.link; // Check if the link is active
+
     return (
       <Link to={item.link} style={{ textDecoration: 'none', color: 'inherit' }} key={item.label}>
         <ListItem
           button
-          onClick={() => setActive(item.label)}
-          data-active={item.label === active}
           sx={{
             display: 'flex',
             alignItems: 'center',
@@ -59,13 +60,13 @@ export function SideBar() {
             '&:hover': {
               backgroundColor: 'white',
             },
-            '&[data-active="true"]': {
+            ...(isActive && {
               backgroundColor: 'white',
               color: 'black',
               '& .MuiSvgIcon-root': {
                 color: 'black',
               },
-            },
+            }),
           }}
         >
           <ListItemIcon sx={{ color: '#999AA3', marginRight: -2 }}>
