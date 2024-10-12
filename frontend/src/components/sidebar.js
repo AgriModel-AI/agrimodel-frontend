@@ -10,6 +10,7 @@ import {
   Box,
   Avatar
 } from '@mui/material';
+import { Link } from 'react-router-dom'; // Import Link
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CoronavirusIcon from '@mui/icons-material/Coronavirus';
 import BiotechIcon from '@mui/icons-material/Biotech';
@@ -17,7 +18,6 @@ import PersonIcon from '@mui/icons-material/Person';
 import GroupIcon from '@mui/icons-material/Group';
 import SupportAgentIcon from '@mui/icons-material/SupportAgent';
 import LogoutIcon from '@mui/icons-material/Logout';
-
 
 const usersData = [
   {
@@ -27,12 +27,12 @@ const usersData = [
 ];
 
 const data = [
-  { link: '', label: 'Dashboard', icon: DashboardIcon },
-  { link: '', label: 'Diseases', icon: CoronavirusIcon },
-  { link: '', label: 'Diagnosis Results', icon: BiotechIcon },
-  { link: '', label: 'Users', icon: PersonIcon },
-  { link: '', label: 'Community', icon: GroupIcon },
-  { link: '', label: 'Support', icon: SupportAgentIcon },
+  { link: '/dashboard', label: 'Dashboard', icon: DashboardIcon },
+  { link: '/dashboard/diseases', label: 'Diseases', icon: CoronavirusIcon },
+  { link: '/dashboard/diagnosis-results', label: 'Diagnosis Results', icon: BiotechIcon },
+  { link: '/dashboard/registered-users', label: 'Users', icon: PersonIcon },
+  { link: '/dashboard/community', label: 'Community', icon: GroupIcon },
+  { link: '/dashboard/support', label: 'Support', icon: SupportAgentIcon },
 ];
 
 export function SideBar() {
@@ -42,40 +42,38 @@ export function SideBar() {
   const links = data.map((item) => {
     const Icon = item.icon; // Get the component reference
     return (
-      <ListItem
-        button
-        key={item.label}
-        onClick={(event) => {
-          event.preventDefault();
-          setActive(item.label);
-        }}
-        data-active={item.label === active}
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          textDecoration: 'none',
-          color: '#999AA3',
-          padding: 0,
-          borderRadius: 1,
-          ml:1,
-          cursor: 'pointer',
-          '&:hover': {
-            backgroundColor: 'white',
-          },
-          '&[data-active="true"]': {
-            backgroundColor: 'white',
-            color: 'black',
-            '& .MuiSvgIcon-root': {
-              color: 'black',
+      <Link to={item.link} style={{ textDecoration: 'none', color: 'inherit' }} key={item.label}>
+        <ListItem
+          button
+          onClick={() => setActive(item.label)}
+          data-active={item.label === active}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            textDecoration: 'none',
+            color: '#999AA3',
+            padding: 0,
+            borderRadius: 1,
+            ml: 1,
+            cursor: 'pointer',
+            '&:hover': {
+              backgroundColor: 'white',
             },
-          },
-        }}
-      >
-        <ListItemIcon sx={{ color: '#999AA3', marginRight: -2}}>
-          <Icon /> 
-        </ListItemIcon>
-        <ListItemText primary={item.label}/>
-      </ListItem>
+            '&[data-active="true"]': {
+              backgroundColor: 'white',
+              color: 'black',
+              '& .MuiSvgIcon-root': {
+                color: 'black',
+              },
+            },
+          }}
+        >
+          <ListItemIcon sx={{ color: '#999AA3', marginRight: -2 }}>
+            <Icon />
+          </ListItemIcon>
+          <ListItemText primary={item.label} />
+        </ListItem>
+      </Link>
     );
   });
 
@@ -91,16 +89,16 @@ export function SideBar() {
       }}
     >
       <Box sx={{ flex: 1 }}>
-      <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none', mb: 1 }}>
+        <AppBar position="static" sx={{ backgroundColor: 'transparent', boxShadow: 'none', mb: 1 }}>
           <Toolbar sx={{ mt: -2, padding: 1, borderBottom: `1px solid`, borderColor: '#999AA3', display: 'flex', alignItems: 'center' }}>
-            <Avatar sx={{ bgcolor: 'black', marginRight: 1, ml:-2.5,  }}>
-              {name.charAt(0)} 
+            <Avatar sx={{ bgcolor: 'black', marginRight: 1, ml: -2.5 }}>
+              {name.charAt(0)}
             </Avatar>
             <Box>
-              <Typography  sx={{ color: 'black', fontSize:'0.85rem' }} noWrap>
+              <Typography sx={{ color: 'black', fontSize: '0.85rem' }} noWrap>
                 {name}
               </Typography>
-              <Typography  sx={{ color: '#999AA3', fontSize:'0.85rem' }} noWrap>
+              <Typography sx={{ color: '#999AA3', fontSize: '0.85rem' }} noWrap>
                 {email}
               </Typography>
             </Box>
@@ -110,28 +108,29 @@ export function SideBar() {
       </Box>
 
       <Box sx={{ borderTop: `1px solid`, borderColor: '#999AA3', paddingTop: 1, marginTop: 1 }}>
-        <ListItem
-          button
-          onClick={(event) => event.preventDefault()}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            textDecoration: 'none',
-            color: '#999AA3',
-            padding: 0,
-            borderRadius: 1,
-            ml:1,
-           
-            '&:hover': {
-              backgroundColor: 'white',
-            },
-          }}
-        >
-          <ListItemIcon sx={{ color: '#999AA3', marginRight: -2 }}>
-            <LogoutIcon />
-          </ListItemIcon>
-          <ListItemText primary="Logout" />
-        </ListItem>
+        <Link to="/logout" style={{ textDecoration: 'none', color: 'inherit' }}>
+          <ListItem
+            button
+            onClick={(event) => event.preventDefault()}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              textDecoration: 'none',
+              color: '#999AA3',
+              padding: 0,
+              borderRadius: 1,
+              ml: 1,
+              '&:hover': {
+                backgroundColor: 'white',
+              },
+            }}
+          >
+            <ListItemIcon sx={{ color: '#999AA3', marginRight: -2 }}>
+              <LogoutIcon />
+            </ListItemIcon>
+            <ListItemText primary="Logout" />
+          </ListItem>
+        </Link>
       </Box>
     </Box>
   );
