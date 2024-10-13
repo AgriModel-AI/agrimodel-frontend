@@ -10,6 +10,8 @@ import CodeVerification from './pages/authentication/codeVerification';
 import ResetPasswordSuccessful from './pages/authentication/resetPasswordSuccessful';
 import ForgotPass from './pages/authentication/forgot';
 import Dashboard from './pages/dashboard';
+import SupportPage from './pages/support';
+import DiseasePage from './pages/DiseasePage';
 
 function App() {
   return (
@@ -25,6 +27,8 @@ function App() {
             <Route path="/reset-password" element={<Resetpassword />} />
             <Route path="/reset-password-successful" element={<ResetPasswordSuccessful />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/support" element={<SupportPage />} />
+            <Route path="/disease" element={<DiseasePage />} />
           </Routes>
         </Router>
     </Provider>
