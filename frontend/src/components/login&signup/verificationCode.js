@@ -69,7 +69,7 @@ const VerificationCode = () => {
             variant="h6"
             align="center"
             gutterBottom
-            sx={{ fontWeight: 'bold', fontSize: '1.6rem', color: '#005700' }}
+            sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#005700', mb: 1 }}
           >
             Enter Verification Code
           </Typography>
@@ -78,7 +78,7 @@ const VerificationCode = () => {
             variant="subtitle1"
             align="center"
             gutterBottom
-            sx={{ fontWeight: 'semibold', fontSize: '0.875rem', color: 'black' }}
+            sx={{ fontWeight: 'semibold', fontSize: '0.75rem', color: 'black', mb:3 }}
           >
             We have sent a code to your e-mail XXXXXXXXX
           </Typography>
@@ -90,7 +90,7 @@ const VerificationCode = () => {
               justifyContent: 'center',
               gap: 2, // Space between text fields
               mt: 1,
-              mb: 10,
+              mb: 16,
             }}
           >
             {code.map((digit, index) => (
@@ -125,8 +125,8 @@ const VerificationCode = () => {
               backgroundColor: "#008000",
               color: "#fff",
               marginTop: 2,
-              width: '100%',
-              maxWidth: '300px',
+              width: '270px',
+              fontWeight: 'bold',
               '&:hover': {
                 backgroundColor: "#005700",
               },
@@ -142,7 +142,7 @@ const VerificationCode = () => {
             gutterBottom
             sx={{
               fontWeight: 'semiBold',
-              fontSize: '0.85rem',
+              fontSize: '0.80rem',
               color: 'black',
               mt: 2,
               cursor: 'pointer',

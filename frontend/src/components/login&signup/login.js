@@ -151,8 +151,9 @@ const Login = () => {
             onFocus={() => setIsUsernameFocused(true)}
             onBlur={() => setIsUsernameFocused(false)}
             sx={{
-              width: '100%', // Ensure it fits within the box
+              width: '270px', // Ensure it fits within the box
               height: '40px',
+              mb: 0,
               '& .MuiInputBase-root': {
                 borderRadius: '8px',
                 height: '100%',
@@ -186,7 +187,7 @@ const Login = () => {
             onFocus={() => setIsPasswordFocused(true)}
             onBlur={() => setIsPasswordFocused(false)}
             sx={{
-              width: '100%', // Ensure it fits within the box
+              width: '270px', // Ensure it fits within the box
               height: '40px',
               '& .MuiInputBase-root': {
                 borderRadius: '8px',
@@ -231,7 +232,7 @@ const Login = () => {
               fontSize: '0.85rem',
               color: 'black',
               cursor: 'pointer',
-              ml:24,
+              ml:20,
               '&:hover': {
                 color: '#008000',
               },
@@ -247,7 +248,8 @@ const Login = () => {
               backgroundColor: "#008000",
               color: "#fff",
               marginTop: 2,
-              width: '100%',
+              width: '270px',
+              fontWeight: 'bold',
               '&:hover': {
                 backgroundColor: "#005700",
               },
@@ -277,13 +279,10 @@ const Login = () => {
             gutterBottom
             sx={{
               fontWeight: 'semiBold',
-              fontSize: '0.85rem',
-              color: 'black',
+              fontSize: '0.65rem',
+              color: 'blue',
               mt: 0.5,
               cursor: 'pointer',
-              '&:hover': {
-                color: 'blue',
-              },
             }}
           >
             - OR -
@@ -294,8 +293,10 @@ const Login = () => {
             variant="outlined"
             startIcon={<GoogleIcon />}
             sx={{
-              marginTop: 2,
-              width: '100%', // Full width
+              fontWeight: 'semiBold',
+              fontSize: '0.75rem',
+              marginTop: 1,
+              width: '270px', // Full width
               borderColor: '#D32F2F', // Color for the border
               color: '#D32F2F', // Color for the text
               '&:hover': {

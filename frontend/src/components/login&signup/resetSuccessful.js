@@ -68,7 +68,7 @@ const ResetSuccessful = () => {
                             width: '140px',  // Set width of the box
                         }}
                     >
-                        <CheckCircleOutlineOutlinedIcon sx={{ fontSize: '120px' }} /> {/* Adjusted icon size */}
+                        <CheckCircleOutlineOutlinedIcon sx={{ fontSize: '120px' , color: '#005700'}} /> {/* Adjusted icon size */}
                     </Box>
 
                     <Typography
@@ -81,10 +81,10 @@ const ResetSuccessful = () => {
                     </Typography>
 
                     <Typography
-                        variant="h6"
+                        variant="h2"
                         align="center"
                         gutterBottom
-                        sx={{ fontWeight: 'semibold', fontSize: '0.80rem', mb:8 }}
+                        sx={{ fontWeight: 'bold', fontSize: '0.65rem', mb:14 , color: 'black'}}
                     >
                         Congratulations! Your password has been changed.
                     </Typography>
@@ -94,8 +94,8 @@ const ResetSuccessful = () => {
                             backgroundColor: "#008000",
                             color: "#fff",
                             marginTop: 2,
-                            width: '100%',
-                            maxWidth: '300px',
+                            width: '270px',
+                            fontWeight: 'bold',
                             '&:hover': {
                                 backgroundColor: "#005700",
                             },

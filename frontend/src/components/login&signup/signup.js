@@ -78,7 +78,7 @@ const Signup = () => {
             variant="h6"
             align="center"
             gutterBottom
-            sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#005700', mb:-1.4 }}
+            sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#005700', mb: -1}}
           >
             Create an account
           </Typography>
@@ -93,7 +93,7 @@ const Signup = () => {
             onFocus={() => setIsNamesFocused(true)}
             onBlur={() => setIsNamesFocused(false)}
             sx={{
-              width: '300px',
+              width: '270px',
               height: '40px',
               mb: -0.5,
               '& .MuiInputBase-root': {
@@ -128,7 +128,7 @@ const Signup = () => {
             onFocus={() => setIsEmailFocused(true)}
             onBlur={() => setIsEmailFocused(false)}
             sx={{
-              width: '300px',
+              width: '270px',
               height: '40px',
               mb: -0.5,
               '& .MuiInputBase-root': {
@@ -163,7 +163,7 @@ const Signup = () => {
             onFocus={() => setIsPhoneFocused(true)}
             onBlur={() => setIsPhoneFocused(false)}
             sx={{
-              width: '300px',
+              width: '270px',
               height: '40px',
               mb: -0.5,
               '& .MuiInputBase-root': {
@@ -199,7 +199,7 @@ const Signup = () => {
             onFocus={() => setIsPasswordFocused(true)}
             onBlur={() => setIsPasswordFocused(false)}
             sx={{
-              width: '300px',
+              width: '270px',
               height: '40px',
               '& .MuiInputBase-root': {
                 borderRadius: '8px',
@@ -242,6 +242,7 @@ const Signup = () => {
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)} // Handle checkbox change
                 name="termsCheckbox"
+                sx={{ transform: 'scale(0.6)', mt:-0.85}} // Reduces size of checkbox
               />
             }
             label={
@@ -249,27 +250,30 @@ const Signup = () => {
                 variant="h6"
                 gutterBottom
                 sx={{
+                  ml:-1,
                   fontWeight: 'semiBold',
-                  fontSize: '0.85rem',
+                  fontSize: '0.80rem',
                   color: 'black',
                   cursor: 'pointer',
-                  '&:hover': {
-                    color: 'blue',
-                  },
+                  display: 'inline', // Ensures text stays on the same line as checkbox
                 }}
               >
-                I agree with your terms & conditions
+                I agree with your
+                <span> </span> 
+                <span style={{ textDecoration: 'underline' , color: 'blue'}}>terms & conditions</span>
               </Typography>
             }
-            sx={{ marginBottom: 0 }}
+            sx={{ marginBottom: 0, display: 'flex', alignItems: 'center' }} // Ensures checkbox and label are aligned
           />
+
 
           <Button
             sx={{
               backgroundColor: '#008000',
               color: '#fff',
               marginTop: 0,
-              width: '300px',
+              width: '270px',
+              fontWeight: 'bold',
               '&:hover': {
                 backgroundColor: '#006400',
               },
@@ -284,7 +288,7 @@ const Signup = () => {
           <Typography
             variant="body2"
             align="center"
-            sx={{ marginTop: 2, color: 'black' }}
+            sx={{ marginTop: 4, color: 'black' }}
           >
             Already have an account?{' '}
             <span
@@ -300,8 +304,10 @@ const Signup = () => {
             variant="outlined"
             startIcon={<GoogleIcon />}
             sx={{
-              marginTop: 2,
-              width: '300px',
+              fontWeight: 'semiBold',
+              fontSize: '0.75rem',
+              marginTop: 1,
+              width: '270px',
               borderColor: '#D32F2F', // Color for the border
               color: '#D32F2F', // Color for the text
               '&:hover': {

@@ -82,7 +82,7 @@ const ResetPassword = () => {
             variant="h6"
             align="center"
             gutterBottom
-            sx={{ fontWeight: 'bold', fontSize: '1.6rem', color: '#005700' }}
+            sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#005700', mb: 1  }}
           >
             Reset Your Password
           </Typography>
@@ -91,7 +91,7 @@ const ResetPassword = () => {
             variant="subtitle1"
             align="center"
             gutterBottom
-            sx={{ fontWeight: 'semibold', fontSize: '0.875rem', color: 'black', mt:-1, mb: 4 }}
+            sx={{ fontWeight: 'semibold', fontSize: '0.75rem', color: 'black', mt:-1, mb: 1 }}
           >
             Enter your new password to reset your account
           </Typography>
@@ -107,8 +107,7 @@ const ResetPassword = () => {
             onFocus={() => setIsNewPasswordFocused(true)}
             onBlur={() => setIsNewPasswordFocused(false)}
             sx={{
-              width: '100%',
-              maxWidth: '300px',
+              width: '270px',
               height: '40px',
               mb: -0.5,
               '& .MuiInputBase-root': {
@@ -156,8 +155,7 @@ const ResetPassword = () => {
             onFocus={() => setIsConfirmPasswordFocused(true)}
             onBlur={() => setIsConfirmPasswordFocused(false)}
             sx={{
-              width: '100%',
-              maxWidth: '300px',
+              width: '270px',
               height: '40px',
               '& .MuiInputBase-root': {
                 borderRadius: '8px',
@@ -198,9 +196,9 @@ const ResetPassword = () => {
             sx={{
               backgroundColor: "#008000",
               color: "#fff",
-              marginTop: 2,
-              width: '100%',
-              maxWidth: '300px',
+              marginTop: 10,
+              fontWeight: 'bold',
+              width: '270px',
               '&:hover': {
                 backgroundColor: "#005700",
               },
@@ -217,8 +215,8 @@ const ResetPassword = () => {
               color: "#008000",
               border: "1px solid #008000",
               marginTop: 1,
-              width: '100%',
-              maxWidth: '300px',
+              width: '270px',
+              fontWeight: 'bold',
               '&:hover': {
                 backgroundColor: "#f5f5f5",
               },
