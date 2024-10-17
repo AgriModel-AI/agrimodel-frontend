@@ -286,20 +286,20 @@ const Signup = () => {
           </Button>
 
           <Typography
-            variant="body2"
-            align="center"
-            sx={{ marginTop: 4, color: 'black' }}
+            variant="h6"
+            gutterBottom
+            sx={{
+              fontWeight: 'semiBold',
+              fontSize: '0.65rem',
+              color: 'blue',
+              mt: 1,
+              cursor: 'pointer',
+            }}
           >
-            Already have an account?{' '}
-            <span
-              onClick={() => navigate('/login')}
-              style={{ cursor: 'pointer', color: '#008000', fontWeight: 'bold' }}
-            >
-              Login
-            </span>
+            - OR -
           </Typography>
 
-          {/* Google signup button */}
+             {/* Google signup button */}
           <Button
             variant="outlined"
             startIcon={<GoogleIcon />}
@@ -318,6 +318,22 @@ const Signup = () => {
           >
             Signup with Google
           </Button>
+
+          <Typography
+            variant="body2"
+            align="center"
+            sx={{ marginTop: 2, color: 'black' }}
+          >
+            Already have an account?{' '}
+            <span
+              onClick={() => navigate('/login')}
+              style={{ cursor: 'pointer', color: '#008000', fontWeight: 'bold' }}
+            >
+              Login
+            </span>
+          </Typography>
+
+         
         </Box>
       </Box>
     </Box>
