@@ -39,21 +39,21 @@ const statusStyles = {
     backgroundColor: '#d4edda',
     color: '#155724',
     display: 'inline-block',
-    padding: '0px 10px',
+    padding: '2px 10px', // Adjusted padding for better visibility
     borderRadius: '4px',
     whiteSpace: 'nowrap',
-    marginTop: '8px',
-    marginBottom: '8px',
+    margin: '0', // Removed margin to prevent affecting borders
+    lineHeight: '1.5', // Set line height for vertical alignment
   },
   Inactive: {
     backgroundColor: '#f8d7da',
     color: '#721c24',
     display: 'inline-block',
-    padding: '2px 10px',
+    padding: '2px 10px', // Adjusted padding for better visibility
     borderRadius: '4px',
     whiteSpace: 'nowrap',
-    marginTop: '8px',
-    marginBottom: '8px',
+    margin: '0', // Removed margin to prevent affecting borders
+    lineHeight: '1.5', // Set line height for vertical alignment
   },
 };
 
@@ -189,8 +189,10 @@ const Users = ({ data = initialData, width = '100%', maxHeight = '380px' }) => {
                     <TableCell align="left" sx={{ padding: 1, fontSize: '0.70rem' }}>{row.name}</TableCell>
                     <TableCell align="left" sx={{ padding: 1, fontSize: '0.70rem' }}>{row.email}</TableCell>
                     <TableCell align="left" sx={{ padding: 1, fontSize: '0.70rem' }}>{row.phone}</TableCell>
-                    <TableCell align="left" sx={statusStyles[row.status]}>
-                      {row.status}
+                    <TableCell align="left" sx={{ padding: 1 }}>
+                      <span style={statusStyles[row.status]}>
+                        {row.status}
+                      </span>
                     </TableCell>
                     <TableCell align="left" sx={{ padding: 1, fontSize: '0.70rem' }}>
                       <span style={{ display: 'flex', alignItems: 'center', cursor: 'pointer', color: 'blue' }}
