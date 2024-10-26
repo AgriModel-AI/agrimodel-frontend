@@ -121,7 +121,7 @@ const Signup = () => {
             variant="h6"
             align="center"
             gutterBottom
-            sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#005700', mb: -1}}
+            sx={{ fontWeight: 'bold', fontSize: '1.2rem', color: '#005700', mb: -0.5}}
           >
             Create an account
           </Typography>
