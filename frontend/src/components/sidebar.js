@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useLocation, Link } from 'react-router-dom'; // Import Link and useLocation
+import { useLocation, Link, useNavigate } from 'react-router-dom';
 import {
   AppBar,
   Toolbar,
@@ -9,7 +9,11 @@ import {
   ListItemIcon,
   ListItemText,
   Box,
-  Avatar
+  Avatar,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  Button
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import CoronavirusIcon from '@mui/icons-material/Coronavirus';
@@ -36,13 +40,15 @@ const data = [
 ];
 
 export function SideBar() {
-  const location = useLocation(); // Get the current location
-  const currentPath = location.pathname; // Extract the current path
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
+  const currentPath = location.pathname;
   const { name, email } = usersData[0];
 
   const links = data.map((item) => {
-    const Icon = item.icon; // Get the component reference
-    const isActive = currentPath === item.link; // Check if the link is active
+    const Icon = item.icon;
+    const isActive = currentPath === item.link;
 
     return (
       <Link to={item.link} style={{ textDecoration: 'none', color: 'inherit' }} key={item.label}>
@@ -51,7 +57,6 @@ export function SideBar() {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            textDecoration: 'none',
             color: '#999AA3',
             padding: 0,
             borderRadius: 1,
@@ -77,6 +82,20 @@ export function SideBar() {
       </Link>
     );
   });
+
+  const handleLogoutClick = (event) => {
+    event.preventDefault();
+    setOpen(true);
+  };
+
+  const handleLogoutConfirm = () => {
+    setOpen(false);
+    navigate('/login'); 
+  };
+
+  const handleLogoutCancel = () => {
+    setOpen(false);
+  };
 
   return (
     <Box
@@ -109,30 +128,79 @@ export function SideBar() {
       </Box>
 
       <Box sx={{ borderTop: `1px solid`, borderColor: '#999AA3', paddingTop: 1, marginTop: 1 }}>
-        <Link to="/logout" style={{ textDecoration: 'none', color: 'inherit' }}>
-          <ListItem
-            button
-            onClick={(event) => event.preventDefault()}
-            sx={{
-              display: 'flex',
-              alignItems: 'center',
-              textDecoration: 'none',
-              color: '#999AA3',
-              padding: 0,
-              borderRadius: 1,
-              ml: 1,
-              '&:hover': {
-                backgroundColor: 'white',
-              },
-            }}
-          >
-            <ListItemIcon sx={{ color: '#999AA3', marginRight: -2 }}>
-              <LogoutIcon />
-            </ListItemIcon>
-            <ListItemText primary="Logout" />
-          </ListItem>
-        </Link>
+        <ListItem
+          button
+          onClick={handleLogoutClick}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            color: '#999AA3',
+            padding: 0,
+            borderRadius: 1,
+            ml: 1,
+            cursor: 'pointer',
+            '&:hover': {
+              backgroundColor: 'white',
+            },
+          }}
+        >
+          <ListItemIcon sx={{ color: '#999AA3', marginRight: -2 }}>
+            <LogoutIcon />
+          </ListItemIcon>
+          <ListItemText primary="Logout" />
+        </ListItem>
       </Box>
+
+      <Dialog 
+  open={open} 
+  onClose={handleLogoutCancel} 
+  sx={{
+    '& .MuiDialog-paper': {
+      padding: 2,
+      borderRadius: 2,
+      minWidth: '400px',
+    },
+  }}
+>
+  <DialogTitle sx={{ textAlign: 'center', fontWeight: 'bold', color: '#333' }}>
+    Confirm Logout
+  </DialogTitle>
+  
+  <Typography sx={{ textAlign: 'center', mb: 4, color: '#666' }}>
+    Are you sure you want to logout?
+  </Typography>
+  
+  <DialogActions sx={{ justifyContent: 'center', gap: 2 }}>
+  <Button 
+      onClick={handleLogoutConfirm} 
+      sx={{ 
+        color: '#fff', 
+        backgroundColor: '#d9534f',
+        '&:hover': {
+          backgroundColor: '#c9302c',
+        },
+      }}
+      autoFocus
+    >
+      Yes
+    </Button>
+    <Button 
+      onClick={handleLogoutCancel} 
+      sx={{ 
+        color: '#fff', 
+        backgroundColor: '#6c757d',
+        '&:hover': {
+          backgroundColor: '#5a6268',
+        },
+      }}
+    >
+      No
+    </Button>
+    
+    
+  </DialogActions>
+</Dialog>
+
     </Box>
   );
 }
