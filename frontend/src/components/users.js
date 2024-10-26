@@ -16,7 +16,7 @@ import SearchIcon from '@mui/icons-material/Search';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import ProfileCard from './personDetails';
 
-// Initial data
+
 const initialData = [
   { name: 'Athena Weissnat', email: 'Elouise.Prohaska@yahoo.com', phone: '123-456-7890', status: 'Active' },
   { name: 'Deangelo Runolfsson', email: 'Kadin_Trantow87@yahoo.com', phone: '234-567-8901', status: 'Inactive' },
@@ -39,21 +39,21 @@ const statusStyles = {
     backgroundColor: '#d4edda',
     color: '#155724',
     display: 'inline-block',
-    padding: '2px 10px', // Adjusted padding for better visibility
+    padding: '2px 4px', 
     borderRadius: '4px',
     whiteSpace: 'nowrap',
-    margin: '0', // Removed margin to prevent affecting borders
-    lineHeight: '1.5', // Set line height for vertical alignment
+    margin: '0', 
+    lineHeight: '1',
   },
   Inactive: {
     backgroundColor: '#f8d7da',
     color: '#721c24',
     display: 'inline-block',
-    padding: '2px 10px', // Adjusted padding for better visibility
+    padding: '2px 4px', 
     borderRadius: '4px',
     whiteSpace: 'nowrap',
-    margin: '0', // Removed margin to prevent affecting borders
-    lineHeight: '1.5', // Set line height for vertical alignment
+    margin: '0', 
+    lineHeight: '1', 
   },
 };
 
@@ -63,8 +63,8 @@ const Users = ({ data = initialData, width = '100%', maxHeight = '380px' }) => {
   const [sortBy, setSortBy] = useState(null);
   const [reverseSortDirection, setReverseSortDirection] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
-  const [page, setPage] = useState(0); // Current page
-  const [rowsPerPage, setRowsPerPage] = useState(8); // Default to 8 users per page
+  const [page, setPage] = useState(0); 
+  const [rowsPerPage, setRowsPerPage] = useState(8);
 
   const setSorting = (field) => {
     const reversed = field === sortBy ? !reverseSortDirection : false;
@@ -109,18 +109,15 @@ const Users = ({ data = initialData, width = '100%', maxHeight = '380px' }) => {
     setSelectedUser(null);
   };
 
-  // Handle page change
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
 
-  // Handle rows per page change
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset to first page
+    setPage(0); 
   };
 
-  // Calculate displayed data
   const displayedData = sortedData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
@@ -141,7 +138,7 @@ const Users = ({ data = initialData, width = '100%', maxHeight = '380px' }) => {
             ),
             sx: { height: '35px', width: '300px', mt: -5 },
           }}
-          sx={{ height: '30px', marginBottom: -3 }} // Reduced height
+          sx={{ height: '30px', marginBottom: -3 }} 
           value={search}
           onChange={handleSearchChange}
         />
@@ -212,7 +209,7 @@ const Users = ({ data = initialData, width = '100%', maxHeight = '380px' }) => {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[8, 25, 50]} // Update options to reflect default of 8
+          rowsPerPageOptions={[8, 25, 50]} 
           component="div"
           count={sortedData.length}
           rowsPerPage={rowsPerPage}
