@@ -48,17 +48,60 @@ const Signup = () => {
           overflow: 'hidden', // Prevents overflow from content
         }}
       >
-        {/* Box for the image */}
+         {/* Box for the image with typography overlay */}
+      <Box
+        sx={{
+          position: 'relative', // Set main container as relative for absolute positioning within
+          flex: 1,
+          backgroundImage: `url(${imageUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          borderTopLeftRadius: '12px', 
+          borderBottomLeftRadius: '12px',
+        }}
+      >
+        {/* Overlay text */}
         <Box
           sx={{
-            flex: 1,
-            backgroundImage: `url(${imageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            borderTopLeftRadius: '12px', // Rounded corners
-            borderBottomLeftRadius: '12px',
+            position: 'absolute',
+            top: '200px', 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            color: 'white', 
+            fontWeight: 'bold',
+            padding: '2px 10px', 
+            border: '1px solid white', 
+            borderRadius: '0px', 
           }}
-        />
+        >
+          <Typography variant="h6"> AgriModel </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '50px', 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            color: 'white', 
+            fontWeight: 'bold',
+            padding: '2px 10px', 
+            
+            borderRadius: '6px', 
+          }}
+        >
+          <Typography
+            variant="h8"
+            sx={{
+              
+              fontSize: '0.8rem', 
+              fontWeight: 'bold', 
+            }}
+          >
+            xxxxxx
+          </Typography>
+       </Box>
+      </Box>
 
         {/* Box for the signup form */}
         <Box
