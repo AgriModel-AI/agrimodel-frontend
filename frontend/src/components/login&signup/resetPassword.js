@@ -49,17 +49,60 @@ const ResetPassword = () => {
           overflow: 'hidden',
         }}
       >
-        {/* Box for the image */}
+         {/* Box for the image with typography overlay */}
+      <Box
+        sx={{
+          position: 'relative', // Set main container as relative for absolute positioning within
+          flex: 1,
+          backgroundImage: `url(${imageUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          borderTopLeftRadius: '12px', 
+          borderBottomLeftRadius: '12px',
+        }}
+      >
+        {/* Overlay text */}
         <Box
           sx={{
-            flex: 1,
-            backgroundImage: `url(${imageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            borderTopLeftRadius: '12px',
-            borderBottomLeftRadius: '12px',
+            position: 'absolute',
+            top: '200px', 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            color: 'white', 
+            fontWeight: 'bold',
+            padding: '2px 10px', 
+            border: '1px solid white', 
+            borderRadius: '0px', 
           }}
-        />
+        >
+          <Typography variant="h6"> AgriModel </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '50px', 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            color: 'white', 
+            fontWeight: 'bold',
+            padding: '2px 10px', 
+            
+            borderRadius: '6px', 
+          }}
+        >
+          <Typography
+            variant="h8"
+            sx={{
+              
+              fontSize: '0.8rem', 
+              fontWeight: 'bold', 
+            }}
+          >
+            xxxxxx
+          </Typography>
+       </Box>
+      </Box>
 
         {/* Box for the Reset Password form */}
         <Box
@@ -82,7 +125,7 @@ const ResetPassword = () => {
             variant="h6"
             align="center"
             gutterBottom
-            sx={{ fontWeight: 'bold', fontSize: '1.6rem', color: '#005700' }}
+            sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#005700', mb: 1  }}
           >
             Reset Your Password
           </Typography>
@@ -91,7 +134,7 @@ const ResetPassword = () => {
             variant="subtitle1"
             align="center"
             gutterBottom
-            sx={{ fontWeight: 'semibold', fontSize: '0.875rem', color: 'black', mt:-1, mb: 4 }}
+            sx={{ fontWeight: 'semibold', fontSize: '0.75rem', color: 'black', mt:-1, mb: 1 }}
           >
             Enter your new password to reset your account
           </Typography>
@@ -107,8 +150,7 @@ const ResetPassword = () => {
             onFocus={() => setIsNewPasswordFocused(true)}
             onBlur={() => setIsNewPasswordFocused(false)}
             sx={{
-              width: '100%',
-              maxWidth: '300px',
+              width: '270px',
               height: '40px',
               mb: -0.5,
               '& .MuiInputBase-root': {
@@ -156,8 +198,7 @@ const ResetPassword = () => {
             onFocus={() => setIsConfirmPasswordFocused(true)}
             onBlur={() => setIsConfirmPasswordFocused(false)}
             sx={{
-              width: '100%',
-              maxWidth: '300px',
+              width: '270px',
               height: '40px',
               '& .MuiInputBase-root': {
                 borderRadius: '8px',
@@ -198,9 +239,9 @@ const ResetPassword = () => {
             sx={{
               backgroundColor: "#008000",
               color: "#fff",
-              marginTop: 2,
-              width: '100%',
-              maxWidth: '300px',
+              marginTop: 10,
+              fontWeight: 'bold',
+              width: '270px',
               '&:hover': {
                 backgroundColor: "#005700",
               },
@@ -217,8 +258,8 @@ const ResetPassword = () => {
               color: "#008000",
               border: "1px solid #008000",
               marginTop: 1,
-              width: '100%',
-              maxWidth: '300px',
+              width: '270px',
+              fontWeight: 'bold',
               '&:hover': {
                 backgroundColor: "#f5f5f5",
               },

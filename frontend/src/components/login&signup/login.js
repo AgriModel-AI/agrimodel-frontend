@@ -99,17 +99,61 @@ const Login = () => {
           overflow: 'hidden', // Prevents overflow from content
         }}
       >
-        {/* Box for the image */}
+        {/* Box for the image with typography overlay */}
+      <Box
+        sx={{
+          position: 'relative', // Set main container as relative for absolute positioning within
+          flex: 1,
+          backgroundImage: `url(${imageUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          borderTopLeftRadius: '12px', 
+          borderBottomLeftRadius: '12px',
+        }}
+      >
+        {/* Overlay text */}
         <Box
           sx={{
-            flex: 1,
-            backgroundImage: `url(${imageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            borderTopLeftRadius: '12px', // Rounded corners
-            borderBottomLeftRadius: '12px',
+            position: 'absolute',
+            top: '200px', 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            color: 'white', 
+            fontWeight: 'bold',
+            padding: '2px 10px', 
+            border: '1px solid white', 
+            borderRadius: '0px', 
           }}
-        />
+        >
+          <Typography variant="h6"> AgriModel </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '50px', 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            color: 'white', 
+            fontWeight: 'bold',
+            padding: '2px 10px', 
+            
+            borderRadius: '6px', 
+          }}
+        >
+          <Typography
+            variant="h8"
+            sx={{
+              
+              fontSize: '0.8rem', 
+              fontWeight: 'bold', 
+            }}
+          >
+            xxxxxx
+          </Typography>
+       </Box>
+      </Box>
+
 
         {/* Box for the login form */}
         <Box
@@ -151,8 +195,9 @@ const Login = () => {
             onFocus={() => setIsUsernameFocused(true)}
             onBlur={() => setIsUsernameFocused(false)}
             sx={{
-              width: '100%', // Ensure it fits within the box
+              width: '270px', // Ensure it fits within the box
               height: '40px',
+              mb: 0,
               '& .MuiInputBase-root': {
                 borderRadius: '8px',
                 height: '100%',
@@ -186,7 +231,7 @@ const Login = () => {
             onFocus={() => setIsPasswordFocused(true)}
             onBlur={() => setIsPasswordFocused(false)}
             sx={{
-              width: '100%', // Ensure it fits within the box
+              width: '270px', // Ensure it fits within the box
               height: '40px',
               '& .MuiInputBase-root': {
                 borderRadius: '8px',
@@ -231,7 +276,7 @@ const Login = () => {
               fontSize: '0.85rem',
               color: 'black',
               cursor: 'pointer',
-              ml:24,
+              ml:20,
               '&:hover': {
                 color: '#008000',
               },
@@ -247,7 +292,8 @@ const Login = () => {
               backgroundColor: "#008000",
               color: "#fff",
               marginTop: 2,
-              width: '100%',
+              width: '270px',
+              fontWeight: 'bold',
               '&:hover': {
                 backgroundColor: "#005700",
               },
@@ -277,13 +323,10 @@ const Login = () => {
             gutterBottom
             sx={{
               fontWeight: 'semiBold',
-              fontSize: '0.85rem',
-              color: 'black',
+              fontSize: '0.65rem',
+              color: 'blue',
               mt: 0.5,
               cursor: 'pointer',
-              '&:hover': {
-                color: 'blue',
-              },
             }}
           >
             - OR -
@@ -294,8 +337,10 @@ const Login = () => {
             variant="outlined"
             startIcon={<GoogleIcon />}
             sx={{
-              marginTop: 2,
-              width: '100%', // Full width
+              fontWeight: 'semiBold',
+              fontSize: '0.75rem',
+              marginTop: 1,
+              width: '270px', // Full width
               borderColor: '#D32F2F', // Color for the border
               color: '#D32F2F', // Color for the text
               '&:hover': {

@@ -48,17 +48,60 @@ const Signup = () => {
           overflow: 'hidden', // Prevents overflow from content
         }}
       >
-        {/* Box for the image */}
+         {/* Box for the image with typography overlay */}
+      <Box
+        sx={{
+          position: 'relative', // Set main container as relative for absolute positioning within
+          flex: 1,
+          backgroundImage: `url(${imageUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          borderTopLeftRadius: '12px', 
+          borderBottomLeftRadius: '12px',
+        }}
+      >
+        {/* Overlay text */}
         <Box
           sx={{
-            flex: 1,
-            backgroundImage: `url(${imageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            borderTopLeftRadius: '12px', // Rounded corners
-            borderBottomLeftRadius: '12px',
+            position: 'absolute',
+            top: '200px', 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            color: 'white', 
+            fontWeight: 'bold',
+            padding: '2px 10px', 
+            border: '1px solid white', 
+            borderRadius: '0px', 
           }}
-        />
+        >
+          <Typography variant="h6"> AgriModel </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '50px', 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            color: 'white', 
+            fontWeight: 'bold',
+            padding: '2px 10px', 
+            
+            borderRadius: '6px', 
+          }}
+        >
+          <Typography
+            variant="h8"
+            sx={{
+              
+              fontSize: '0.8rem', 
+              fontWeight: 'bold', 
+            }}
+          >
+            xxxxxx
+          </Typography>
+       </Box>
+      </Box>
 
         {/* Box for the signup form */}
         <Box
@@ -78,7 +121,7 @@ const Signup = () => {
             variant="h6"
             align="center"
             gutterBottom
-            sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#005700', mb:-1.4 }}
+            sx={{ fontWeight: 'bold', fontSize: '1.2rem', color: '#005700', mb: -0.5}}
           >
             Create an account
           </Typography>
@@ -93,7 +136,7 @@ const Signup = () => {
             onFocus={() => setIsNamesFocused(true)}
             onBlur={() => setIsNamesFocused(false)}
             sx={{
-              width: '300px',
+              width: '270px',
               height: '40px',
               mb: -0.5,
               '& .MuiInputBase-root': {
@@ -128,7 +171,7 @@ const Signup = () => {
             onFocus={() => setIsEmailFocused(true)}
             onBlur={() => setIsEmailFocused(false)}
             sx={{
-              width: '300px',
+              width: '270px',
               height: '40px',
               mb: -0.5,
               '& .MuiInputBase-root': {
@@ -163,7 +206,7 @@ const Signup = () => {
             onFocus={() => setIsPhoneFocused(true)}
             onBlur={() => setIsPhoneFocused(false)}
             sx={{
-              width: '300px',
+              width: '270px',
               height: '40px',
               mb: -0.5,
               '& .MuiInputBase-root': {
@@ -199,7 +242,7 @@ const Signup = () => {
             onFocus={() => setIsPasswordFocused(true)}
             onBlur={() => setIsPasswordFocused(false)}
             sx={{
-              width: '300px',
+              width: '270px',
               height: '40px',
               '& .MuiInputBase-root': {
                 borderRadius: '8px',
@@ -242,6 +285,7 @@ const Signup = () => {
                 checked={agreed}
                 onChange={(e) => setAgreed(e.target.checked)} // Handle checkbox change
                 name="termsCheckbox"
+                sx={{ transform: 'scale(0.6)', mt:-0.85}} // Reduces size of checkbox
               />
             }
             label={
@@ -249,27 +293,30 @@ const Signup = () => {
                 variant="h6"
                 gutterBottom
                 sx={{
+                  ml:-1,
                   fontWeight: 'semiBold',
-                  fontSize: '0.85rem',
+                  fontSize: '0.80rem',
                   color: 'black',
                   cursor: 'pointer',
-                  '&:hover': {
-                    color: 'blue',
-                  },
+                  display: 'inline', // Ensures text stays on the same line as checkbox
                 }}
               >
-                I agree with your terms & conditions
+                I agree with your
+                <span> </span> 
+                <span style={{ textDecoration: 'underline' , color: 'blue'}}>terms & conditions</span>
               </Typography>
             }
-            sx={{ marginBottom: 0 }}
+            sx={{ marginBottom: 0, display: 'flex', alignItems: 'center' }} // Ensures checkbox and label are aligned
           />
+
 
           <Button
             sx={{
               backgroundColor: '#008000',
               color: '#fff',
               marginTop: 0,
-              width: '300px',
+              width: '270px',
+              fontWeight: 'bold',
               '&:hover': {
                 backgroundColor: '#006400',
               },
@@ -282,26 +329,28 @@ const Signup = () => {
           </Button>
 
           <Typography
-            variant="body2"
-            align="center"
-            sx={{ marginTop: 2, color: 'black' }}
+            variant="h6"
+            gutterBottom
+            sx={{
+              fontWeight: 'semiBold',
+              fontSize: '0.65rem',
+              color: 'blue',
+              mt: 1,
+              cursor: 'pointer',
+            }}
           >
-            Already have an account?{' '}
-            <span
-              onClick={() => navigate('/signin')}
-              style={{ cursor: 'pointer', color: '#008000', fontWeight: 'bold' }}
-            >
-              Login
-            </span>
+            - OR -
           </Typography>
 
-          {/* Google signup button */}
+             {/* Google signup button */}
           <Button
             variant="outlined"
             startIcon={<GoogleIcon />}
             sx={{
-              marginTop: 2,
-              width: '300px',
+              fontWeight: 'semiBold',
+              fontSize: '0.75rem',
+              marginTop: 1,
+              width: '270px',
               borderColor: '#D32F2F', // Color for the border
               color: '#D32F2F', // Color for the text
               '&:hover': {
@@ -312,6 +361,22 @@ const Signup = () => {
           >
             Signup with Google
           </Button>
+
+          <Typography
+            variant="body2"
+            align="center"
+            sx={{ marginTop: 2, color: 'black' }}
+          >
+            Already have an account?{' '}
+            <span
+              onClick={() => navigate('/login')}
+              style={{ cursor: 'pointer', color: '#008000', fontWeight: 'bold' }}
+            >
+              Login
+            </span>
+          </Typography>
+
+         
         </Box>
       </Box>
     </Box>

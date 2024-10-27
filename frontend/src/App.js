@@ -10,8 +10,11 @@ import CodeVerification from './pages/authentication/codeVerification';
 import ResetPasswordSuccessful from './pages/authentication/resetPasswordSuccessful';
 import ForgotPass from './pages/authentication/forgot';
 import Dashboard from './pages/dashboard';
+import UsersRegisteredPage from './pages/usersPage';
+import CommunityPage from './pages/communityPage';
+import DiagnosisResultsPage from './pages/diagnosisResults';
+import DiseasePage from './pages/diseases';
 import SupportPage from './pages/support';
-import DiseasePage from './pages/DiseasePage';
 
 function App() {
   return (
@@ -20,15 +23,18 @@ function App() {
         <Router>
           <Routes>
             {/*routes */}
-            <Route path="/signin" element={<Signin />} />
+            <Route path="/login" element={<Signin />} />
             <Route path="/forgot-password" element={<ForgotPass />} />
             <Route path="/verification-code" element={<CodeVerification />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/reset-password" element={<Resetpassword />} />
             <Route path="/reset-password-successful" element={<ResetPasswordSuccessful />} />
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/support" element={<SupportPage />} />
-            <Route path="/disease" element={<DiseasePage />} />
+            <Route path="/dashboard/registered-users" element={<UsersRegisteredPage/>} />
+            <Route path="/dashboard/community" element={<CommunityPage/>} />
+            <Route path="/dashboard/diagnosis-results" element={<DiagnosisResultsPage />} />
+            <Route path="/dashboard/diseases" element={<DiseasePage />} />
+            <Route path="/dashboard/support" element={<SupportPage />} />
           </Routes>
         </Router>
     </Provider>

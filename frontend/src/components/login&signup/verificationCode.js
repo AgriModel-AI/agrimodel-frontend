@@ -36,17 +36,60 @@ const VerificationCode = () => {
           overflow: 'hidden', // Prevents overflow from content
         }}
       >
-        {/* Box for the image */}
+         {/* Box for the image with typography overlay */}
+      <Box
+        sx={{
+          position: 'relative', // Set main container as relative for absolute positioning within
+          flex: 1,
+          backgroundImage: `url(${imageUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          borderTopLeftRadius: '12px', 
+          borderBottomLeftRadius: '12px',
+        }}
+      >
+        {/* Overlay text */}
         <Box
           sx={{
-            flex: 1,
-            backgroundImage: `url(${imageUrl})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            borderTopLeftRadius: '12px', // Rounded corners
-            borderBottomLeftRadius: '12px',
+            position: 'absolute',
+            top: '200px', 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            color: 'white', 
+            fontWeight: 'bold',
+            padding: '2px 10px', 
+            border: '1px solid white', 
+            borderRadius: '0px', 
           }}
-        />
+        >
+          <Typography variant="h6"> AgriModel </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '50px', 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            color: 'white', 
+            fontWeight: 'bold',
+            padding: '2px 10px', 
+            
+            borderRadius: '6px', 
+          }}
+        >
+          <Typography
+            variant="h8"
+            sx={{
+              
+              fontSize: '0.8rem', 
+              fontWeight: 'bold', 
+            }}
+          >
+            xxxxxx
+          </Typography>
+       </Box>
+      </Box>
 
         {/* Box for the Verification Code form */}
         <Box
@@ -69,7 +112,7 @@ const VerificationCode = () => {
             variant="h6"
             align="center"
             gutterBottom
-            sx={{ fontWeight: 'bold', fontSize: '1.6rem', color: '#005700' }}
+            sx={{ fontWeight: 'bold', fontSize: '1.5rem', color: '#005700', mb: 1 }}
           >
             Enter Verification Code
           </Typography>
@@ -78,7 +121,7 @@ const VerificationCode = () => {
             variant="subtitle1"
             align="center"
             gutterBottom
-            sx={{ fontWeight: 'semibold', fontSize: '0.875rem', color: 'black' }}
+            sx={{ fontWeight: 'semibold', fontSize: '0.75rem', color: 'black', mb:3 }}
           >
             We have sent a code to your e-mail XXXXXXXXX
           </Typography>
@@ -90,7 +133,7 @@ const VerificationCode = () => {
               justifyContent: 'center',
               gap: 2, // Space between text fields
               mt: 1,
-              mb: 10,
+              mb: 16,
             }}
           >
             {code.map((digit, index) => (
@@ -125,8 +168,8 @@ const VerificationCode = () => {
               backgroundColor: "#008000",
               color: "#fff",
               marginTop: 2,
-              width: '100%',
-              maxWidth: '300px',
+              width: '270px',
+              fontWeight: 'bold',
               '&:hover': {
                 backgroundColor: "#005700",
               },
@@ -142,7 +185,7 @@ const VerificationCode = () => {
             gutterBottom
             sx={{
               fontWeight: 'semiBold',
-              fontSize: '0.85rem',
+              fontSize: '0.80rem',
               color: 'black',
               mt: 2,
               cursor: 'pointer',

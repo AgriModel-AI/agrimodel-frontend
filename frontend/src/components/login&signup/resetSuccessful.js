@@ -30,17 +30,60 @@ const ResetSuccessful = () => {
                     overflow: 'hidden',
                 }}
             >
-                {/* Box for the image */}
-                <Box
-                    sx={{
-                        flex: 1,
-                        backgroundImage: `url(${imageUrl})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        borderTopLeftRadius: '12px',
-                        borderBottomLeftRadius: '12px',
-                    }}
-                />
+                 {/* Box for the image with typography overlay */}
+      <Box
+        sx={{
+          position: 'relative', // Set main container as relative for absolute positioning within
+          flex: 1,
+          backgroundImage: `url(${imageUrl})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          borderTopLeftRadius: '12px', 
+          borderBottomLeftRadius: '12px',
+        }}
+      >
+        {/* Overlay text */}
+        <Box
+          sx={{
+            position: 'absolute',
+            top: '200px', 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            color: 'white', 
+            fontWeight: 'bold',
+            padding: '2px 10px', 
+            border: '1px solid white', 
+            borderRadius: '0px', 
+          }}
+        >
+          <Typography variant="h6"> AgriModel </Typography>
+        </Box>
+
+        <Box
+          sx={{
+            position: 'absolute',
+            bottom: '50px', 
+            left: '50%',
+            transform: 'translateX(-50%)',
+            color: 'white', 
+            fontWeight: 'bold',
+            padding: '2px 10px', 
+            
+            borderRadius: '6px', 
+          }}
+        >
+          <Typography
+            variant="h8"
+            sx={{
+              
+              fontSize: '0.8rem', 
+              fontWeight: 'bold', 
+            }}
+          >
+            xxxxxx
+          </Typography>
+       </Box>
+      </Box>
 
                 {/* Box for the Reset Successful message */}
                 <Box
@@ -68,7 +111,7 @@ const ResetSuccessful = () => {
                             width: '140px',  // Set width of the box
                         }}
                     >
-                        <CheckCircleOutlineOutlinedIcon sx={{ fontSize: '120px' }} /> {/* Adjusted icon size */}
+                        <CheckCircleOutlineOutlinedIcon sx={{ fontSize: '120px' , color: '#005700'}} /> {/* Adjusted icon size */}
                     </Box>
 
                     <Typography
@@ -81,10 +124,10 @@ const ResetSuccessful = () => {
                     </Typography>
 
                     <Typography
-                        variant="h6"
+                        variant="h2"
                         align="center"
                         gutterBottom
-                        sx={{ fontWeight: 'semibold', fontSize: '0.80rem', mb:8 }}
+                        sx={{ fontWeight: 'bold', fontSize: '0.65rem', mb:14 , color: 'black'}}
                     >
                         Congratulations! Your password has been changed.
                     </Typography>
@@ -94,13 +137,13 @@ const ResetSuccessful = () => {
                             backgroundColor: "#008000",
                             color: "#fff",
                             marginTop: 2,
-                            width: '100%',
-                            maxWidth: '300px',
+                            width: '270px',
+                            fontWeight: 'bold',
                             '&:hover': {
                                 backgroundColor: "#005700",
                             },
                         }}
-                        onClick={() => navigate('/signin')}
+                        onClick={() => navigate('/login')}
                     >
                         Continue
                     </Button>
