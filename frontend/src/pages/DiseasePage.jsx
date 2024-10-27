@@ -9,6 +9,7 @@ import {
   } from '@mui/material';
 import FilterComponent from '../components/support/FilterComponent';
 import ReportList from '../components/support/ReportList';
+import DiseaseTable from '../components/Disease/DiseaseTable';
 
 
 function SupportPage
@@ -20,12 +21,8 @@ function SupportPage
       />
       <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
       <Header/>
-        <Box sx={{ flexGrow: 1, overflow: 'auto', mt: 5, py: 2, px: '20%' }}>
-          <Box sx={{}}>
-            <Typography variant='overline'>Filter</Typography>
-            <FilterComponent />
-          </Box>
-          <ReportList />
+        <Box sx={{ flexGrow: 1, overflow: 'auto', mt: 5, py: 2, px: '10%' }}>
+          <DiseaseTable />
         </Box>
       </Box>
     </Box>
