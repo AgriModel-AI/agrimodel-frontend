@@ -25,6 +25,7 @@ import NotFoundPage from './pages/404';
 import ForbiddenPage from './pages/403';
 import VerifyAccount from './components/auth/verifyAccount';
 import GoogleAuthCallback from './components/auth/GoogleAuthCallback';
+import DiseaseUpdate from './pages/diseases/update';
 
 export default function App() {
   return (
@@ -45,7 +46,7 @@ export default function App() {
             <Route path="/dashboard/profile" element={<ProfileManagement />} />
             <Route path="/dashboard/diseases" element={<Diseases />} />
             <Route path="/dashboard/diseases/add" element={<DiseasesAdd />} />
-            <Route path="/dashboard/diseases/update" element={<Diseases />} />
+            <Route path="/dashboard/diseases/update" element={<DiseaseUpdate />} />
             <Route path="/dashboard/diagnosis" element={<Diagnosis />} />
             <Route path="/dashboard/clients" element={<Clients />} />
             <Route path="/dashboard/clients/view" element={<ClientDetails />} />

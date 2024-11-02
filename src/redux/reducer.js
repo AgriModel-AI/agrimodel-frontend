@@ -1,11 +1,13 @@
 import { combineReducers } from 'redux';
 import userReducer from './slices/userSlice';
 import userDetailsReducer from './slices/userDetailsSlice';
+import diseaseReducer from './slices/diseaseSlice';
 
 
 const appReducer = combineReducers({
   user: userReducer,
-  userDetails: userDetailsReducer
+  userDetails: userDetailsReducer,
+  diseases: diseaseReducer
 });
 
 const rootReducer = (state, action) => {

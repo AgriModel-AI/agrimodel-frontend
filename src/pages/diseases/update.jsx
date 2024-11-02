@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   Input,
@@ -10,17 +10,20 @@ import {
 } from "@nextui-org/react";
 import { useMediaQuery } from "react-responsive";
 import { useToast } from "@chakra-ui/react";
-import { useDispatch } from "react-redux";
-import { addDisease } from "../../redux/slices/diseaseSlice"; // Update with correct path
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { updateDisease, fetchDiseases } from "../../redux/slices/diseaseSlice";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 
-const DiseaseForm = () => {
+const DiseaseUpdate = () => {
   const isSmallScreen = useMediaQuery({ maxWidth: 640 });
   const toast = useToast();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const id = queryParams.get("id");
+  const { diseases, hasFetched } = useSelector((state) => state.diseases);
 
-  // Form state
   const [formData, setFormData] = useState({
     name: "",
     description: "",
@@ -30,11 +33,38 @@ const DiseaseForm = () => {
     images: [],
     relatedDiseases: "",
   });
-
-  // Validation errors state
   const [errors, setErrors] = useState({});
 
-  // Handle form input change
+  // Fetch diseases if not already fetched
+  useEffect(() => {
+    if (!hasFetched) {
+      dispatch(fetchDiseases());
+    }
+  }, [hasFetched, dispatch]);
+
+  // Populate form data for update
+  useEffect(() => {
+    if (id && hasFetched && diseases.length > 0) {
+      const existingDisease = diseases.find((disease) => disease.diseaseId === Number(id));
+      
+      if (existingDisease) {
+        
+        setFormData({
+          name: existingDisease.name || "",
+          description: existingDisease.description || "",
+          symptoms: existingDisease.symptoms || "",
+          treatment: existingDisease.treatment || "",
+          prevention: existingDisease.prevention || "",
+          images: [], // Images not prefilled for updates
+          relatedDiseases: existingDisease.relatedDiseases || "",
+        });
+      } else {
+        console.log("No matching disease found with ID:", id);
+      }
+    }
+  }, [id, hasFetched, diseases]);
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -43,7 +73,6 @@ const DiseaseForm = () => {
     }));
   };
 
-  // Handle image input change
   const handleImageChange = (e) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -51,7 +80,6 @@ const DiseaseForm = () => {
     }));
   };
 
-  // Validate required fields
   const validate = () => {
     let tempErrors = {};
     if (!formData.name.trim()) tempErrors.name = "Disease name is required.";
@@ -64,7 +92,6 @@ const DiseaseForm = () => {
     return Object.keys(tempErrors).length === 0;
   };
 
-  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
@@ -76,22 +103,20 @@ const DiseaseForm = () => {
       payload.append("prevention", formData.prevention);
       payload.append("relatedDiseases", formData.relatedDiseases);
       formData.images.forEach((file) => payload.append("images", file));
-      
+
       try {
-        await dispatch(addDisease(payload)).unwrap();
-        toast({
-          title: "Disease added successfully!",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
-        navigate("/dashboard/diseases"); // Redirect on success
+          await dispatch(updateDisease({ diseaseId: id, updatedData: payload })).unwrap();
+          toast({
+            title: "Disease updated successfully!",
+            status: "success",
+            duration: 3000,
+            isClosable: true,
+          });
+        navigate("/dashboard/diseases");
       } catch (error) {
-        // Check if the error is an object and has a message property
         const errorMessage = typeof error === 'object' && error.message
           ? error.message
-          : "Failed to add disease. Please try again later.";
-          
+          : "Failed to save disease. Please try again later.";
         toast({
           title: "Error",
           description: errorMessage,
@@ -112,20 +137,19 @@ const DiseaseForm = () => {
 
   return (
     <div className={`px-4 md:px-8 lg:px-16 py-8`}>
-      {/* Breadcrumbs */}
       <Breadcrumbs className="mb-6">
         <BreadcrumbItem href="/dashboard">Dashboard</BreadcrumbItem>
         <BreadcrumbItem href="/dashboard/diseases">Diseases</BreadcrumbItem>
-        <BreadcrumbItem isCurrent href="/dashboard/diseases/add">Add</BreadcrumbItem>
+        <BreadcrumbItem isCurrent href={`/dashboard/diseases/update?id=${id}`}>Edit</BreadcrumbItem>
       </Breadcrumbs>
 
-      {/* Form Card */}
       <div className={`flex ${isSmallScreen ? "flex-col" : "flex-row"} justify-center items-center`}>
         <Card className="w-full max-w-lg p-6 shadow-lg">
           <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
-            <h3 className="text-lg font-semibold text-center mb-2">ADD DISEASE INFORMATION</h3>
+            <h3 className="text-lg font-semibold text-center mb-2">EDIT DISEASE INFORMATION</h3>
 
             <Input
+              label="Images"
               type="file"
               fullWidth
               name="images"
@@ -134,7 +158,6 @@ const DiseaseForm = () => {
               multiple
             />
 
-            {/* Disease Name */}
             <Input
               label="Disease Name"
               placeholder="Enter disease name"
@@ -147,7 +170,6 @@ const DiseaseForm = () => {
               clearable
             />
 
-            {/* Disease Description */}
             <Textarea
               label="Description"
               placeholder="Enter a brief description"
@@ -160,7 +182,6 @@ const DiseaseForm = () => {
               minRows={3}
             />
 
-            {/* Symptoms */}
             <Textarea
               label="Symptoms"
               placeholder="List symptoms, separated by commas"
@@ -173,7 +194,6 @@ const DiseaseForm = () => {
               minRows={2}
             />
 
-            {/* Treatment */}
             <Textarea
               label="Treatment"
               placeholder="List treatments, separated by commas"
@@ -186,7 +206,6 @@ const DiseaseForm = () => {
               minRows={2}
             />
 
-            {/* Prevention */}
             <Textarea
               label="Prevention"
               placeholder="List prevention methods, separated by commas"
@@ -199,10 +218,6 @@ const DiseaseForm = () => {
               minRows={2}
             />
 
-            {/* Images (multiple file input) */}
-            
-
-            {/* Related Diseases */}
             <Input
               label="Related Diseases"
               placeholder="Enter related disease IDs, separated by commas"
@@ -213,11 +228,8 @@ const DiseaseForm = () => {
               clearable
             />
 
-            {/* Submit Button */}
             <Spacer y={1} />
-            <Button color="primary" type="submit" className="w-full">
-              Submit
-            </Button>
+            <Button color="primary" type="submit" className="w-full">Update</Button>
           </form>
         </Card>
       </div>
@@ -225,4 +237,4 @@ const DiseaseForm = () => {
   );
 };
 
-export default DiseaseForm;
+export default DiseaseUpdate;
