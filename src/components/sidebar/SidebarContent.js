@@ -11,6 +11,7 @@ import {
 import NavItem from './NavItem';
 
 import { FiHome, FiClipboard, FiActivity, FiHelpCircle, FiUsers, FiUser } from 'react-icons/fi';
+import { Link } from 'react-router-dom';
 
 const LinkItems = [
     { name: 'Dashboard', icon: FiHome, url: '/dashboard' },
@@ -39,7 +40,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
           <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
         </Flex>
         {LinkItems.map((link) => (
-          <NavItem key={link.name} icon={link.icon} url={link.url}>
+          <NavItem as={Link} key={link.name} icon={link.icon} to={link.url}>
             {link.name}
           </NavItem>
         ))}

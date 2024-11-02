@@ -6,12 +6,14 @@ export const store = configureStore({
 });
 
 const jwtToken = localStorage.getItem('jwtToken');
+const refreshToken = localStorage.getItem('refreshToken');
 
-if (jwtToken) {
+if (jwtToken && refreshToken) {
   store.dispatch({
     type: 'user/login',
-    payload: { jwtToken },
+    payload: { access_token: jwtToken, refresh_token: refreshToken },
   });
 }
+
 
 export default store;

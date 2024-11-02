@@ -16,7 +16,6 @@ import Support from './pages/support/index';
 
 import Signin from "./pages/auth/login";
 import SignUp from "./pages/auth/signup";
-import CodeVerification from "./pages/auth/codeVerification";
 import ForgotPass from "./pages/auth/forgot";
 import Resetpassword from "./pages/auth/resetPassword";
 import ResetPasswordSuccessful from "./pages/auth/resetPasswordSuccessful";
@@ -24,6 +23,8 @@ import ClientDetails from './pages/clients/clientDetails';
 import ProfileManagement from './pages/profile/ProfileManagement';
 import NotFoundPage from './pages/404';
 import ForbiddenPage from './pages/403';
+import VerifyAccount from './components/auth/verifyAccount';
+import GoogleAuthCallback from './components/auth/GoogleAuthCallback';
 
 export default function App() {
   return (
@@ -33,8 +34,9 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Signin />} />
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/verify-account" element={<VerifyAccount />} />
+          <Route path="/google-auth" element={<GoogleAuthCallback />} />
           <Route path="/forgot-password" element={<ForgotPass />} />
-          <Route path="/verification-code" element={<CodeVerification />} />
           <Route path="/reset-password" element={<Resetpassword />} />
           <Route path="/reset-password-successful" element={<ResetPasswordSuccessful />} />
 

@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   jwtToken: null,
+  refreshToken: null,
 };
 
 const userSlice = createSlice({
@@ -11,12 +12,15 @@ const userSlice = createSlice({
     login: (state, action) => {
 
       state.jwtToken = action.payload.access_token;
+      state.refreshToken = action.payload.refresh_token;
 
       localStorage.setItem('jwtToken', action.payload.access_token);
+      localStorage.setItem('refreshToken', action.payload.refresh_token);
 
     },
     logout: (state) => {
       state.jwtToken = null;
+      state.refreshToken = null;
 
       localStorage.clear();
     },

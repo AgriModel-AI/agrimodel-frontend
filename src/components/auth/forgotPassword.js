@@ -7,30 +7,65 @@ import {
   InputGroup,
   VStack,
   Icon,
+  useToast,
+  Spinner,
 } from '@chakra-ui/react';
 import { LockIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
-
-const imageUrl = './assets/adult-harvesting-coffee.jpg';
+import axios from 'axios';
 
 const ForgotPassword = () => {
   const navigate = useNavigate();
+  const toast = useToast();
+
   const [email, setEmail] = useState('');
-  const [isFocused, setIsFocused] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleContinue = () => {
-    setErrorMessage('');
+  const validateEmail = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const handleContinue = async () => {
+    setErrorMessage('');
+
     if (!email) {
       setErrorMessage('Please enter your email address.');
       return;
     }
-    if (!emailRegex.test(email)) {
+    if (!validateEmail(email)) {
       setErrorMessage('Please enter a valid email address.');
       return;
     }
-    navigate('/verification-code');
+
+    setIsLoading(true);
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/password-reset`, {
+        email,
+      });
+
+      toast({
+        title: 'Email Sent',
+        description: 'Check your inbox for the verification code.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+
+      navigate(`/reset-password?email=${email}`);
+    } catch (error) {
+      toast({
+        title: 'An error occurred. Please try again.',
+        description: error.response?.data?.message,
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+      });
+      // setErrorMessage(error.response?.data?.message || 'An error occurred. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -45,53 +80,18 @@ const ForgotPassword = () => {
       <Box
         display="flex"
         height="450px"
-        width="650px"
+        width="450px"
         boxShadow="lg"
         borderRadius="md"
         overflow="hidden"
+        padding={5}
       >
-        {/* Image Section */}
-        <Box
-          flex="1"
-          bgImage={`url(${imageUrl})`}
-          bgSize="cover"
-          bgPosition="center"
-          borderTopLeftRadius="md"
-          borderBottomLeftRadius="md"
-          position="relative"
-        >
-          <Text
-            position="absolute"
-            top="50%"
-            left="50%"
-            transform="translate(-50%, -50%)"
-            color="white"
-            fontWeight="bold"
-            fontSize="lg"
-          >
-            AgriModel
-          </Text>
-          <Text
-            position="absolute"
-            bottom="5"
-            left="50%"
-            transform="translateX(-50%)"
-            color="white"
-            fontWeight="bold"
-            fontSize="sm"
-          >
-            xxxxxx
-          </Text>
-        </Box>
-
         {/* Form Section */}
         <VStack
           flex="1"
           p="6"
           justify="center"
           align="center"
-          borderTopRightRadius="md"
-          borderBottomRightRadius="md"
           bg="white"
           spacing="4"
         >
@@ -107,7 +107,7 @@ const ForgotPassword = () => {
           </Box>
 
           {errorMessage && (
-            <Text color="red.500" fontSize="sm" mt="1">
+            <Text color="red.500" fontSize="sm">
               {errorMessage}
             </Text>
           )}
@@ -115,15 +115,13 @@ const ForgotPassword = () => {
           <InputGroup size="md">
             <Input
               placeholder="Enter your email"
-              ml={4}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              onFocus={() => setIsFocused(true)}
-              onBlur={() => setIsFocused(false)}
               width="270px"
               borderColor="gray.300"
               focusBorderColor="green.700"
               _hover={{ borderColor: 'gray.400' }}
+              margin={"auto"}
             />
           </InputGroup>
 
@@ -131,9 +129,10 @@ const ForgotPassword = () => {
             colorScheme="green"
             width="270px"
             onClick={handleContinue}
+            isLoading={isLoading}
             mt="5"
           >
-            Continue
+            {isLoading ? <Spinner size="sm" /> : 'Continue'}
           </Button>
 
           <Button
