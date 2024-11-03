@@ -28,7 +28,7 @@ import {
 
 
 import {Breadcrumbs, BreadcrumbItem} from "@nextui-org/react";
-import { MdSupportAgent } from "react-icons/md";
+import { MdPerson } from "react-icons/md";
 
 import { PlusIcon } from "../../components/diseases/PlusIcon";
 import { VerticalDotsIcon } from "../../components/diseases/VerticalDotsIcon";
@@ -191,12 +191,12 @@ export default function Disease() {
       <div className="flex flex-col gap-4">
         <Breadcrumbs className="mb-5">
           <BreadcrumbItem href="/dashboard">Dashboard</BreadcrumbItem>
-          <BreadcrumbItem href="/dashboard/diseases">Diseases</BreadcrumbItem>
+          <BreadcrumbItem href="/dashboard/clients">clients</BreadcrumbItem>
         </Breadcrumbs>
 
         <div className="flex items-center my-4 space-x-3">
-          <MdSupportAgent size={28} color="#1a73e8" />
-          <h2 className="text-2xl font-bold text-gray-800">Support</h2>
+          <MdPerson size={28} color="#1a73e8" />
+          <h2 className="text-2xl font-bold text-gray-800">Clients</h2>
         </div>
 
         <div className="flex justify-between gap-3 items-end">

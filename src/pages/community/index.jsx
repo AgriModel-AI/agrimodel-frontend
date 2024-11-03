@@ -25,8 +25,7 @@ import {
   ModalBody, 
   ModalFooter
 } from "@nextui-org/modal";
-import { MdSupportAgent } from "react-icons/md";
-
+import { MdPeople } from "react-icons/md";
 
 import {Breadcrumbs, BreadcrumbItem} from "@nextui-org/react";
 
@@ -191,11 +190,11 @@ export default function Disease() {
       <div className="flex flex-col gap-4">
         <Breadcrumbs className="mb-5">
           <BreadcrumbItem href="/dashboard">Dashboard</BreadcrumbItem>
-          <BreadcrumbItem href="/dashboard/diseases">Diseases</BreadcrumbItem>
+          <BreadcrumbItem href="/dashboard/community">Community</BreadcrumbItem>
         </Breadcrumbs>
         <div className="flex items-center my-4 space-x-3">
-          <MdSupportAgent size={28} color="#1a73e8" />
-          <h2 className="text-2xl font-bold text-gray-800">Support</h2>
+          <MdPeople size={28} color="#1a73e8" />
+          <h2 className="text-2xl font-bold text-gray-800">Community</h2>
         </div>
         <div className="flex justify-between gap-3 items-end">
           <Input
@@ -257,7 +256,7 @@ export default function Disease() {
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">Total {users.length} users</span>
+          <span className="text-default-400 text-small">Total {users.length} communities</span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
             <select
@@ -338,12 +337,12 @@ export default function Disease() {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={"No users found"} items={sortedItems}>
-          {(item) => (
+        <TableBody emptyContent={"No Communities found"} items={sortedItems}>
+          {/* {(item) => (
             <TableRow key={item.id}>
               {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
             </TableRow>
-          )}
+          )} */}
         </TableBody>
       </Table>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
