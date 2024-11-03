@@ -22,11 +22,30 @@ const LandingPage = () => {
         }`}
       >
         <div className="flex justify-between items-center max-w-6xl mx-auto">
-        <h2 className="text-xl font-bold text-slate-900">AGRIMODEL</h2>
+        {/* <h2 className="text-xl font-bold text-slate-900">AGRIMODEL</h2> */}
+          {
+            navbarBackground ?
+            <Image src="../../assets/logo_black.png" width={160} className="mx-w-[100px]"/>
+              :
+            <Image src="../../assets/logo.png" width={160} className="mx-w-[100px]"/>
+
+          }
           <div className="hidden md:flex gap-6">
-            <Link href="#" className="hover:text-green-600 text-green-900">Home</Link>
-            <Link href="#" className="hover:text-green-600 text-green-900">About Us</Link>
-            <Link href="#" className="hover:text-green-600 text-green-900">Services</Link>
+            {
+              navbarBackground ? 
+              <>
+                <Link href="#" className="hover:text-green-600 text-green-900">Home</Link>
+                <Link href="#" className="hover:text-green-600 text-green-900">About Us</Link>
+                <Link href="#" className="hover:text-green-600 text-green-900">Services</Link>
+              </>
+              :
+              <>
+                <Link href="#" className="hover:text-white text-white">Home</Link>
+                <Link href="#" className="hover:text-white text-white">About Us</Link>
+                <Link href="#" className="hover:text-white text-white">Services</Link>
+              </>
+            }
+            
           </div>
           <div className="flex items-center gap-4">
             <select className="border rounded px-2 py-1">
@@ -40,7 +59,7 @@ const LandingPage = () => {
       </div>
 
       {/* Hero Section */}
-      <div className="flex flex-col md:flex-row items-center h-screen bg-cover bg-center text-white pt-16 relative" style={{ backgroundImage: "url('../../assets/5.png')" }}>
+      <div className="flex flex-col md:flex-row items-center h-screen bg-cover bg-center text-white pt-16 relative" style={{ backgroundImage: "url('../../assets/back.jpg')" }}>
         <div className="absolute inset-0 bg-black opacity-50 z-10"></div>
         
         <div className="relative flex w-full h-full items-center px-8 max-w-6xl mx-auto z-20">
