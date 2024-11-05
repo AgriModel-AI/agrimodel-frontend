@@ -6,6 +6,7 @@ import {
   Flex,
   useColorModeValue,
   Text,
+  Image,
 } from '@chakra-ui/react';
 
 import NavItem from './NavItem';
@@ -34,10 +35,11 @@ const SidebarContent = ({ onClose, ...rest }) => {
         pos="fixed"
         h="full"
         {...rest}>
-        <Flex h="20" alignItems="center" mx="8" justifyContent="space-between">
-          <Text fontSize="2xl" fontFamily="monospace" fontWeight="black">
+        <Flex h="20" alignItems="center" mb={6} mx="8" justifyContent="space-between">
+          {/* <Text fontSize="2xl" fontFamily="monospace" fontWeight="black">
             AgriModel
-          </Text>
+          </Text> */}
+          <Image src='../../assets/logo_black.png' width={140}/>
           <CloseButton display={{ base: 'flex', md: 'none' }} onClick={onClose} />
         </Flex>
         {LinkItems.map((link) => (

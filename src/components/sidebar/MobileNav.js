@@ -25,8 +25,9 @@ import {
   AlertDialogContent,
   AlertDialogOverlay,
   Button,
+  Image,
 } from '@chakra-ui/react';
-import { Badge, Image } from "@nextui-org/react";
+import { Badge } from "@nextui-org/react";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchUserDetails } from '../../redux/slices/userDetailsSlice';
 import { logout } from '../../redux/slices/userSlice';
@@ -82,13 +83,15 @@ const MobileNav = ({ onOpen, ...rest }) => {
         icon={<FiMenu />}
       />
 
-      <Text
+      {/* <Text
         display={{ base: 'flex', md: 'none' }}
         fontSize="2xl"
         fontFamily="monospace"
         fontWeight="bold">
         AgriModel
-      </Text>
+      </Text> */}
+      <Image src='../../assets/logo_black.png' width={130} display={{ base: 'flex', md: 'none' }}/>
+      
 
       <HStack spacing={{ base: '0', md: '6' }}>
         <Flex alignItems={'center'}>
