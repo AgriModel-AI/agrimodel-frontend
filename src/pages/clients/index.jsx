@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -35,21 +35,40 @@ import { VerticalDotsIcon } from "../../components/diseases/VerticalDotsIcon";
 import { SearchIcon } from "../../components/diseases/SearchIcon";
 import { ChevronDownIcon } from "../../components/diseases/ChevronDownIcon";
 import { capitalize } from "../../components/diseases/utils";
-import {columns, users, statusOptions} from "../../components/diseases/data";
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { fetchClients } from "../../redux/slices/clientsSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const statusColorMap = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
+  true: "success",
+  false: "danger",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
+const columns = [
+  {name: "ID", uid: "userId", sortable: true},
+  {name: "NAME", uid: "username", sortable: true},
+  {name: "PHONENUMBER", uid: "phone_number", sortable: true},
+  {name: "ADDRESS", uid: "address", sortable: true},
+  {name: "ROLE", uid: "role", sortable: true},
+  {name: "ISVERIFIED", uid: "isVerified", sortable: true},
+  {name: "ISBLOCKED", uid: "isBlocked", sortable: true},
+  {name: "ACTIONS", uid: "actions"},
+];
+
+const INITIAL_VISIBLE_COLUMNS = ["username", "phone_number", "address", "role", "isVerified", "isBlocked", "actions"];
 
 export default function Disease() {
 
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const {clients, hasFetched} = useSelector((state) => state.clients)
+
+
+  useEffect(()=> {
+    if(!hasFetched) {
+      dispatch(fetchClients());
+    }
+  }, [dispatch, hasFetched])
 
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
@@ -57,7 +76,7 @@ export default function Disease() {
   const [statusFilter, setStatusFilter] = React.useState("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: "age",
+    column: "phone_number",
     direction: "ascending",
   });
   const [page, setPage] = React.useState(1);
@@ -71,21 +90,16 @@ export default function Disease() {
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...users];
+    let filteredUsers = [...clients];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        user.name.toLowerCase().includes(filterValue.toLowerCase()),
-      );
-    }
-    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status),
+        user.name ? user.name?.toLowerCase().includes(filterValue.toLowerCase()) : user.email?.toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
 
     return filteredUsers;
-  }, [users, filterValue, statusFilter]);
+  }, [clients, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -110,27 +124,95 @@ export default function Disease() {
     const cellValue = user[columnKey];
 
     switch (columnKey) {
-      case "name":
+      case "username":
         return (
           <User
-            avatarProps={{radius: "lg", src: user.avatar}}
+            avatarProps={{radius: "lg", src: user.profilePicture}}
             description={user.email}
             name={cellValue}
+            alt="Profile"
+            size='sm'
+            referrerPolicy="no-referrer" 
           >
-            {user.email}
+            {user.username}
           </User>
         );
-      case "role":
+      case "address":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{cellValue}</p>
-            <p className="text-bold text-tiny capitalize text-default-400">{user.team}</p>
+            <p className="text-bold text-small capitalize">{cellValue ? cellValue : "Not provided"}</p>
+            <p className="text-bold text-tiny capitalize text-default-400">
+              {user.city ? user.city : "Unknown city"}
+            </p>
           </div>
         );
-      case "status":
+        case "role":
         return (
-          <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
-            {cellValue}
+          <div className="flex items-center space-x-2">
+          {user.role === "farmer" ? (
+            <span className="inline-flex items-center px-3 py-1 rounded-md bg-green-100 text-green-700 font-medium text-sm shadow-md">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-1"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M13 16h-1v-4H9v-1h4V8l3 3-3 3v2zm-5 0H7v-1H5v-1h2v-1H4v2h1v1h2v1zm14-2V5h-7V3H6v2H1v9h22v-2zm-2 0h-4v1h-2v1h2v1h4v-3zm0-6V7h-4v1h4z"/>
+              </svg>
+              Farmer
+            </span>
+          ) : (
+            <span className="inline-flex items-center px-3 py-1 rounded-md bg-blue-100 text-blue-700 font-medium text-sm shadow-md">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-4 w-4 mr-1"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path d="M12 12c2.76 0 5-2.24 5-5S14.76 2 12 2 7 4.24 7 7s2.24 5 5 5zm0 2c-3.87 0-7 3.13-7 7h2a5 5 0 0110 0h2c0-3.87-3.13-7-7-7z"/>
+              </svg>
+              User
+            </span>
+          )}
+        </div>
+        );
+
+      
+      case "isBlocked":
+        return (
+          <div className="flex items-center space-x-2">
+            {user.isBlocked ? (
+              <span className="inline-flex items-center px-3 py-1 rounded-md bg-red-100 text-red-700 text-sm shadow-md">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm4.29 14.3a1 1 0 0 1-1.41 0L12 13.41l-2.88 2.89a1 1 0 0 1-1.41-1.41L10.59 12l-2.88-2.88a1 1 0 1 1 1.41-1.41L12 10.59l2.88-2.88a1 1 0 0 1 1.41 1.41L13.41 12l2.88 2.88a1 1 0 0 1 0 1.41z"/>
+                </svg>
+                Blocked
+              </span>
+            ) : (
+              <span className="inline-flex items-center px-3 py-1 rounded-md bg-green-100 text-green-700 text-sm shadow-md">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 mr-1"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M10 15l-3.5-3.5 1.42-1.42L10 12.17l5.09-5.09 1.41 1.41L10 15zM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/>
+                </svg>
+                Unblocked
+              </span>
+            )}
+          </div>
+        );
+
+      case "isVerified":
+        return (
+          <Chip className="capitalize" color={statusColorMap[user.isVerified]} size="sm" variant="flat">
+            {cellValue ? 'Verified' : 'Not Verified'}
           </Chip>
         );
       case "actions":
@@ -143,15 +225,13 @@ export default function Disease() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu>
-                <DropdownItem href="/view">View</DropdownItem>
-                <DropdownItem>Edit</DropdownItem>
-                <DropdownItem onPress={onOpen}>Delete</DropdownItem>
+                <DropdownItem as={Link} to={`/dashboard/clients/view?id=${user.userId}`}>View</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
         );
       default:
-        return cellValue;
+        return cellValue ? cellValue : "Not provided";
     }
   }, []);
 
@@ -214,27 +294,6 @@ export default function Disease() {
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                  Status
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={statusFilter}
-                selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
-              >
-                {statusOptions.map((status) => (
-                  <DropdownItem key={status.uid} className="capitalize">
-                    {capitalize(status.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
-                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
                   Columns
                 </Button>
               </DropdownTrigger>
@@ -253,13 +312,10 @@ export default function Disease() {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button color="primary" endContent={<PlusIcon />} onClick={()=> {navigate("/dashboard/diseases/add");}}>
-              Add New
-            </Button>
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">Total {users.length} users</span>
+          <span className="text-default-400 text-small">Total {clients.length} users</span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
             <select
@@ -279,7 +335,7 @@ export default function Disease() {
     statusFilter,
     visibleColumns,
     onRowsPerPageChange,
-    users.length,
+    clients.length,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -340,50 +396,14 @@ export default function Disease() {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={"No users found"} items={sortedItems}>
+        <TableBody emptyContent={"No Users found"} items={sortedItems}>
           {(item) => (
-            <TableRow key={item.id}>
+            <TableRow key={item.userId}>
               {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
             </TableRow>
           )}
         </TableBody>
       </Table>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
-        <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
-              <ModalBody>
-                <p> 
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit
-                  dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. 
-                  Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. 
-                  Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur 
-                  proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
-                </Button>
-              </ModalFooter>
-            </>
-          )}
-        </ModalContent>
-      </Modal>
     </div>
   );
 }

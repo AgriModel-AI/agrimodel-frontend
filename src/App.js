@@ -26,6 +26,7 @@ import ForbiddenPage from './pages/403';
 import VerifyAccount from './components/auth/verifyAccount';
 import GoogleAuthCallback from './components/auth/GoogleAuthCallback';
 import DiseaseUpdate from './pages/diseases/update';
+import AccountBlocked from './pages/auth/AccountBlocked';
 
 export default function App() {
   return (
@@ -37,6 +38,7 @@ export default function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/verify-account" element={<VerifyAccount />} />
           <Route path="/google-auth" element={<GoogleAuthCallback />} />
+          <Route path="/account-block" element={<AccountBlocked />} />
           <Route path="/forgot-password" element={<ForgotPass />} />
           <Route path="/reset-password" element={<Resetpassword />} />
           <Route path="/reset-password-successful" element={<ResetPasswordSuccessful />} />

@@ -12,7 +12,7 @@ import { useMediaQuery } from "react-responsive";
 import { useToast } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDisease, fetchDiseases } from "../../redux/slices/diseaseSlice";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const DiseaseUpdate = () => {
   const isSmallScreen = useMediaQuery({ maxWidth: 640 });
