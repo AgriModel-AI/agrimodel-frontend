@@ -26,7 +26,7 @@ import {
   AlertDialogOverlay,
   Button,
 } from '@chakra-ui/react';
-import { Badge } from "@nextui-org/react";
+import { Badge, Image } from "@nextui-org/react";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchUserDetails } from '../../redux/slices/userDetailsSlice';
 import { logout } from '../../redux/slices/userSlice';
@@ -52,6 +52,16 @@ const MobileNav = ({ onOpen, ...rest }) => {
     dispatch(logout());
     navigate('/login');
   };
+
+  const [imageSrc, setImageSrc] = useState('');
+  const [imageHash, setImageHash] = useState(Date.now());
+
+  useEffect(() => {
+    if (!loading && userDetails.profilePicture) {
+      setImageSrc(userDetails.profilePicture);
+      setImageHash(Date.now()); // Update hash to force refresh
+    }
+  }, [loading, userDetails.profilePicture]);
 
   return (
     <Flex
@@ -108,11 +118,12 @@ const MobileNav = ({ onOpen, ...rest }) => {
           <Menu>
             <MenuButton py={2} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
               <HStack>
-                <Avatar
-                  size={'sm'}
-                  src={
-                    'https://images.unsplash.com/photo-1619946794135-5bc917a27793?ixlib=rb-0.3.5&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&s=b616b2c5b373a80ffc9636ba24f7a4a9'
-                  }
+              <Avatar
+                  src={`${userDetails.profilePicture}`}
+                  key={imageHash}
+                  alt="Profile"
+                  size='sm'
+                  referrerPolicy="no-referrer" 
                 />
                 <VStack
                   display={{ base: 'none', md: 'flex' }}
