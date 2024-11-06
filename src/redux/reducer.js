@@ -3,13 +3,15 @@ import userReducer from './slices/userSlice';
 import userDetailsReducer from './slices/userDetailsSlice';
 import diseaseReducer from './slices/diseaseSlice';
 import clientReducer from './slices/clientsSlice'
+import communitiesReducer from './slices/communitySlice'
 
 
 const appReducer = combineReducers({
   user: userReducer,
   userDetails: userDetailsReducer,
   diseases: diseaseReducer,
-  clients: clientReducer
+  clients: clientReducer,
+  communities: communitiesReducer
 });
 
 const rootReducer = (state, action) => {

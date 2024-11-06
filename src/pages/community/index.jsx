@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -12,7 +12,6 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
-  Chip,
   User,
   Pagination,
   useDisclosure
@@ -32,23 +31,30 @@ import {Breadcrumbs, BreadcrumbItem} from "@nextui-org/react";
 import { PlusIcon } from "../../components/diseases/PlusIcon";
 import { VerticalDotsIcon } from "../../components/diseases/VerticalDotsIcon";
 import { SearchIcon } from "../../components/diseases/SearchIcon";
-import { ChevronDownIcon } from "../../components/diseases/ChevronDownIcon";
-import { capitalize } from "../../components/diseases/utils";
-import {columns, users, statusOptions} from "../../components/diseases/data";
+import { statusOptions} from "../../components/diseases/data";
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCommunities } from "../../redux/slices/communitySlice";
+import { formatDate } from "../../utils/dateUtil";
 
-const statusColorMap = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
-};
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
+const columns = [
+  {name: "ID", uid: "communityId", sortable: true},
+  {name: "NAME", uid: "name", sortable: true},
+  {name: "DESCRIPTION", uid: "description", sortable: true},
+  {name: "NUMBER OF FARMERS", uid: "users", sortable: true},
+  {name: "NUMBER OF POSTS", uid: "posts", sortable: true},
+  {name: "CREATED BY", uid: "createdBy", sortable: true},
+  {name: "CREATED AT", uid: "createdAt", sortable: true},
+  {name: "ACTIONS", uid: "actions", sortable: true},
+];
+const INITIAL_VISIBLE_COLUMNS = ["name", "description", "users", "posts", "createdBy", "createdAt", "actions"];
 
 export default function Disease() {
 
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
@@ -56,9 +62,19 @@ export default function Disease() {
   const [statusFilter, setStatusFilter] = React.useState("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: "age",
+    column: "name",
     direction: "ascending",
   });
+
+  const { hasFetched, communities } = useSelector((state)=> state.communities);
+
+  useEffect(()=> {
+    if(!hasFetched) {
+      dispatch(fetchCommunities());
+    }
+  }, [hasFetched, dispatch])
+
+
   const [page, setPage] = React.useState(1);
 
   const hasSearchFilter = Boolean(filterValue);
@@ -70,7 +86,7 @@ export default function Disease() {
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...users];
+    let filteredUsers = [...communities];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
@@ -84,7 +100,7 @@ export default function Disease() {
     }
 
     return filteredUsers;
-  }, [users, filterValue, statusFilter]);
+  }, [communities, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -112,26 +128,29 @@ export default function Disease() {
       case "name":
         return (
           <User
-            avatarProps={{radius: "lg", src: user.avatar}}
-            description={user.email}
+            avatarProps={{
+              radius: "lg",
+              src: user.image
+                ? `${process.env.REACT_APP_BACKEND_URL}/api/v1/communities/image/${user.image}` 
+                : undefined,
+            }}
             name={cellValue}
+            description={user.name}
           >
-            {user.email}
+            {user.name}
           </User>
         );
-      case "role":
+      case "createdBy":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{cellValue}</p>
-            <p className="text-bold text-tiny capitalize text-default-400">{user.team}</p>
+            <p className="text-bold text-small capitalize">{user?.createdBy?.username}</p>
+            <p className="text-bold text-tiny capitalize text-default-400">{user?.createdBy?.email}</p>
           </div>
         );
-      case "status":
-        return (
-          <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
-            {cellValue}
-          </Chip>
-        );
+
+
+      case "createdAt":
+        return formatDate(cellValue)
       case "actions":
         return (
           <div className="relative flex justify-end items-center gap-2">
@@ -143,7 +162,7 @@ export default function Disease() {
               </DropdownTrigger>
               <DropdownMenu>
                 <DropdownItem href="/view">View</DropdownItem>
-                <DropdownItem>Edit</DropdownItem>
+                <DropdownItem href={`/dashboard/community/update?id=${user.communityId}`}>Edit</DropdownItem>
                 <DropdownItem onPress={onOpen}>Delete</DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -207,56 +226,14 @@ export default function Disease() {
             onValueChange={onSearchChange}
             variant="faded"
           />
-          <div className="flex gap-3">
-            <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
-                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                  Status
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={statusFilter}
-                selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
-              >
-                {statusOptions.map((status) => (
-                  <DropdownItem key={status.uid} className="capitalize">
-                    {capitalize(status.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
-                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                  Columns
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={visibleColumns}
-                selectionMode="multiple"
-                onSelectionChange={setVisibleColumns}
-              >
-                {columns.map((column) => (
-                  <DropdownItem key={column.uid} className="capitalize">
-                    {capitalize(column.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
-            <Button color="primary" endContent={<PlusIcon />} onClick={()=> {navigate("/dashboard/diseases/add");}}>
+          <div className="flex gap-3">            
+            <Button color="primary" endContent={<PlusIcon />} onClick={()=> {navigate("/dashboard/community/add");}}>
               Add New
             </Button>
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">Total {users.length} communities</span>
+          <span className="text-default-400 text-small">Total {communities.length} communities</span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
             <select
@@ -276,7 +253,7 @@ export default function Disease() {
     statusFilter,
     visibleColumns,
     onRowsPerPageChange,
-    users.length,
+    communities.length,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -338,11 +315,11 @@ export default function Disease() {
           )}
         </TableHeader>
         <TableBody emptyContent={"No Communities found"} items={sortedItems}>
-          {/* {(item) => (
-            <TableRow key={item.id}>
+          {(item) => (
+            <TableRow key={item.communityId}>
               {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
             </TableRow>
-          )} */}
+          )}
         </TableBody>
       </Table>
       <Modal isOpen={isOpen} onOpenChange={onOpenChange}>

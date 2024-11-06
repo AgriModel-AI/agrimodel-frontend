@@ -27,6 +27,7 @@ import VerifyAccount from './components/auth/verifyAccount';
 import GoogleAuthCallback from './components/auth/GoogleAuthCallback';
 import DiseaseUpdate from './pages/diseases/update';
 import AccountBlocked from './pages/auth/AccountBlocked';
+import CommunityUpdate from './pages/community/update';
 
 export default function App() {
   return (
@@ -54,7 +55,7 @@ export default function App() {
             <Route path="/dashboard/clients/view" element={<ClientDetails />} />
             <Route path="/dashboard/community" element={<Community />} />
             <Route path="/dashboard/community/add" element={<CommunityForm />} />
-            <Route path="/dashboard/community/update" element={<Community />} />
+            <Route path="/dashboard/community/update" element={<CommunityUpdate />} />
             <Route path="/dashboard/support" element={<Support />} />
           </Route>
 
