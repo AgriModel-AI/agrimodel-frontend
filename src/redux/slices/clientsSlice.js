@@ -27,6 +27,18 @@ export const toggleBlockStatus = createAsyncThunk(
   }
 );
 
+export const addAdminUser = createAsyncThunk(
+  'clients/addAdminUser',
+  async (adminData, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.post('/clients/admin/create', adminData);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Error creating admin user");
+    }
+  }
+);
+
 // Client slice
 const clientSlice = createSlice({
   name: 'clients',
@@ -69,6 +81,21 @@ const clientSlice = createSlice({
         }
       })
       .addCase(toggleBlockStatus.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+      // Add admin user
+      builder
+      .addCase(addAdminUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addAdminUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.hasFetched = false;
+      })
+      .addCase(addAdminUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

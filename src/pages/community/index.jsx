@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableHeader,
@@ -34,8 +34,9 @@ import { SearchIcon } from "../../components/diseases/SearchIcon";
 import { statusOptions} from "../../components/diseases/data";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
-import { fetchCommunities } from "../../redux/slices/communitySlice";
+import { fetchCommunities, deleteCommunity  } from "../../redux/slices/communitySlice";
 import { formatDate } from "../../utils/dateUtil";
+import { useToast } from "@chakra-ui/react";
 
 
 const columns = [
@@ -55,8 +56,10 @@ export default function Disease() {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const toast = useToast();
 
   const [filterValue, setFilterValue] = React.useState("");
+  const [selectedCommunity, setSelectedCommunity] = useState(null);
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
   const [visibleColumns, setVisibleColumns] = React.useState(new Set(INITIAL_VISIBLE_COLUMNS));
   const [statusFilter, setStatusFilter] = React.useState("all");
@@ -72,7 +75,31 @@ export default function Disease() {
     if(!hasFetched) {
       dispatch(fetchCommunities());
     }
-  }, [hasFetched, dispatch])
+  }, [hasFetched, dispatch]);
+
+  const handleDeleteConfirm = async () => {
+    console.log(selectedCommunity);
+    if (selectedCommunity) {
+      dispatch(deleteCommunity(selectedCommunity))
+      .then(() => {
+        toast({
+          title: "Success",
+          description: "Community deleted successfully!",
+          status: "success",
+          duration: 3000,
+        });
+      })
+      .catch(() => {
+        toast({
+          title: "Error",
+          description: "Failed to delete community. Please try again later.",
+          status: "error",
+          duration: 3000,
+        });
+      })
+      .finally(() => onOpenChange());
+    }
+  };
 
 
   const [page, setPage] = React.useState(1);
@@ -135,7 +162,6 @@ export default function Disease() {
                 : undefined,
             }}
             name={cellValue}
-            description={user.name}
           >
             {user.name}
           </User>
@@ -161,9 +187,9 @@ export default function Disease() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu>
-                <DropdownItem href="/view">View</DropdownItem>
+                <DropdownItem href={`/dashboard/community/view?id=${user.communityId}`}>View</DropdownItem>
                 <DropdownItem href={`/dashboard/community/update?id=${user.communityId}`}>Edit</DropdownItem>
-                <DropdownItem onPress={onOpen}>Delete</DropdownItem>
+                <DropdownItem onPress={() => { setSelectedCommunity(user.communityId); onOpen(); }}>Delete</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -326,32 +352,16 @@ export default function Disease() {
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
+              <ModalHeader className="flex flex-col gap-1">Confirm Deletion</ModalHeader>
               <ModalBody>
-                <p> 
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit
-                  dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. 
-                  Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. 
-                  Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur 
-                  proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
+                <p>Are you sure you want to delete this community? This action cannot be undone.</p>
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
-                  Close
+                  Cancel
                 </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
+                <Button color="primary" onPress={handleDeleteConfirm}>
+                  Confirm Delete
                 </Button>
               </ModalFooter>
             </>

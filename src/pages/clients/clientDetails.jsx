@@ -20,7 +20,7 @@ import {
   FaIdCard,
   FaCalendarAlt,
 } from "react-icons/fa";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchClients, toggleBlockStatus } from "../../redux/slices/clientsSlice";
 import { Image, Spinner, Center, useToast } from "@chakra-ui/react";
@@ -98,7 +98,7 @@ const ClientDetails = () => {
     <div className="px-4 sm:px-6 md:px-10 lg:px-16 py-8 bg-gray-100">
       <Breadcrumbs className="mb-6">
         <BreadcrumbItem href="/dashboard">Dashboard</BreadcrumbItem>
-        <BreadcrumbItem href="/dashboard/clients">Clients</BreadcrumbItem>
+        <BreadcrumbItem href="/dashboard/clients">Users</BreadcrumbItem>
         <BreadcrumbItem isCurrent href="/dashboard/clients/view">View</BreadcrumbItem>
       </Breadcrumbs>
 

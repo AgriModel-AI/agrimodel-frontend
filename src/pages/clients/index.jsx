@@ -60,6 +60,7 @@ const INITIAL_VISIBLE_COLUMNS = ["username", "phone_number", "address", "role", 
 export default function Disease() {
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const {clients, hasFetched} = useSelector((state) => state.clients)
 
@@ -171,7 +172,7 @@ export default function Disease() {
               >
                 <path d="M12 12c2.76 0 5-2.24 5-5S14.76 2 12 2 7 4.24 7 7s2.24 5 5 5zm0 2c-3.87 0-7 3.13-7 7h2a5 5 0 0110 0h2c0-3.87-3.13-7-7-7z"/>
               </svg>
-              User
+              Admin
             </span>
           )}
         </div>
@@ -271,12 +272,12 @@ export default function Disease() {
       <div className="flex flex-col gap-4">
         <Breadcrumbs className="mb-5">
           <BreadcrumbItem href="/dashboard">Dashboard</BreadcrumbItem>
-          <BreadcrumbItem href="/dashboard/clients">clients</BreadcrumbItem>
+          <BreadcrumbItem href="/dashboard/clients">Users</BreadcrumbItem>
         </Breadcrumbs>
 
         <div className="flex items-center my-4 space-x-3">
           <MdPerson size={28} color="#1a73e8" />
-          <h2 className="text-2xl font-bold text-gray-800">Clients</h2>
+          <h2 className="text-2xl font-bold text-gray-800">Users</h2>
         </div>
 
         <div className="flex justify-between gap-3 items-end">
@@ -312,6 +313,11 @@ export default function Disease() {
                 ))}
               </DropdownMenu>
             </Dropdown>
+            <div className="flex gap-3">            
+            <Button color="primary" endContent={<PlusIcon />} onClick={()=> {navigate("/dashboard/clients/create-admin");}}>
+              Create New Admin
+            </Button>
+          </div>
           </div>
         </div>
         <div className="flex justify-between items-center">

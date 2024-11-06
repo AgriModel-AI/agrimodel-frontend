@@ -25,7 +25,7 @@ axiosInstance.interceptors.response.use(
   async error => {
     if (error.response && error.response.status === 401) {
       console.error('Unauthorized, redirecting to login...');
-      window.location.href = '/login'; 
+      window.location.href = '/token-expired'; 
     }
     return Promise.reject(error);
   }

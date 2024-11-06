@@ -28,6 +28,9 @@ import GoogleAuthCallback from './components/auth/GoogleAuthCallback';
 import DiseaseUpdate from './pages/diseases/update';
 import AccountBlocked from './pages/auth/AccountBlocked';
 import CommunityUpdate from './pages/community/update';
+import CommunityDetails from './pages/community/CommunityDetails';
+import TokenExpiredPage from './pages/auth/TokenExpiredPage';
+import CreateAdminUserPage from './pages/clients/CreateAdminUserPage';
 
 export default function App() {
   return (
@@ -36,6 +39,7 @@ export default function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Signin />} />
+          <Route path="/token-expired" element={<TokenExpiredPage />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/verify-account" element={<VerifyAccount />} />
           <Route path="/google-auth" element={<GoogleAuthCallback />} />
@@ -53,7 +57,9 @@ export default function App() {
             <Route path="/dashboard/diagnosis" element={<Diagnosis />} />
             <Route path="/dashboard/clients" element={<Clients />} />
             <Route path="/dashboard/clients/view" element={<ClientDetails />} />
+            <Route path="/dashboard/clients/create-admin" element={<CreateAdminUserPage />} />
             <Route path="/dashboard/community" element={<Community />} />
+            <Route path="/dashboard/community/view" element={<CommunityDetails />} />
             <Route path="/dashboard/community/add" element={<CommunityForm />} />
             <Route path="/dashboard/community/update" element={<CommunityUpdate />} />
             <Route path="/dashboard/support" element={<Support />} />

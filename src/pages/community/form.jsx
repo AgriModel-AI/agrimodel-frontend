@@ -96,8 +96,8 @@ const CommunityForm = () => {
       {/* Breadcrumbs */}
       <Breadcrumbs className="mb-6">
         <BreadcrumbItem href="/dashboard">Dashboard</BreadcrumbItem>
-        <BreadcrumbItem href="/dashboard/communities">Communities</BreadcrumbItem>
-        <BreadcrumbItem isCurrent href="/dashboard/communities/add">Add</BreadcrumbItem>
+        <BreadcrumbItem href="/dashboard/community">Communities</BreadcrumbItem>
+        <BreadcrumbItem isCurrent href="/dashboard/community/add">Add</BreadcrumbItem>
       </Breadcrumbs>
 
       {/* Form Card */}
