@@ -95,9 +95,12 @@ export default function Disease() {
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        user.name ? user.name?.toLowerCase().includes(filterValue.toLowerCase()) : user.email?.toLowerCase().includes(filterValue.toLowerCase()),
+        (user.name && user.name.toLowerCase().includes(filterValue.toLowerCase())) ||
+        (user.email && user.email.toLowerCase().includes(filterValue.toLowerCase())) ||
+        (user.username && user.username.toLowerCase().includes(filterValue.toLowerCase()))
       );
     }
+    
 
     return filteredUsers;
   }, [clients, filterValue, statusFilter]);
