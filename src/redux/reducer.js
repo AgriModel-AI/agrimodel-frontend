@@ -13,7 +13,7 @@ const appReducer = combineReducers({
   diseases: diseaseReducer,
   clients: clientReducer,
   communities: communitiesReducer,
-  supportRequest: supportRequestReducer
+  supportRequests: supportRequestReducer
 });
 
 const rootReducer = (state, action) => {

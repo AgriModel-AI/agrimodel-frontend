@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card,
   Button,
@@ -17,14 +17,35 @@ import {
 } from "@nextui-org/react";
 import { AiOutlineCalendar } from 'react-icons/ai';
 import { BsThreeDotsVertical } from 'react-icons/bs';
+import { FaQuestionCircle } from 'react-icons/fa';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/modal";
 import { MdSupportAgent } from "react-icons/md";
+import { fetchSupportRequests } from '../../redux/slices/supportRequestSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
-const ReportCard = ({ title, description, date, status, onStatusChange }) => {
+function formatDateToCustom(dateString) {
+  const originalDate = new Date(dateString);
+
+  // Array of month names
+  const monthNames = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ];
+
+  // Get the day, month, and year
+  const day = String(originalDate.getDate()).padStart(2, '0'); // Ensure two digits (e.g. 07, 10)
+  const month = monthNames[originalDate.getMonth()];          // Get the month name
+  const year = originalDate.getFullYear();                   // Get the year
+
+  // Return formatted string: "07 Nov 2024"
+  return `${day} ${month} ${year}`;
+}
+
+const ReportCard = ({ title, description, date, status, user, type, onStatusChange }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalTitle, setModalTitle] = useState('');
   const [modalDescription, setModalDescription] = useState('');
   const [selectedStatus, setSelectedStatus] = useState(status);
+
 
   const handleStatusChange = (key) => {
     if (key === 'closed') {
@@ -65,6 +86,10 @@ const ReportCard = ({ title, description, date, status, onStatusChange }) => {
                 <div className="flex items-center space-x-1">
                   <AiOutlineCalendar className="w-4 h-4 text-gray-500" />
                   <p className="text-sm text-gray-500">{date}</p>
+                </div>
+                <div className="flex items-center space-x-1">
+                  <FaQuestionCircle className="w-4 h-4 text-gray-500 ml-6"/>
+                  <p className="text-sm text-gray-500">{type}</p>
                 </div>
                 <Chip color={statusColorMap[selectedStatus.toLowerCase()]} className='ml-6' variant="solid">
                   {selectedStatus}
@@ -124,24 +149,24 @@ const ReportCard = ({ title, description, date, status, onStatusChange }) => {
 };
 
 const ReportList = () => {
-  const reports = [
-    {
-      title: 'File upload problem',
-      description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-      date: '4 days ago',
-      status: 'In-progress',
-    },
-    {
-      title: 'Data loading issue',
-      description: 'Nulla egestas nulla eget hendrerit.',
-      date: '3 days ago',
-      status: 'Open',
-    },
-  ];
 
-  const [filteredReports, setFilteredReports] = useState(reports);
+  const [filteredReports, setFilteredReports] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
+
+  const { supportRequests, hasFetched } = useSelector(state => state.supportRequests);
+
+  const dispatch = useDispatch();
+
+  useEffect(()=> {
+    if(!hasFetched) {
+      dispatch(fetchSupportRequests());
+    }
+  }, [hasFetched, dispatch]);
+
+  useEffect(()=> {
+    setFilteredReports(supportRequests);
+  }, [supportRequests])
 
   const handleStatusChange = (newStatus, data) => {
     console.log(`Status changed to: ${newStatus}`, data);
@@ -160,8 +185,8 @@ const ReportList = () => {
 
   const filterReports = (term, status) => {
     const lowerTerm = term.toLowerCase();
-    const filtered = reports.filter(report => {
-      const matchesSearch = report.title.toLowerCase().includes(lowerTerm) ||
+    const filtered = supportRequests.filter(report => {
+      const matchesSearch = report.subject.toLowerCase().includes(lowerTerm) ||
                             report.description.toLowerCase().includes(lowerTerm);
       const matchesStatus = status === 'all' || report.status.toLowerCase() === status;
       return matchesSearch && matchesStatus;
@@ -212,10 +237,12 @@ const ReportList = () => {
         {filteredReports.map((report, index) => (
           <ReportCard
             key={index}
-            title={report.title}
+            title={report.subject}
             description={report.description}
-            date={report.date}
+            date={formatDateToCustom(report.createdAt)}
             status={report.status}
+            user={report.user}
+            type={report.type}
             onStatusChange={handleStatusChange}
           />
         ))}
