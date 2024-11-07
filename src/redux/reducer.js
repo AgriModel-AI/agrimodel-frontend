@@ -4,6 +4,7 @@ import userDetailsReducer from './slices/userDetailsSlice';
 import diseaseReducer from './slices/diseaseSlice';
 import clientReducer from './slices/clientsSlice'
 import communitiesReducer from './slices/communitySlice'
+import supportRequestReducer from './slices/supportRequestSlice'
 
 
 const appReducer = combineReducers({
@@ -11,7 +12,8 @@ const appReducer = combineReducers({
   userDetails: userDetailsReducer,
   diseases: diseaseReducer,
   clients: clientReducer,
-  communities: communitiesReducer
+  communities: communitiesReducer,
+  supportRequest: supportRequestReducer
 });
 
 const rootReducer = (state, action) => {

@@ -14,7 +14,6 @@ import {
   BreadcrumbItem,
 } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { useToast } from "@chakra-ui/react";
 import { FaUser, FaIdCard } from "react-icons/fa";
 import { useDispatch } from "react-redux";

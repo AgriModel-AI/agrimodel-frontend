@@ -31,6 +31,7 @@ import CommunityUpdate from './pages/community/update';
 import CommunityDetails from './pages/community/CommunityDetails';
 import TokenExpiredPage from './pages/auth/TokenExpiredPage';
 import CreateAdminUserPage from './pages/clients/CreateAdminUserPage';
+import SocketIOTestComponent from './pages/sock';
 
 export default function App() {
   return (
@@ -66,6 +67,7 @@ export default function App() {
           </Route>
 
           <Route path="/forbidden-page" element={<ForbiddenPage />} />
+          <Route path="/sock" element={<SocketIOTestComponent />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>
