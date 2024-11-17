@@ -15,6 +15,7 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
+import {  Autocomplete,  AutocompleteSection,  AutocompleteItem} from "@nextui-org/autocomplete";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
 import { useToast } from "@chakra-ui/react";
@@ -22,6 +23,7 @@ import { fetchUserDetails, addUserDetail } from "../../redux/slices/userDetailsS
 import { useDispatch, useSelector } from "react-redux";
 import axiosInstance from "../../utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
+import { fetchProvinces } from "../../redux/slices/provincesSlice";
 
 const ProfileManagement = () => {
   const [activeTab, setActiveTab] = useState("personalInfo");
@@ -78,17 +80,27 @@ const ProfileManagement = () => {
 const PersonalInfo = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
-  const dispatch = useDispatch();
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { userDetails, loading, error, hasFetched } = useSelector((state) => state.userDetails);
+  const { provinces, hasFetched: hasFetchedProvince } = useSelector((state) => state.provinces);
+ 
+  const [imageModal, setImageModal] = React.useState({ isOpen: false, src: "" });
+  const onCloseModal = () => setImageModal({ isOpen: false, src: "" });
+
+  useEffect(() => {
+    if(!hasFetchedProvince) {
+      dispatch(fetchProvinces());
+    }
+  }, [dispatch, hasFetchedProvince]);
 
   const [formData, setFormData] = useState({
     names: "",
     national_id: "",
     phone_number: "",
-    city: "",
+    district: "",
     address: "",
     gender: "",
     birthdate: null,
@@ -109,7 +121,7 @@ const PersonalInfo = () => {
         names: userDetails.names || "",
         national_id: userDetails.national_id || "",
         phone_number: userDetails.phone_number || "",
-        city: userDetails.city || "",
+        district: userDetails.district?.name || "",
         address: userDetails.address || "",
         gender: userDetails.gender || "",
         dob: userDetails.dob ?userDetails.dob : null,
@@ -140,7 +152,7 @@ const PersonalInfo = () => {
       !formData.names ||
       !formData.national_id ||
       !formData.phone_number ||
-      !formData.city ||
+      !formData.district ||
       !formData.address ||
       !formData.gender ||
       !formData.dob
@@ -157,10 +169,12 @@ const PersonalInfo = () => {
   data.append("names", formData.names);
   data.append("national_id", formData.national_id);
   data.append("phone_number", formData.phone_number);
-  data.append("city", formData.city);
+  data.append("district", formData.district);
   data.append("address", formData.address);
   data.append("gender", formData.gender);
   data.append("dob", formData.dob);
+
+  console.log(formData)
 
   // Only append profilePicture if it has changed
   if (formData.imageChanged) {
@@ -230,6 +244,7 @@ const PersonalInfo = () => {
               }
               alt="User Avatar"
               className="mr-0 md:mr-4 mb-4 md:mb-0"
+              onClick={() => setImageModal({ isOpen: true, src: URL.createObjectURL(formData.profilePicture) })}
             />
 
             : 
@@ -275,14 +290,23 @@ const PersonalInfo = () => {
             value={formData.phone_number}
             onChange={handleInputChange}
           />
-          <Input
-            clearable
-            label="City"
-            placeholder="Enter City"
-            name="city"
-            value={formData.city}
-            onChange={handleInputChange}
-          />
+          <Autocomplete
+  label="Districts"
+  placeholder="Search a district"
+  defaultItems={provinces} 
+  selectedKey={formData.district}
+  onSelectionChange={(value) => setFormData({ ...formData, district: value })}
+>
+  {(item) => (
+    <AutocompleteSection title={item.name} key={item.id} >
+      {item.districts.map((district) => (
+        <AutocompleteItem key={district.name}>
+          {district.name}
+        </AutocompleteItem>
+      ))}
+    </AutocompleteSection>
+  )}
+</Autocomplete>
           <Input
             label="Address"
             placeholder="Enter Address"
@@ -373,6 +397,14 @@ const PersonalInfo = () => {
             </ModalFooter>
           </ModalContent>
         </Modal>
+        <Modal isOpen={imageModal.isOpen} onClose={onCloseModal}>
+        <ModalContent>
+          <ModalHeader>Profile Image</ModalHeader>
+          <ModalBody>
+            <img src={imageModal.src} alt="Diagnosis" className="w-full h-auto" />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </Card>
   );
 };

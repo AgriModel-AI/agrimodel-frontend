@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
@@ -6,10 +6,11 @@ import MarkerClusterGroup from 'react-leaflet-markercluster';
 import 'leaflet/dist/leaflet.css';
 import { Icon, divIcon, point } from "leaflet";
 import 'animate.css';
-import {Card, CardBody, CardHeader} from "@nextui-org/react";
+import {Card, CardBody, CardHeader, Modal, ModalBody, ModalContent, ModalHeader, Spinner, User} from "@nextui-org/react";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell} from "@nextui-org/react";
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
+import { fetchDashboardStats } from '../../redux/slices/dashboardStatsSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 
 
@@ -70,19 +71,20 @@ const provinces = {
 };
 
 const Dashboard = () => {
-  const data = {
-    labels: [
-      'January', 'February', 'March', 'April', 'May', 'June',
-      'July', 'August', 'September', 'October', 'November', 'December'
-    ],
-    datasets: [
-      {
-        label: 'Cases',
-        data: [30, 20, 50, 40, 60, 55, 70, 65, 80, 90, 100, 75],
-        backgroundColor: '#34d399',
-      },
-    ],
-  };
+
+  const dispatch = useDispatch();
+
+  const {stats, loading, hasFetched} = useSelector((state) => state.dashboardStats);
+
+  const [imageModal, setImageModal] = React.useState({ isOpen: false, src: "" });
+  const onCloseModal = () => setImageModal({ isOpen: false, src: "" });
+
+
+  useEffect(()=> {
+    if(!hasFetched) {
+      dispatch(fetchDashboardStats());
+    }
+  }, [dispatch, hasFetched])
 
   const options = {
     responsive: true,
@@ -93,6 +95,14 @@ const Dashboard = () => {
     },
   };
 
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <Spinner color="success" size="lg">Loading...</Spinner>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col md:flex-row h-screen p-6 md:space-x-6 bg-gray-100">
       {/* Main Content */}
@@ -101,15 +111,15 @@ const Dashboard = () => {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 animate__animated animate__fadeIn">
           <Card className="p-4 bg-white rounded-lg shadow hover:bg-green-100 transition-all duration-300 ease-in-out">
             <h3 className="text-lg font-semibold text-gray-600">Total Clients</h3>
-            <p className="text-3xl font-bold text-green-600">500</p>
+            <p className="text-3xl font-bold text-green-600">{stats.totalClients}</p>
           </Card>
           <Card className="p-4 bg-white rounded-lg shadow hover:bg-green-100 transition-all duration-300 ease-in-out">
             <h3 className="text-lg font-semibold text-gray-600">Total Diseases</h3>
-            <p className="text-3xl font-bold text-green-600">20</p>
+            <p className="text-3xl font-bold text-green-600">{stats.totalDiseases}</p>
           </Card>
           <Card className="p-4 bg-white rounded-lg shadow hover:bg-green-100 transition-all duration-300 ease-in-out">
             <h3 className="text-lg font-semibold text-gray-600">Total Communities</h3>
-            <p className="text-3xl font-bold text-green-600">15</p>
+            <p className="text-3xl font-bold text-green-600">{stats.totalCommunities}</p>
           </Card>
         </div>
 
@@ -118,16 +128,16 @@ const Dashboard = () => {
             <h3 className="text-lg font-semibold mb-4 text-gray-600">Disease Cases Over Months</h3>
           </CardHeader>
           <CardBody>
-          <Bar data={data} options={options} />
+          <Bar data={stats.diseaseCasesOverMonths} options={options} />
           </CardBody>
         </Card>
 
         {/* Diseases Table */}
         <Card className="p-4 bg-white rounded-lg shadow overflow-hidden animate__animated animate__fadeInUp">
           <CardHeader className="flex justify-between items-center px-4 mb-4">
-              <h3 className="text-lg font-semibold text-gray-600">Diseases</h3>
+              <h3 className="text-lg font-semibold text-gray-600">Disease Cases Summary</h3>
               <Link
-                to="/dashboard/clients" 
+                to="/dashboard/diseases" 
                 className="text-blue-500 hover:underline font-semibold"
               >
                 View All
@@ -136,31 +146,31 @@ const Dashboard = () => {
           <div className="overflow-x-auto">
             <Table aria-label="Example static collection table">
               <TableHeader>
-                <TableColumn>NAME</TableColumn>
-                <TableColumn>ROLE</TableColumn>
-                <TableColumn>STATUS</TableColumn>
+                <TableColumn>DISEASE NAME</TableColumn>
+                <TableColumn>DISCRIPTION</TableColumn>
+                <TableColumn>TOTAL CASES</TableColumn>
               </TableHeader>
               <TableBody>
-                <TableRow key="1">
-                  <TableCell>Tony Reichert</TableCell>
-                  <TableCell>CEO</TableCell>
-                  <TableCell>Active</TableCell>
-                </TableRow>
-                <TableRow key="2">
-                  <TableCell>Zoey Lang</TableCell>
-                  <TableCell>Technical Lead</TableCell>
-                  <TableCell>Paused</TableCell>
-                </TableRow>
-                <TableRow key="3">
-                  <TableCell>Jane Fisher</TableCell>
-                  <TableCell>Senior Developer</TableCell>
-                  <TableCell>Active</TableCell>
-                </TableRow>
-                <TableRow key="4">
-                  <TableCell>William Howard</TableCell>
-                  <TableCell>Community Manager</TableCell>
-                  <TableCell>Vacation</TableCell>
-                </TableRow>
+                {
+                  stats.diseaseCases.map((disease)=> {
+                    return (
+                      <TableRow key={disease.diseaseName}>
+                        <TableCell>
+                        <User
+            avatarProps={{radius: "lg", src: disease.image, onClick: () => setImageModal({ isOpen: true, src: disease.image }),}}
+            name={disease.diseaseName}
+            alt="image"
+            size='sm'
+            referrerPolicy="no-referrer" 
+          >
+          </User>
+                        </TableCell>
+                        <TableCell>{disease.description}</TableCell>
+                        <TableCell>{disease.totalCases}</TableCell>
+                     </TableRow>
+                    )
+                  })
+                }
               </TableBody>
             </Table>
           </div>
@@ -171,7 +181,7 @@ const Dashboard = () => {
       <div className="w-full md:w-1/4 space-y-6 mt-6 md:mt-0">
         {/* Map */}
         <Card className="p-4 mb-5 bg-white rounded-lg shadow h-72 animate__animated animate__fadeInRight">
-          <h3 className="text-lg font-semibold mb-4 text-gray-600">Rwanda Provinces Map</h3>
+          <h3 className="text-lg font-semibold mb-4 text-gray-600">Rwanda Provinces Diagnoses Map</h3>
           <div className="h-full w-full overflow-hidden rounded-lg">
             <MapContainer center={[-1.9403, 29.8739]} zoom={7.5} className="h-full w-full">
               <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
@@ -189,7 +199,7 @@ const Dashboard = () => {
         {/* Provinces Table */}
         <Card className="p-4 bg-white rounded-lg shadow animate__animated animate__fadeInRight">
           <CardHeader className="flex gap-3">
-            <h3 className="text-lg font-semibold mb-0 text-gray-600">Province Diagnoses</h3>
+            <h3 className="text-lg font-semibold mb-0 text-gray-600">Province Diagnoses Summary</h3>
           </CardHeader>
           <div className="overflow-x-auto">
             
@@ -199,19 +209,27 @@ const Dashboard = () => {
                 <TableColumn>CASES</TableColumn>
               </TableHeader>
               <TableBody>
-              {Object.entries(provinces).map(([province, districts], index) => (
-                <TableRow key={index} className="hover:bg-gray-100 transition">
-                  <TableCell>{province}</TableCell>
-                  <TableCell>
-                    {districts.reduce((total, _) => total + Math.floor(Math.random() * 200), 0)}
-                  </TableCell>
+              {
+                stats.provinceCases.map((province)=> (
+                <TableRow key={province.id} className="hover:bg-gray-100 transition">
+                  <TableCell>{province.provinceName}</TableCell>
+                  <TableCell>{province.totalCases}</TableCell>
                 </TableRow>
-              ))}
+                ))
+              }
               </TableBody>
             </Table>
           </div>
         </Card>
       </div>
+      <Modal isOpen={imageModal.isOpen} onClose={onCloseModal}>
+        <ModalContent>
+          <ModalHeader>Disease Image</ModalHeader>
+          <ModalBody>
+            <img src={imageModal.src} alt="Diagnosis" className="w-full h-auto" />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </div>
   );
 };

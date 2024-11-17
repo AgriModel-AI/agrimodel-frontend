@@ -12,7 +12,6 @@ import {
   Dropdown,
   DropdownMenu,
   DropdownItem,
-  Chip,
   User,
   Pagination,
   useDisclosure
@@ -58,6 +57,9 @@ export default function Disease() {
   const toast = useToast();
 
   const { diseases, hasFetched } = useSelector((state) => state.diseases);
+
+  const [imageModal, setImageModal] = React.useState({ isOpen: false, src: "" });
+  const onCloseModal = () => setImageModal({ isOpen: false, src: "" });
 
   useEffect(() => {
     if (!hasFetched) {
@@ -153,8 +155,9 @@ export default function Disease() {
           avatarProps={{
             radius: "lg",
             src: user.images?.[0] 
-              ? `${process.env.REACT_APP_BACKEND_URL}/api/v1/disease/image/${user.images[0]}` 
+              ? user.images[0]
               : undefined,
+              onClick: () => setImageModal({ isOpen: true, src: user.images[0] })
           }}
           name={cellValue}
         >
@@ -357,6 +360,14 @@ export default function Disease() {
               </ModalFooter>
             </>
           )}
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={imageModal.isOpen} onClose={onCloseModal}>
+        <ModalContent>
+          <ModalHeader>Disease Image</ModalHeader>
+          <ModalBody>
+            <img src={imageModal.src} alt="Disease" className="w-full h-auto" />
+          </ModalBody>
         </ModalContent>
       </Modal>
     </div>

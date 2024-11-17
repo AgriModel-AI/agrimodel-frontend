@@ -8,7 +8,6 @@ import {
   useDisclosure,
   DropdownMenu,
   DropdownItem,
-  CardFooter,
   CardHeader,
   Image,
   Chip,
@@ -46,6 +45,8 @@ const ReportCard = ({ title, description, date, status, user, type, onStatusChan
   const [modalDescription, setModalDescription] = useState('');
   const [selectedStatus, setSelectedStatus] = useState(status);
 
+  const [imageModal, setImageModal] = React.useState({ isOpen: false, src: "" });
+  const onCloseModal = () => setImageModal({ isOpen: false, src: "" });
 
   const handleStatusChange = (key) => {
     if (key === 'closed') {
@@ -74,8 +75,11 @@ const ReportCard = ({ title, description, date, status, user, type, onStatusChan
           alt="nextui logo"
           height={60}
           radius="sm"
-          src="https://img.freepik.com/free-photo/people-showing-support-respect-with-yellow-background-suicide-prevention-day_23-2151607937.jpg?t=st=1728759547~exp=1728763147~hmac=6f4846ab7a3a618d83c3c83b11dd7a5b2edb9a63abf756bccff52706c9964fb0&w=740"
+          src={
+            user.profilePicture || "https://via.placeholder.com/150"
+          }
           width={60}
+          onClick={() => setImageModal({ isOpen: true, src: user.profilePicture })}
         />
         <div className="flex flex-col w-full">
           <p className="text-lg font-bold">{title}</p>
@@ -142,6 +146,14 @@ const ReportCard = ({ title, description, date, status, user, type, onStatusChan
               </ModalFooter>
             </>
           )}
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={imageModal.isOpen} onClose={onCloseModal}>
+        <ModalContent>
+          <ModalHeader>Diagnosis Image</ModalHeader>
+          <ModalBody>
+            <img src={imageModal.src} alt="Diagnosis" className="w-full h-auto" />
+          </ModalBody>
         </ModalContent>
       </Modal>
     </Card>

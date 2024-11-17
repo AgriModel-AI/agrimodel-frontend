@@ -178,7 +178,7 @@ const CommunityUpdate = () => {
               <Image
                 src={
                   formData.image 
-                    ? `${process.env.REACT_APP_BACKEND_URL}/api/v1/communities/image/${formData.image}`
+                    ?formData.image
                     : '../../assets/user1.png'
                 }
                 size="sm"

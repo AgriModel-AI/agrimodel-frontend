@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardBody,
@@ -12,12 +12,16 @@ import {
   Spacer,
   Breadcrumbs,
   BreadcrumbItem,
+  AutocompleteItem,
+  Autocomplete,
+  AutocompleteSection,
 } from "@nextui-org/react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@chakra-ui/react";
 import { FaUser, FaIdCard } from "react-icons/fa";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addAdminUser } from "../../redux/slices/clientsSlice";
+import { fetchProvinces } from "../../redux/slices/provincesSlice";
 
 const CreateAdminUserPage = () => {
   const [step, setStep] = useState(0);
@@ -27,7 +31,7 @@ const CreateAdminUserPage = () => {
     phone_number: "",
     names: "",
     national_id: "",
-    city: "",
+    district: "",
     address: "",
     gender: "",
     dob: "",
@@ -37,6 +41,15 @@ const CreateAdminUserPage = () => {
   const toast = useToast();
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { provinces, hasFetched: hasFetchedProvince } = useSelector((state) => state.provinces);
+
+
+  useEffect(() => {
+    if(!hasFetchedProvince) {
+      dispatch(fetchProvinces());
+    }
+  }, [dispatch, hasFetchedProvince]);
 
   const validate = () => {
     let tempErrors = {};
@@ -55,7 +68,7 @@ const CreateAdminUserPage = () => {
       } else if (!/^\d{16}$/.test(formData.national_id)) {
         tempErrors.national_id = "National ID must be 16 digits.";
       }
-      if (!formData.city) tempErrors.city = "City is required.";
+      if (!formData.district) tempErrors.district = "district is required.";
       if (!formData.address) tempErrors.address = "Address is required.";
       if (!formData.gender) tempErrors.gender = "Gender is required.";
       if (!formData.dob) tempErrors.dob = "Date of birth is required.";
@@ -221,17 +234,26 @@ const CreateAdminUserPage = () => {
                 errorMessage={errors.national_id}
                 isInvalid={!!errors.national_id}
               />
-              <Input
-                label="City"
-                placeholder="Enter city"
-                name="city"
-                value={formData.city}
-                onChange={handleChange}
-                fullWidth
-                className="mb-3"
-                errorMessage={errors.city}
-                isInvalid={!!errors.city}
-              />
+              <Autocomplete
+  label="Districts"
+  placeholder="Search a district"
+  defaultItems={provinces} 
+  selectedKey={formData.district}
+  onSelectionChange={(value) => setFormData({ ...formData, district: value })}
+  errorMessage={errors.district}
+  isInvalid={!!errors.district}
+  className="mb-3"
+>
+  {(item) => (
+    <AutocompleteSection title={item.name} key={item.id} >
+      {item.districts.map((district) => (
+        <AutocompleteItem key={district.id} value={district.id}>
+          {district.name}
+        </AutocompleteItem>
+      ))}
+    </AutocompleteSection>
+  )}
+</Autocomplete>
               <Input
                 label="Address"
                 placeholder="Enter address"

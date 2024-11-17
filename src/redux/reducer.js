@@ -2,9 +2,12 @@ import { combineReducers } from 'redux';
 import userReducer from './slices/userSlice';
 import userDetailsReducer from './slices/userDetailsSlice';
 import diseaseReducer from './slices/diseaseSlice';
-import clientReducer from './slices/clientsSlice'
-import communitiesReducer from './slices/communitySlice'
-import supportRequestReducer from './slices/supportRequestSlice'
+import clientReducer from './slices/clientsSlice';
+import communitiesReducer from './slices/communitySlice';
+import supportRequestReducer from './slices/supportRequestSlice';
+import provinceReducer from './slices/provincesSlice';
+import diagnosisReducer from './slices/diagnosisResult';
+import DashboardStatsReducer from './slices/dashboardStatsSlice';
 
 
 const appReducer = combineReducers({
@@ -13,7 +16,10 @@ const appReducer = combineReducers({
   diseases: diseaseReducer,
   clients: clientReducer,
   communities: communitiesReducer,
-  supportRequests: supportRequestReducer
+  supportRequests: supportRequestReducer,
+  provinces: provinceReducer,
+  diagnosis: diagnosisReducer,
+  dashboardStats: DashboardStatsReducer
 });
 
 const rootReducer = (state, action) => {

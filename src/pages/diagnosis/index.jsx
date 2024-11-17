@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Table,
   TableHeader,
@@ -15,42 +15,53 @@ import {
   Chip,
   User,
   Pagination,
-  useDisclosure
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody
 } from "@nextui-org/react";
-
-import {
-  Modal, 
-  ModalContent, 
-  ModalHeader, 
-  ModalBody, 
-  ModalFooter
-} from "@nextui-org/modal";
 
 
 import {Breadcrumbs, BreadcrumbItem} from "@nextui-org/react";
 import { MdAssignment } from "react-icons/md";
-
-
-import { PlusIcon } from "../../components/diseases/PlusIcon";
-import { VerticalDotsIcon } from "../../components/diseases/VerticalDotsIcon";
 import { SearchIcon } from "../../components/diseases/SearchIcon";
 import { ChevronDownIcon } from "../../components/diseases/ChevronDownIcon";
 import { capitalize } from "../../components/diseases/utils";
-import {columns, users, statusOptions} from "../../components/diseases/data";
 import { useNavigate } from 'react-router-dom';
+import { fetchDiagnosisResults } from "../../redux/slices/diagnosisResult";
+import { useDispatch, useSelector } from "react-redux";
+import { formatDate } from "../../utils/dateUtil";
 
 const statusColorMap = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
+  true: "success",
+  false: "danger",
 };
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "role", "status", "actions"];
+const columns = [
+  {name: "ID", uid: "resultId", sortable: true},
+  {name: "FARMER", uid: "user", sortable: true},
+  {name: "IMAGE", uid: "image_path", sortable: true},
+  {name: "DISTRICT", uid: "district", sortable: true},
+  {name: "DISEASE", uid: "disease", sortable: true},
+  {name: "DETECTED", uid: "detected", sortable: true},
+  {name: "DATE", uid: "date", sortable: true},
+];
+
+const INITIAL_VISIBLE_COLUMNS = ["image_path", "user", "district", "disease", "detected", "date"];
 
 export default function Disease() {
 
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const {results, hasFetched} = useSelector((state) => state.diagnosis)
+
+
+  useEffect(()=> {
+    if(!hasFetched) {
+      dispatch(fetchDiagnosisResults());
+    }
+  }, [dispatch, hasFetched])
 
   const [filterValue, setFilterValue] = React.useState("");
   const [selectedKeys, setSelectedKeys] = React.useState(new Set([]));
@@ -58,12 +69,15 @@ export default function Disease() {
   const [statusFilter, setStatusFilter] = React.useState("all");
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [sortDescriptor, setSortDescriptor] = React.useState({
-    column: "age",
+    column: "phone_number",
     direction: "ascending",
   });
   const [page, setPage] = React.useState(1);
 
   const hasSearchFilter = Boolean(filterValue);
+
+  const [imageModal, setImageModal] = React.useState({ isOpen: false, src: "" });
+  const onCloseModal = () => setImageModal({ isOpen: false, src: "" });
 
   const headerColumns = React.useMemo(() => {
     if (visibleColumns === "all") return columns;
@@ -72,21 +86,20 @@ export default function Disease() {
   }, [visibleColumns]);
 
   const filteredItems = React.useMemo(() => {
-    let filteredUsers = [...users];
+    let filteredUsers = [...results];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
-        user.name.toLowerCase().includes(filterValue.toLowerCase()),
+        (user.user && user.user.username.toLowerCase().includes(filterValue.toLowerCase())) ||
+        (user.district && user.district.districtName.toLowerCase().includes(filterValue.toLowerCase())) ||
+        (user.district && user.district.provinceName.toLowerCase().includes(filterValue.toLowerCase())) ||
+        (user.disease && user.disease.name.toLowerCase().includes(filterValue.toLowerCase()))
       );
     }
-    if (statusFilter !== "all" && Array.from(statusFilter).length !== statusOptions.length) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status),
-      );
-    }
+    
 
     return filteredUsers;
-  }, [users, filterValue, statusFilter]);
+  }, [results, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -111,48 +124,61 @@ export default function Disease() {
     const cellValue = user[columnKey];
 
     switch (columnKey) {
-      case "name":
+
+      case "image_path":
         return (
           <User
-            avatarProps={{radius: "lg", src: user.avatar}}
-            description={user.email}
-            name={cellValue}
+            avatarProps={{
+              radius: "lg",
+              src: cellValue,
+              onClick: () => setImageModal({ isOpen: true, src: cellValue }),
+            }}
+            
           >
-            {user.email}
           </User>
         );
-      case "role":
+        
+      case "user":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{cellValue}</p>
-            <p className="text-bold text-tiny capitalize text-default-400">{user.team}</p>
+            <p className="text-bold text-small capitalize">{user.user ? user.user.username : "Unknown user"}</p>
+            <p className="text-bold text-tiny capitalize text-default-400">
+              {user.user ? user.user.email : "Unknown email"}
+            </p>
           </div>
         );
-      case "status":
+
+      case "date":
+          return formatDate(cellValue)
+
+      case "disease":
         return (
-          <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
-            {cellValue}
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">{user.disease ? user.disease.name : "Unknown Disease"}</p>
+            <p className="text-bold text-tiny capitalize text-default-400">
+              {user.disease ? `ID: #${user.disease.id}` : "Unknown ID"}
+            </p>
+          </div>
+        );
+      case "district":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-small capitalize">{user.district ? user.district.districtName : "Unknown district"}</p>
+            <p className="text-bold text-tiny capitalize text-default-400">
+              {user.district ? user.district.provinceName : "Unknown province"}
+            </p>
+          </div>
+        );
+        
+      case "detected":
+        return (
+          <Chip className="capitalize" color={statusColorMap[user.isVerified]} size="sm" variant="flat">
+            {cellValue ? 'Detected' : 'Not Detected'}
           </Chip>
         );
-      case "actions":
-        return (
-          <div className="relative flex justify-end items-center gap-2">
-            <Dropdown>
-              <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <VerticalDotsIcon className="text-default-300" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem href="/view">View</DropdownItem>
-                <DropdownItem>Edit</DropdownItem>
-                <DropdownItem onPress={onOpen}>Delete</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        );
+     
       default:
-        return cellValue;
+        return cellValue ? cellValue : "Not provided";
     }
   }, []);
 
@@ -192,15 +218,15 @@ export default function Disease() {
       <div className="flex flex-col gap-4">
         <Breadcrumbs className="mb-5">
           <BreadcrumbItem href="/dashboard">Dashboard</BreadcrumbItem>
-          <BreadcrumbItem href="/dashboard/diagnosis">Diagnosis Result</BreadcrumbItem>
+          <BreadcrumbItem href="/dashboard/diagnosis">diagnosis results</BreadcrumbItem>
         </Breadcrumbs>
 
         <div className="flex items-center my-4 space-x-3">
           <MdAssignment size={28} color="#1a73e8" />
-          <h2 className="text-2xl font-bold text-gray-800">Diagnosis Result</h2>
+          <h2 className="text-2xl font-bold text-gray-800">Diagnosis Results</h2>
         </div>
-      
-        {/* <div className="flex justify-between gap-3 items-end">
+
+        <div className="flex justify-between gap-3 items-end">
           <Input
             isClearable
             className="w-full sm:max-w-[44%]"
@@ -212,27 +238,6 @@ export default function Disease() {
             variant="faded"
           />
           <div className="flex gap-3">
-            <Dropdown>
-              <DropdownTrigger className="hidden sm:flex">
-                <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
-                  Status
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                disallowEmptySelection
-                aria-label="Table Columns"
-                closeOnSelect={false}
-                selectedKeys={statusFilter}
-                selectionMode="multiple"
-                onSelectionChange={setStatusFilter}
-              >
-                {statusOptions.map((status) => (
-                  <DropdownItem key={status.uid} className="capitalize">
-                    {capitalize(status.name)}
-                  </DropdownItem>
-                ))}
-              </DropdownMenu>
-            </Dropdown>
             <Dropdown>
               <DropdownTrigger className="hidden sm:flex">
                 <Button endContent={<ChevronDownIcon className="text-small" />} variant="flat">
@@ -254,13 +259,12 @@ export default function Disease() {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button color="primary" endContent={<PlusIcon />} onClick={()=> {navigate("/dashboard/diseases/add");}}>
-              Add New
-            </Button>
+            <div className="flex gap-3"> 
+          </div>
           </div>
         </div>
         <div className="flex justify-between items-center">
-          <span className="text-default-400 text-small">Total {users.length} users</span>
+          <span className="text-default-400 text-small">Total {results.length} diagnosis results</span>
           <label className="flex items-center text-default-400 text-small">
             Rows per page:
             <select
@@ -272,7 +276,7 @@ export default function Disease() {
               <option value="15">15</option>
             </select>
           </label>
-        </div> */}
+        </div>
       </div>
     );
   }, [
@@ -280,7 +284,7 @@ export default function Disease() {
     statusFilter,
     visibleColumns,
     onRowsPerPageChange,
-    users.length,
+    results.length,
     onSearchChange,
     hasSearchFilter,
   ]);
@@ -341,48 +345,20 @@ export default function Disease() {
             </TableColumn>
           )}
         </TableHeader>
-        <TableBody emptyContent={"No diagnosis Result found"} items={sortedItems}>
-          {/* {(item) => (
-            <TableRow key={item.id}>
+        <TableBody emptyContent={"No results found"} items={sortedItems}>
+          {(item) => (
+            <TableRow key={item.resultId}>
               {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
             </TableRow>
-          )} */}
+          )}
         </TableBody>
       </Table>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+      <Modal isOpen={imageModal.isOpen} onClose={onCloseModal}>
         <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">Modal Title</ModalHeader>
-              <ModalBody>
-                <p> 
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Nullam pulvinar risus non risus hendrerit venenatis.
-                  Pellentesque sit amet hendrerit risus, sed porttitor quam.
-                </p>
-                <p>
-                  Magna exercitation reprehenderit magna aute tempor cupidatat consequat elit
-                  dolor adipisicing. Mollit dolor eiusmod sunt ex incididunt cillum quis. 
-                  Velit duis sit officia eiusmod Lorem aliqua enim laboris do dolor eiusmod. 
-                  Et mollit incididunt nisi consectetur esse laborum eiusmod pariatur 
-                  proident Lorem eiusmod et. Culpa deserunt nostrud ad veniam.
-                </p>
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="light" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Action
-                </Button>
-              </ModalFooter>
-            </>
-          )}
+          <ModalHeader>Diagnosis Image</ModalHeader>
+          <ModalBody>
+            <img src={imageModal.src} alt="Diagnosis" className="w-full h-auto" />
+          </ModalBody>
         </ModalContent>
       </Modal>
     </div>

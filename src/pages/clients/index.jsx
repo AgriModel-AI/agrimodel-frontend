@@ -15,16 +15,11 @@ import {
   Chip,
   User,
   Pagination,
-  useDisclosure
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody
 } from "@nextui-org/react";
-
-import {
-  Modal, 
-  ModalContent, 
-  ModalHeader, 
-  ModalBody, 
-  ModalFooter
-} from "@nextui-org/modal";
 
 
 import {Breadcrumbs, BreadcrumbItem} from "@nextui-org/react";
@@ -48,21 +43,24 @@ const columns = [
   {name: "ID", uid: "userId", sortable: true},
   {name: "NAME", uid: "username", sortable: true},
   {name: "PHONENUMBER", uid: "phone_number", sortable: true},
-  {name: "ADDRESS", uid: "address", sortable: true},
+  {name: "DISTRICT", uid: "district", sortable: true},
   {name: "ROLE", uid: "role", sortable: true},
   {name: "ISVERIFIED", uid: "isVerified", sortable: true},
   {name: "ISBLOCKED", uid: "isBlocked", sortable: true},
   {name: "ACTIONS", uid: "actions"},
 ];
 
-const INITIAL_VISIBLE_COLUMNS = ["username", "phone_number", "address", "role", "isVerified", "isBlocked", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["username", "phone_number", "district", "role", "isVerified", "isBlocked", "actions"];
 
 export default function Disease() {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const {clients, hasFetched} = useSelector((state) => state.clients)
+  const {clients, hasFetched} = useSelector((state) => state.clients);
+
+  const [imageModal, setImageModal] = React.useState({ isOpen: false, src: "" });
+  const onCloseModal = () => setImageModal({ isOpen: false, src: "" });
 
 
   useEffect(()=> {
@@ -131,57 +129,26 @@ export default function Disease() {
       case "username":
         return (
           <User
-            avatarProps={{radius: "lg", src: user.profilePicture}}
+            avatarProps={{radius: "lg", src: user.profilePicture, onClick: () => setImageModal({ isOpen: true, src: user.profilePicture }),}}
             description={user.email}
             name={cellValue}
             alt="Profile"
             size='sm'
-            referrerPolicy="no-referrer" 
+            referrerPolicy="no-referrer"
           >
             {user.username}
           </User>
         );
-      case "address":
+      case "district":
         return (
           <div className="flex flex-col">
-            <p className="text-bold text-small capitalize">{cellValue ? cellValue : "Not provided"}</p>
+            <p className="text-bold text-small capitalize">{user.district ? user.district.districtName : "Unknown district"}</p>
             <p className="text-bold text-tiny capitalize text-default-400">
-              {user.city ? user.city : "Unknown city"}
+              {user.district ? user.district.provinceName : "Unknown province"}
             </p>
           </div>
         );
-        case "role":
-        return (
-          <div className="flex items-center space-x-2">
-          {user.role === "farmer" ? (
-            <span className="inline-flex items-center px-3 py-1 rounded-md bg-green-100 text-green-700 font-medium text-sm shadow-md">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M13 16h-1v-4H9v-1h4V8l3 3-3 3v2zm-5 0H7v-1H5v-1h2v-1H4v2h1v1h2v1zm14-2V5h-7V3H6v2H1v9h22v-2zm-2 0h-4v1h-2v1h2v1h4v-3zm0-6V7h-4v1h4z"/>
-              </svg>
-              Farmer
-            </span>
-          ) : (
-            <span className="inline-flex items-center px-3 py-1 rounded-md bg-blue-100 text-blue-700 font-medium text-sm shadow-md">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-4 w-4 mr-1"
-                fill="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path d="M12 12c2.76 0 5-2.24 5-5S14.76 2 12 2 7 4.24 7 7s2.24 5 5 5zm0 2c-3.87 0-7 3.13-7 7h2a5 5 0 0110 0h2c0-3.87-3.13-7-7-7z"/>
-              </svg>
-              Admin
-            </span>
-          )}
-        </div>
-        );
-
-      
+        
       case "isBlocked":
         return (
           <div className="flex items-center space-x-2">
@@ -413,6 +380,14 @@ export default function Disease() {
           )}
         </TableBody>
       </Table>
+      <Modal isOpen={imageModal.isOpen} onClose={onCloseModal}>
+        <ModalContent>
+          <ModalHeader>User Image</ModalHeader>
+          <ModalBody>
+            <img src={imageModal.src} alt="User" className="w-full h-auto" />
+          </ModalBody>
+        </ModalContent>
+      </Modal>
     </div>
   );
 }

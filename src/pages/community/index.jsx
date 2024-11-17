@@ -71,6 +71,9 @@ export default function Disease() {
 
   const { hasFetched, communities } = useSelector((state)=> state.communities);
 
+  const [imageModal, setImageModal] = React.useState({ isOpen: false, src: "" });
+  const onCloseModal = () => setImageModal({ isOpen: false, src: "" });
+
   useEffect(()=> {
     if(!hasFetched) {
       dispatch(fetchCommunities());
@@ -158,8 +161,9 @@ export default function Disease() {
             avatarProps={{
               radius: "lg",
               src: user.image
-                ? `${process.env.REACT_APP_BACKEND_URL}/api/v1/communities/image/${user.image}` 
+                ? user.image 
                 : undefined,
+                onClick: () => setImageModal({ isOpen: true, src: user.image }),
             }}
             name={cellValue}
           >
@@ -366,6 +370,14 @@ export default function Disease() {
               </ModalFooter>
             </>
           )}
+        </ModalContent>
+      </Modal>
+      <Modal isOpen={imageModal.isOpen} onClose={onCloseModal}>
+        <ModalContent>
+          <ModalHeader>Community Image</ModalHeader>
+          <ModalBody>
+            <img src={imageModal.src} alt="Community" className="w-full h-auto" />
+          </ModalBody>
         </ModalContent>
       </Modal>
     </div>

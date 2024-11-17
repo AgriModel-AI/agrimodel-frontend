@@ -65,7 +65,7 @@ const CommunityDetails = () => {
               <Image
                 src={
                   community.image
-                    ? `${process.env.REACT_APP_BACKEND_URL}/api/v1/communities/image/${community.image}`
+                    ?community.image
                     : '../../assets/community_placeholder.png'
                 }
                 size="xl"
