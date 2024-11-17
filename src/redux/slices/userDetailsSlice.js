@@ -13,23 +13,17 @@ export const fetchUserDetails = createAsyncThunk('userDetails/fetchUserDetails',
   }
 });
 
-// Async thunk for updating user details
-export const updateUserDetail = createAsyncThunk('userDetails/updateUserDetail', async (userData, { rejectWithValue }) => {
-  try {
-    const response = await axiosInstance.patch(`/user-details`, userData);
-    return response.data;
-  } catch (error) {
-    return rejectWithValue(error.response.data);
-  }
-});
-
 // Async thunk for adding new user details
 export const addUserDetail = createAsyncThunk('userDetails/addUserDetail', async (userData, { rejectWithValue }) => {
   try {
-    const response = await axiosInstance.post(`/user-details`, userData);
+    const response = await axiosInstance.post(`/user-details`, userData, {
+      headers: {
+        "Content-Type": "multipart/form-data", // Required for FormData
+      },
+    });
     return response.data;
   } catch (error) {
-    return rejectWithValue(error.response.data);
+    return rejectWithValue(error.response?.data.message);
   }
 });
 
@@ -61,19 +55,6 @@ const userDetailsSlice = createSlice({
         state.hasFetched = true;
       })
       .addCase(fetchUserDetails.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload;
-      })
-      // Update user details
-      .addCase(updateUserDetail.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(updateUserDetail.fulfilled, (state, action) => {
-        state.loading = false;
-        state.userDetails = action.payload;
-      })
-      .addCase(updateUserDetail.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

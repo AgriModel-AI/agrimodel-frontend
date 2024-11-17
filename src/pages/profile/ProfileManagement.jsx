@@ -1,7 +1,27 @@
-import React, { useState } from "react";
-import { Card, Input, Button, Avatar, Divider, Modal, ModalBody, ModalFooter, ModalContent, ModalHeader, useDisclosure, Spacer } from "@nextui-org/react";
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  Input,
+  Button,
+  Avatar,
+  Divider,
+  Modal,
+  ModalBody,
+  ModalFooter,
+  ModalContent,
+  ModalHeader,
+  useDisclosure,
+  Spacer,
+  Select,
+  SelectItem,
+} from "@nextui-org/react";
 import { Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
 import { AiFillEye, AiFillEyeInvisible } from "react-icons/ai";
+import { useToast } from "@chakra-ui/react";
+import { fetchUserDetails, addUserDetail } from "../../redux/slices/userDetailsSlice";
+import { useDispatch, useSelector } from "react-redux";
+import axiosInstance from "../../utils/axiosConfig";
+import { useNavigate } from "react-router-dom";
 
 const ProfileManagement = () => {
   const [activeTab, setActiveTab] = useState("personalInfo");
@@ -57,14 +77,47 @@ const ProfileManagement = () => {
 
 const PersonalInfo = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const toast = useToast();
+  const dispatch = useDispatch();
+  const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const { userDetails, loading, error, hasFetched } = useSelector((state) => state.userDetails);
+
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    phone: "",
-    zipCode: "",
-    photo: null,
+    names: "",
+    national_id: "",
+    phone_number: "",
+    city: "",
+    address: "",
+    gender: "",
+    birthdate: null,
+    profilePicture: null,
+    imageChanged: false,
   });
+
+  useEffect(() => {
+    if(!hasFetched) {
+      dispatch(fetchUserDetails());
+    }
+  }, [dispatch, hasFetched]);
+
+
+  useEffect(() => {
+    if (userDetails) {
+      setFormData({
+        names: userDetails.names || "",
+        national_id: userDetails.national_id || "",
+        phone_number: userDetails.phone_number || "",
+        city: userDetails.city || "",
+        address: userDetails.address || "",
+        gender: userDetails.gender || "",
+        dob: userDetails.dob ?userDetails.dob : null,
+        profilePicture: userDetails.profilePicture || null,
+        imageChanged: false,
+      });
+    }
+  }, [userDetails]);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -72,16 +125,87 @@ const PersonalInfo = () => {
   };
 
   const handleFileChange = (e) => {
-    setFormData({ ...formData, photo: e.target.files[0] });
+    const file = e.target.files[0];
+    if (file) {
+      setFormData({ ...formData, profilePicture: file, imageChanged: true });
+    }
   };
 
-  const handleSave = () => {
-    console.log("Form Data:", formData);
+  const handleSave = (e) => {
+    e.preventDefault();
+
+    // Validate inputs
+    
+    if (
+      !formData.names ||
+      !formData.national_id ||
+      !formData.phone_number ||
+      !formData.city ||
+      !formData.address ||
+      !formData.gender ||
+      !formData.dob
+    ) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill out all required fields.",
+        status: "error",
+      });
+      return;
+    }
+
+  const data = new FormData();
+  data.append("names", formData.names);
+  data.append("national_id", formData.national_id);
+  data.append("phone_number", formData.phone_number);
+  data.append("city", formData.city);
+  data.append("address", formData.address);
+  data.append("gender", formData.gender);
+  data.append("dob", formData.dob);
+
+  // Only append profilePicture if it has changed
+  if (formData.imageChanged) {
+    data.append("profilePicture", formData.profilePicture);
+  }
+  // Dispatch addUserDetail thunk
+  dispatch(addUserDetail(data))
+    .unwrap()
+    .then(() => {
+      toast({
+        title: "Profile Updated",
+        description: "Your personal information has been saved successfully.",
+        status: "success",
+      });
+    })
+    .catch((error) => {
+      toast({
+        title: "Error",
+        description: error?.message || "Failed to update profile.",
+        status: "error",
+      });
+    });
   };
 
-  const handleDelete = () => {
-    console.log("Account deleted");
-    onClose();
+  const handleDelete = async () => {
+    try {
+      await axiosInstance.patch("/user-details/block-account", {
+        isBlocked: "true",
+      });
+
+      setConfirmationModalOpen(true);
+
+      setTimeout(() => {
+        setConfirmationModalOpen(false);
+        navigate("/login");
+      }, 3000);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error.response?.data?.description ||
+          "Failed to delete account. Please try again.",
+        status: "error",
+      });
+    }
   };
 
   return (
@@ -89,64 +213,105 @@ const PersonalInfo = () => {
       <h3 className="text-2xl font-bold mb-4">Personal Information</h3>
       <Divider className="my-4" />
 
-      <form className="space-y-6">
+      {loading && <p>Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      <form className="space-y-6" onSubmit={handleSave}>
         <div className="flex flex-col md:flex-row items-center mb-6">
-          <Avatar
-            size="xl"
-            src={formData.photo ? URL.createObjectURL(formData.photo) : "https://img.freepik.com/free-photo/people-showing-support-respect-with-yellow-background-suicide-prevention-day_23-2151607937.jpg"}
-            alt="User Avatar"
-            className="mr-0 md:mr-4 mb-4 md:mb-0"
-          />
+          {
+            formData.imageChanged ?
+
+            <Avatar
+              size="xl"
+              src={
+                formData.profilePicture
+                  ? URL.createObjectURL(formData.profilePicture)
+                  : "https://img.freepik.com/free-photo/people-showing-support-respect-with-yellow-background-suicide-prevention-day_23-2151607937.jpg"
+              }
+              alt="User Avatar"
+              className="mr-0 md:mr-4 mb-4 md:mb-0"
+            />
+
+            : 
+
+            <Avatar
+              size="xl"
+              src={formData.profilePicture || "https://via.placeholder.com/150"}
+              alt="User Avatar"
+              className="mr-0 md:mr-4 mb-4 md:mb-0"
+            />
+          }
+          
+          
           <Input
             type="file"
             accept="image/*"
-            onChange={handleFileChange}
             className="text-sm text-gray-600"
+            onChange={handleFileChange}
           />
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Input
             clearable
-            label="First Name"
-            placeholder="Enter first name"
-            name="firstName"
-            value={formData.firstName}
+            label="Fullname"
+            placeholder="Enter fullname"
+            name="names"
+            value={formData.names}
             onChange={handleInputChange}
           />
           <Input
             clearable
-            label="Last Name"
-            placeholder="Enter last name"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleInputChange}
-          />
-          <Input
-            clearable
-            label="Email Address"
-            placeholder="Enter email address"
-            name="email"
-            value={formData.email}
+            label="National ID"
+            placeholder="Enter National ID"
+            name="national_id"
+            value={formData.national_id}
             onChange={handleInputChange}
           />
           <Input
             label="Phone Number"
-            placeholder="+880 1681 788 203"
-            name="phone"
-            value={formData.phone}
+            placeholder="+250 700 000 000"
+            name="phone_number"
+            value={formData.phone_number}
             onChange={handleInputChange}
           />
           <Input
-            label="Zip Code"
-            placeholder="Enter zip code"
-            name="zipCode"
-            value={formData.zipCode}
+            clearable
+            label="City"
+            placeholder="Enter City"
+            name="city"
+            value={formData.city}
             onChange={handleInputChange}
+          />
+          <Input
+            label="Address"
+            placeholder="Enter Address"
+            name="address"
+            value={formData.address}
+            onChange={handleInputChange}
+          />
+          <Select
+            labelPlacement="inside"
+            label="Gender"
+            placeholder="Select your gender"
+            value={formData.gender}
+            selectedKeys={[formData.gender]}
+            onChange={(e) => setFormData({ ...formData, gender: e.target.value })}
+          >
+            <SelectItem key="male">Male</SelectItem>
+            <SelectItem key="female">Female</SelectItem>
+          </Select>
+          <Input
+            clearable
+            label="Birth date"
+            name="dob"
+            value={formData.dob}
+            onChange={handleInputChange}
+            type="date"
           />
         </div>
 
-        <Button color="primary" auto onPress={handleSave} className="w-full mt-6">
+        <Button type="submit" color="primary" auto className="w-full mt-6">
           Save
         </Button>
       </form>
@@ -156,7 +321,8 @@ const PersonalInfo = () => {
       <Card variant="bordered" className="bg-gray-50 p-4">
         <h4 className="text-lg font-semibold mb-2">Delete Account</h4>
         <p className="text-sm text-gray-600 mb-4">
-          After making a deletion request, you will have <strong>6 months</strong> to maintain this account.
+          Once your account is deleted, it will be <strong>permanently blocked.</strong> To
+          restore access, you must contact the admin for assistance.
         </p>
         <Button color="danger" auto onPress={onOpen}>
           Delete Account
@@ -164,82 +330,232 @@ const PersonalInfo = () => {
       </Card>
 
       <Modal isOpen={isOpen} onClose={onClose}>
+          <ModalContent>
+            <ModalHeader>Confirm Deletion</ModalHeader>
+            <ModalBody>
+              <p>
+                Are you sure you want to delete your account? This action cannot
+                be undone.
+              </p>
+            </ModalBody>
+            <ModalFooter>
+              <Button flat color="default" onPress={onClose}>
+                Cancel
+              </Button>
+              <Button
+                color="error"
+                auto
+                onPress={() => {
+                  onClose();
+                  handleDelete();
+                }}
+              >
+                Confirm Delete
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+        {/* Success Modal */}
+        <Modal isOpen={confirmationModalOpen} onClose={() => setConfirmationModalOpen(false)}>
+          <ModalContent>
+            <ModalHeader>Account Deleted</ModalHeader>
+            <ModalBody>
+              <p>
+                Your account has been successfully deleted and blocked. You will
+                be automatically redirected to the login page.
+              </p>
+            </ModalBody>
+            <ModalFooter>
+              <Button flat color="primary" auto onPress={() => navigate("/login")}>
+                Go to Login
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+    </Card>
+  );
+};
+
+const EmailPassword = () => {
+  const [formData, setFormData] = useState({
+    current_password: "",
+    new_password: "",
+    confirm_password: "",
+  });
+  const [isVisible, setIsVisible] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
+  const toast = useToast();
+  const navigate = useNavigate();
+
+  const toggleVisibility = () => setIsVisible(!isVisible);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleUpdatePassword = async (e) => {
+    e.preventDefault();
+
+    // Validate inputs
+    if (!formData.current_password) {
+      toast({
+        title: "Validation Error",
+        description: "Current password is required.",
+        status: "error",
+      });
+      return;
+    }
+    if (!formData.new_password || formData.new_password.length < 8) {
+      toast({
+        title: "Validation Error",
+        description: "New password must be at least 8 characters long.",
+        status: "error",
+      });
+      return;
+    }
+    if (formData.new_password !== formData.confirm_password) {
+      toast({
+        title: "Validation Error",
+        description: "New password and confirm password do not match.",
+        status: "error",
+      });
+      return;
+    }
+
+    try {
+      console.log(formData)
+      // Send data to the API
+      await axiosInstance.post("/user-details/password-change", formData);
+
+      // Show success modal
+      setModalOpen(true);
+
+      // Auto logout and redirect after 3 seconds
+      setTimeout(() => {
+        setModalOpen(false);
+        navigate("/login");
+      }, 3000);
+    } catch (error) {
+      toast({
+        title: "Error",
+        description:
+          error.response?.data?.description || "Failed to update the password.",
+        status: "error",
+      });
+    }
+  };
+
+  return (
+    <Card className="p-6 md:p-8 shadow-md">
+      <h3 className="text-2xl font-bold mb-4">Change Password</h3>
+
+      <form onSubmit={handleUpdatePassword} className="space-y-6">
+        <Input
+          label="Current Password"
+          variant="flat"
+          placeholder="Enter current password"
+          name="current_password"
+          value={formData.current_password}
+          onChange={handleInputChange}
+          endContent={
+            <button
+              className="focus:outline-none"
+              type="button"
+              onClick={toggleVisibility}
+              aria-label="toggle password visibility"
+            >
+              {isVisible ? (
+                <AiFillEye className="text-2xl text-default-400" />
+              ) : (
+                <AiFillEyeInvisible className="text-2xl text-default-400" />
+              )}
+            </button>
+          }
+          type={isVisible ? "text" : "password"}
+          className="w-full"
+        />
+
+        <Spacer y={2} />
+
+        <Input
+          label="New Password"
+          variant="flat"
+          placeholder="Enter new password"
+          name="new_password"
+          value={formData.new_password}
+          onChange={handleInputChange}
+          endContent={
+            <button
+              className="focus:outline-none"
+              type="button"
+              onClick={toggleVisibility}
+              aria-label="toggle password visibility"
+            >
+              {isVisible ? (
+                <AiFillEye className="text-2xl text-default-400" />
+              ) : (
+                <AiFillEyeInvisible className="text-2xl text-default-400" />
+              )}
+            </button>
+          }
+          type={isVisible ? "text" : "password"}
+          className="w-full"
+        />
+
+        <Spacer y={2} />
+
+        <Input
+          label="Confirm Password"
+          variant="flat"
+          placeholder="Confirm new password"
+          name="confirm_password"
+          value={formData.confirm_password}
+          onChange={handleInputChange}
+          endContent={
+            <button
+              className="focus:outline-none"
+              type="button"
+              onClick={toggleVisibility}
+              aria-label="toggle password visibility"
+            >
+              {isVisible ? (
+                <AiFillEye className="text-2xl text-default-400" />
+              ) : (
+                <AiFillEyeInvisible className="text-2xl text-default-400" />
+              )}
+            </button>
+          }
+          type={isVisible ? "text" : "password"}
+          className="w-full"
+        />
+
+        <Button type="submit" color="primary" className="mt-6 w-full" auto>
+          Update Password
+        </Button>
+      </form>
+
+      {/* Success Modal */}
+      <Modal isOpen={modalOpen} onClose={() => setModalOpen(false)}>
         <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader>Confirm Deletion</ModalHeader>
-              <ModalBody>
-                <p>Are you sure you want to delete your account? This action cannot be undone.</p>
-              </ModalBody>
-              <ModalFooter>
-                <Button flat color="default" onPress={onClose}>
-                  Cancel
-                </Button>
-                <Button color="error" onPress={handleDelete}>
-                  Confirm Delete
-                </Button>
-              </ModalFooter>
-            </>
-          )}
+          <ModalHeader>Password Changed</ModalHeader>
+          <ModalBody>
+            <p>
+              Your password has been successfully changed. You will be
+              automatically logged out and redirected to the login page.
+            </p>
+          </ModalBody>
+          <ModalFooter>
+            <Button flat color="primary" auto onPress={() => navigate("/login")}>
+              Go to Login
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </Card>
   );
 };
 
-const EmailPassword = () => {
-  const [isVisible, setIsVisible] = React.useState(false);
-  const toggleVisibility = () => setIsVisible(!isVisible);
-
-  return (
-    <Card className="p-6 md:p-8 shadow-md">
-      <h3 className="text-2xl font-bold mb-4">Change Password</h3>
-      <Divider className="my-4" />
-
-      <Input
-        label="Current Password"
-        variant="flat"
-        placeholder="Enter current password"
-        endContent={
-          <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-            {isVisible ? <AiFillEye className="text-2xl text-default-400" /> : <AiFillEyeInvisible className="text-2xl text-default-400" />}
-          </button>
-        }
-        type={isVisible ? "text" : "password"}
-        className="w-full"
-      />
-      <Spacer y={2} />
-      <Input
-        label="New Password"
-        variant="flat"
-        placeholder="Enter new password"
-        endContent={
-          <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-            {isVisible ? <AiFillEye className="text-2xl text-default-400" /> : <AiFillEyeInvisible className="text-2xl text-default-400" />}
-          </button>
-        }
-        type={isVisible ? "text" : "password"}
-        className="w-full"
-      />
-      <Spacer y={2} />
-      <Input
-        label="Confirm Password"
-        variant="flat"
-        placeholder="Confirm new password"
-        endContent={
-          <button className="focus:outline-none" type="button" onClick={toggleVisibility} aria-label="toggle password visibility">
-            {isVisible ? <AiFillEye className="text-2xl text-default-400" /> : <AiFillEyeInvisible className="text-2xl text-default-400" />}
-          </button>
-        }
-        type={isVisible ? "text" : "password"}
-        className="w-full"
-      />
-
-      <Button color="primary" className="mt-6 w-full" auto>
-        Update Password
-      </Button>
-    </Card>
-  );
-};
 
 export default ProfileManagement;
