@@ -19,8 +19,9 @@ import { BsThreeDotsVertical } from 'react-icons/bs';
 import { FaQuestionCircle } from 'react-icons/fa';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter } from "@nextui-org/modal";
 import { MdSupportAgent } from "react-icons/md";
-import { fetchSupportRequests } from '../../redux/slices/supportRequestSlice';
+import { fetchSupportRequests, updateSupportRequest } from '../../redux/slices/supportRequestSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import { useToast } from "@chakra-ui/react";
 
 function formatDateToCustom(dateString) {
   const originalDate = new Date(dateString);
@@ -39,32 +40,68 @@ function formatDateToCustom(dateString) {
   return `${day} ${month} ${year}`;
 }
 
-const ReportCard = ({ title, description, date, status, user, type, onStatusChange }) => {
+const ReportCard = ({ requestId, title, description, date, status, user, type, onStatusChange }) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [modalTitle, setModalTitle] = useState('');
   const [modalDescription, setModalDescription] = useState('');
-  const [selectedStatus, setSelectedStatus] = useState(status);
+  const [selectedStatus, setSelectedStatus] = useState('');
+  const [isResolvedOrClosed, setIsResolvedOrClosed] = useState(true);
+  const [statusToConfirm, setStatusToConfirm] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const dispatch = useDispatch();
+  const toast = useToast();
+
+  useEffect(() => {
+    setSelectedStatus(status);
+  }, [status]);
+
+  useEffect(()=> {
+    setIsResolvedOrClosed(selectedStatus.toLowerCase() === 'resolved' || selectedStatus.toLowerCase() === 'closed');
+  }, [selectedStatus]);
 
   const [imageModal, setImageModal] = React.useState({ isOpen: false, src: "" });
   const onCloseModal = () => setImageModal({ isOpen: false, src: "" });
 
   const handleStatusChange = (key) => {
-    if (key === 'closed') {
-      onOpen();
-    } else {
-      setSelectedStatus(key);
-      onStatusChange(key, { title, description });
+    setStatusToConfirm(key);
+    onOpen(); // Open confirmation modal for all status changes
+  };
+
+  const handleModalSubmit = async () => {
+    const updateData = statusToConfirm === 'closed'
+      ? { status: 'closed', title: modalTitle, description: modalDescription }
+      : { status: statusToConfirm };
+
+    setIsLoading(true); // Set loading state to true
+
+    try {
+      await dispatch(updateSupportRequest({ requestId, updateData })).unwrap();
+      setSelectedStatus(statusToConfirm);
+      onStatusChange(statusToConfirm, { title: modalTitle, description: modalDescription });
+      toast({
+        title: "Status updated successfully!",
+        status: "success",
+        duration: 3000,
+        isClosable: true,
+      });
+      onOpenChange();
+    } catch (error) {
+      toast({
+        title: "Error updating status",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false); // Reset loading state
     }
   };
 
-  const handleModalSubmit = () => {
-    onStatusChange('Closed', { title: modalTitle, description: modalDescription });
-    onOpenChange();
-  };
-
   const statusColorMap = {
-    open: 'success',
-    'in-progress': 'warning',
+    pending: 'default',
+    'in_progress': 'warning',
+    'resolved': 'success',
     closed: 'danger',
   };
 
@@ -72,12 +109,10 @@ const ReportCard = ({ title, description, date, status, user, type, onStatusChan
     <Card className="w-full mx-auto mb-4">
       <CardHeader className="flex gap-3 items-start w-full">
         <Image
-          alt="nextui logo"
+          alt="User profile"
           height={60}
           radius="sm"
-          src={
-            user.profilePicture || "https://via.placeholder.com/150"
-          }
+          src={user.profilePicture || "https://via.placeholder.com/150"}
           width={60}
           onClick={() => setImageModal({ isOpen: true, src: user.profilePicture })}
         />
@@ -92,10 +127,10 @@ const ReportCard = ({ title, description, date, status, user, type, onStatusChan
                   <p className="text-sm text-gray-500">{date}</p>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <FaQuestionCircle className="w-4 h-4 text-gray-500 ml-6"/>
+                  <FaQuestionCircle className="w-4 h-4 text-gray-500 ml-6" />
                   <p className="text-sm text-gray-500">{type}</p>
                 </div>
-                <Chip color={statusColorMap[selectedStatus.toLowerCase()]} className='ml-6' variant="solid">
+                <Chip color={statusColorMap[selectedStatus.toLowerCase()]} className="ml-6" variant="solid">
                   {selectedStatus}
                 </Chip>
               </div>
@@ -106,10 +141,14 @@ const ReportCard = ({ title, description, date, status, user, type, onStatusChan
                   <BsThreeDotsVertical />
                 </Button>
               </DropdownTrigger>
-              <DropdownMenu aria-label="Status Actions" onAction={handleStatusChange}>
-                <DropdownItem key="open">Open</DropdownItem>
-                <DropdownItem key="in-progress">In Progress</DropdownItem>
-                <DropdownItem key="closed">Closed</DropdownItem>
+              <DropdownMenu 
+                aria-label="Status Actions" 
+                onAction={handleStatusChange} 
+                disabledKeys={selectedStatus.toLowerCase() === "in_progress" ? ["in_progress"] : isResolvedOrClosed ? ["in_progress", "resolved", "closed"] : []}
+              >
+                <DropdownItem key="in_progress">In Progress</DropdownItem>
+                <DropdownItem key="resolved" >Resolved</DropdownItem>
+                <DropdownItem key="closed" >Closed</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -119,29 +158,37 @@ const ReportCard = ({ title, description, date, status, user, type, onStatusChan
         <ModalContent>
           {(onClose) => (
             <>
-              <ModalHeader>Close Report</ModalHeader>
+              <ModalHeader>
+                Confirm Status Change
+              </ModalHeader>
               <ModalBody>
-                <Input
-                  clearable
-                  fullWidth
-                  label="Title"
-                  value={modalTitle}
-                  onChange={(e) => setModalTitle(e.target.value)}
-                />
-                <Input
-                  clearable
-                  fullWidth
-                  label="Description"
-                  value={modalDescription}
-                  onChange={(e) => setModalDescription(e.target.value)}
-                />
+                {statusToConfirm === 'closed' ? (
+                  <>
+                    <Input
+                      clearable
+                      fullWidth
+                      label="Title"
+                      value={modalTitle}
+                      onChange={(e) => setModalTitle(e.target.value)}
+                    />
+                    <Input
+                      clearable
+                      fullWidth
+                      label="Description"
+                      value={modalDescription}
+                      onChange={(e) => setModalDescription(e.target.value)}
+                    />
+                  </>
+                ) : (
+                  <p>Are you sure you want to change the status to <strong>{statusToConfirm}</strong>?</p>
+                )}
               </ModalBody>
               <ModalFooter>
                 <Button flat color="error" onPress={onClose}>
                   Cancel
                 </Button>
-                <Button color="primary" onPress={handleModalSubmit}>
-                  Submit
+                <Button color="primary" onPress={handleModalSubmit} isLoading={isLoading}>
+                  Confirm
                 </Button>
               </ModalFooter>
             </>
@@ -160,50 +207,42 @@ const ReportCard = ({ title, description, date, status, user, type, onStatusChan
   );
 };
 
-const ReportList = () => {
 
-  const [filteredReports, setFilteredReports] = useState([]);
+const ReportList = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('all');
 
-  const { supportRequests, hasFetched } = useSelector(state => state.supportRequests);
-
+  const { supportRequests, hasFetched } = useSelector((state) => state.supportRequests);
   const dispatch = useDispatch();
 
-  useEffect(()=> {
-    if(!hasFetched) {
+  // Fetch support requests if not already fetched
+  useEffect(() => {
+    if (!hasFetched) {
       dispatch(fetchSupportRequests());
     }
   }, [hasFetched, dispatch]);
 
-  useEffect(()=> {
-    setFilteredReports(supportRequests);
-  }, [supportRequests])
+  // Filtered reports logic
+  const filteredReports = React.useMemo(() => {
+    return supportRequests.filter((report) => {
+      const matchesSearch =
+        report.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        report.description.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesStatus =
+        selectedFilter === 'all' || report.status.toLowerCase() === selectedFilter.toLowerCase();
 
-  const handleStatusChange = (newStatus, data) => {
-    console.log(`Status changed to: ${newStatus}`, data);
-  };
-
-  const handleFilterChange = (key) => {
-    setSelectedFilter(key);
-    filterReports(searchTerm, key);
-  };
-
-  const handleSearchChange = (e) => {
-    const term = e.target.value;
-    setSearchTerm(term);
-    filterReports(term, selectedFilter);
-  };
-
-  const filterReports = (term, status) => {
-    const lowerTerm = term.toLowerCase();
-    const filtered = supportRequests.filter(report => {
-      const matchesSearch = report.subject.toLowerCase().includes(lowerTerm) ||
-                            report.description.toLowerCase().includes(lowerTerm);
-      const matchesStatus = status === 'all' || report.status.toLowerCase() === status;
       return matchesSearch && matchesStatus;
     });
-    setFilteredReports(filtered);
+  }, [supportRequests, searchTerm, selectedFilter]);
+
+  // Handle filter changes
+  const handleFilterChange = (key) => {
+    setSelectedFilter(key);
+  };
+
+  // Handle search input changes
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
   };
 
   return (
@@ -235,10 +274,15 @@ const ReportList = () => {
               Filter by Status
             </Button>
           </DropdownTrigger>
-          <DropdownMenu aria-label="Status Filter" onAction={handleFilterChange} selectedKeys={selectedFilter}>
+          <DropdownMenu
+            aria-label="Status Filter"
+            onAction={handleFilterChange}
+            selectedKeys={selectedFilter}
+          >
             <DropdownItem key="all">All</DropdownItem>
-            <DropdownItem key="open">Open</DropdownItem>
-            <DropdownItem key="in-progress">In Progress</DropdownItem>
+            <DropdownItem key="pending">Pending</DropdownItem>
+            <DropdownItem key="in_progress">In Progress</DropdownItem>
+            <DropdownItem key="resolved">Resolved</DropdownItem>
             <DropdownItem key="closed">Closed</DropdownItem>
           </DropdownMenu>
         </Dropdown>
@@ -249,13 +293,16 @@ const ReportList = () => {
         {filteredReports.map((report, index) => (
           <ReportCard
             key={index}
+            requestId={report.requestId}
             title={report.subject}
             description={report.description}
             date={formatDateToCustom(report.createdAt)}
             status={report.status}
             user={report.user}
             type={report.type}
-            onStatusChange={handleStatusChange}
+            onStatusChange={(newStatus) =>
+              console.log(`Status changed to: ${newStatus}`, report)
+            }
           />
         ))}
       </div>

@@ -291,22 +291,22 @@ const PersonalInfo = () => {
             onChange={handleInputChange}
           />
           <Autocomplete
-  label="Districts"
-  placeholder="Search a district"
-  defaultItems={provinces} 
-  selectedKey={formData.district}
-  onSelectionChange={(value) => setFormData({ ...formData, district: value })}
->
-  {(item) => (
-    <AutocompleteSection title={item.name} key={item.id} >
-      {item.districts.map((district) => (
-        <AutocompleteItem key={district.name}>
-          {district.name}
-        </AutocompleteItem>
-      ))}
-    </AutocompleteSection>
-  )}
-</Autocomplete>
+            label="Districts"
+            placeholder="Search a district"
+            defaultItems={provinces} 
+            selectedKey={formData.district}
+            onSelectionChange={(value) => setFormData({ ...formData, district: value })}
+          >
+            {(item) => (
+              <AutocompleteSection title={item.name} key={item.id} >
+                {item.districts.map((district) => (
+                  <AutocompleteItem key={district.name}>
+                    {district.name}
+                  </AutocompleteItem>
+                ))}
+              </AutocompleteSection>
+            )}
+          </Autocomplete>
           <Input
             label="Address"
             placeholder="Enter Address"

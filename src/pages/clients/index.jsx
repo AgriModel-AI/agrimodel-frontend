@@ -44,7 +44,7 @@ const columns = [
   {name: "NAME", uid: "username", sortable: true},
   {name: "PHONENUMBER", uid: "phone_number", sortable: true},
   {name: "DISTRICT", uid: "district", sortable: true},
-  {name: "ROLE", uid: "role", sortable: true},
+  {name: "TYPE", uid: "role", sortable: true},
   {name: "ISVERIFIED", uid: "isVerified", sortable: true},
   {name: "ISBLOCKED", uid: "isBlocked", sortable: true},
   {name: "ACTIONS", uid: "actions"},
@@ -153,7 +153,7 @@ export default function Disease() {
         return (
           <div className="flex items-center space-x-2">
             {user.isBlocked ? (
-              <span className="inline-flex items-center px-3 py-1 rounded-md bg-red-100 text-red-700 text-sm shadow-md">
+              <span className="inline-flex items-center text-red-700 text-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-4 w-4 mr-1"
@@ -165,7 +165,7 @@ export default function Disease() {
                 Blocked
               </span>
             ) : (
-              <span className="inline-flex items-center px-3 py-1 rounded-md bg-green-100 text-green-700 text-sm shadow-md">
+              <span className="inline-flex items-center text-green-700 text-sm">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-4 w-4 mr-1"
@@ -174,7 +174,7 @@ export default function Disease() {
                 >
                   <path d="M10 15l-3.5-3.5 1.42-1.42L10 12.17l5.09-5.09 1.41 1.41L10 15zM12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"/>
                 </svg>
-                Unblocked
+                Not blocked
               </span>
             )}
           </div>
