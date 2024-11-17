@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { io } from 'socket.io-client';
 
 import { FiMenu, FiBell, FiChevronDown } from 'react-icons/fi';
 
@@ -26,22 +27,63 @@ import {
   AlertDialogOverlay,
   Button,
   Image,
+  Divider
 } from '@chakra-ui/react';
 import { Badge } from "@nextui-org/react";
 import { Link, useNavigate } from "react-router-dom";
 import { fetchUserDetails } from '../../redux/slices/userDetailsSlice';
 import { logout } from '../../redux/slices/userSlice';
+import { fetchNotifications, markNotificationsAsRead } from '../../redux/slices/notificationSlice';
+import { formatDate } from '../../utils/dateUtil';
+import { useToast } from "@chakra-ui/react";
 
 const MobileNav = ({ onOpen, ...rest }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const toast = useToast();
 
   const userDetails = useSelector((state) => state.userDetails.userDetails);
   const loading = useSelector((state) => state.userDetails.loading);
   const hasFetched = useSelector((state) => state.userDetails.hasFetched);
 
+  const {notifications, hasFetched: hasFetchedNotification } = useSelector((state) => state.notifications);
+
   const [isLogoutDialogOpen, setLogoutDialogOpen] = useState(false);
   const cancelRef = useRef();
+
+  useEffect(() => {
+    // Create a socket connection
+    const socket = io(`${process.env.REACT_APP_BACKEND_URL}`, {
+      transports: ['websocket'],
+      auth: {
+            token: localStorage.getItem('jwtToken'),
+        },
+      reconnection: true,
+    });
+
+      // Listen for events from the server
+      socket.on('new_notification', (data) => {
+          dispatch(fetchNotifications());
+          toast({
+            title: "New notification",
+            status: "info",
+            position: 'top',
+            duration: 3000,
+            isClosable: true,
+          });
+      });
+
+    // Cleanup the socket connection on component unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (!hasFetchedNotification) {
+      dispatch(fetchNotifications());
+    }
+  }, [dispatch, hasFetchedNotification]);
 
   useEffect(() => {
     if (!hasFetched) {
@@ -64,6 +106,14 @@ const MobileNav = ({ onOpen, ...rest }) => {
     }
   }, [loading, userDetails.profilePicture]);
 
+  const handleNotification = async() => {
+    try {
+      await dispatch(markNotificationsAsRead());
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   return (
     <Flex
       ml={{ base: 0, md: 60 }}
@@ -83,21 +133,13 @@ const MobileNav = ({ onOpen, ...rest }) => {
         icon={<FiMenu />}
       />
 
-      {/* <Text
-        display={{ base: 'flex', md: 'none' }}
-        fontSize="2xl"
-        fontFamily="monospace"
-        fontWeight="bold">
-        AgriModel
-      </Text> */}
       <Image src='../../assets/logo_black.png' width={130} display={{ base: 'flex', md: 'none' }}/>
       
-
       <HStack spacing={{ base: '0', md: '6' }}>
         <Flex alignItems={'center'}>
           <Menu>
-            <MenuButton py={0} transition="all 0.3s" _focus={{ boxShadow: 'none' }}>
-              <Badge color="danger" content={5} isInvisible={false} shape="circle">
+            <MenuButton py={0} transition="all 0.3s" _focus={{ boxShadow: 'none' }} onClick={handleNotification}>
+              <Badge color="danger" content={notifications.filter(notification => !notification.isRead).length} isInvisible={false} shape="circle">
                 <FiBell size={20} />
               </Badge>
             </MenuButton>
@@ -106,13 +148,16 @@ const MobileNav = ({ onOpen, ...rest }) => {
                 <Text fontSize="lg" fontWeight="bold">Notifications</Text>
               </Box>
               {/* Notifications list */}
-              {[...Array(5)].map((_, index) => (
-                <MenuItem key={index} py={2}>
-                  <Box>
-                    <Text fontSize="base" fontWeight="semibold">📣 Edit your information</Text>
-                    <Text fontSize="sm">Sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim.</Text>
-                  </Box>
-                </MenuItem>
+              {notifications.map((notification, index) => (
+                <>
+                  <MenuItem key={index} py={2}>
+                    <Box>
+                      <Text fontSize="base" fontWeight="semibold">📣 #{notification.notificationId}</Text>
+                      <Text fontSize="sm">{notification.message} {formatDate(notification.timestamp)}</Text>
+                    </Box>
+                  </MenuItem>
+                  <Divider mt={2} />
+                </>
               ))}
             </MenuList>
           </Menu>

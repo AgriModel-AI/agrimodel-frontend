@@ -20,7 +20,7 @@ const LinkItems = [
     { name: 'Diagnosis Results', icon: FiClipboard, url: '/dashboard/diagnosis' },
     { name: 'Users', icon: FiUser, url: '/dashboard/clients' },
     { name: 'Community', icon: FiUsers, url: '/dashboard/community' },
-    { name: 'Support', icon: FiHelpCircle, url: '/dashboard/support' },
+    { name: 'Support Requests', icon: FiHelpCircle, url: '/dashboard/support' },
   ]
 
 const SidebarContent = ({ onClose, ...rest }) => {

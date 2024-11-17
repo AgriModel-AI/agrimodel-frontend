@@ -8,6 +8,7 @@ import supportRequestReducer from './slices/supportRequestSlice';
 import provinceReducer from './slices/provincesSlice';
 import diagnosisReducer from './slices/diagnosisResult';
 import DashboardStatsReducer from './slices/dashboardStatsSlice';
+import NotificationReducer from './slices/notificationSlice';
 
 
 const appReducer = combineReducers({
@@ -19,7 +20,8 @@ const appReducer = combineReducers({
   supportRequests: supportRequestReducer,
   provinces: provinceReducer,
   diagnosis: diagnosisReducer,
-  dashboardStats: DashboardStatsReducer
+  dashboardStats: DashboardStatsReducer,
+  notifications: NotificationReducer,
 });
 
 const rootReducer = (state, action) => {
