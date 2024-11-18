@@ -116,15 +116,21 @@ const MobileNav = ({ onOpen, ...rest }) => {
 
   return (
     <Flex
+      position="fixed"
+      top="0"
+      left={0}
+      right={0}
       ml={{ base: 0, md: 60 }}
       px={{ base: 4, md: 4 }}
       height="20"
+      zIndex="30"
       alignItems="center"
       bg={useColorModeValue('white', 'gray.900')}
       borderBottomWidth="1px"
       borderBottomColor={useColorModeValue('gray.200', 'gray.700')}
       justifyContent={{ base: 'space-between', md: 'flex-end' }}
-      {...rest}>
+      {...rest}
+      >
       <IconButton
         display={{ base: 'flex', md: 'none' }}
         onClick={onOpen}

@@ -8,7 +8,7 @@ import { Icon, divIcon, point } from "leaflet";
 import 'animate.css';
 import {Card, CardBody, CardHeader, Modal, ModalBody, ModalContent, ModalHeader, Spinner, User} from "@nextui-org/react";
 import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell} from "@nextui-org/react";
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { fetchDashboardStats } from '../../redux/slices/dashboardStatsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -86,6 +86,8 @@ const Dashboard = () => {
     }
   }, [dispatch, hasFetched])
 
+  const chartData = React.useMemo(() => stats.diseaseCasesOverMonths, [stats.diseaseCasesOverMonths]);
+
   const options = {
     responsive: true,
     maintainAspectRatio: false,
@@ -94,6 +96,7 @@ const Dashboard = () => {
       y: { beginAtZero: true },
     },
   };
+
 
   if (loading) {
     return (
@@ -128,7 +131,7 @@ const Dashboard = () => {
             <h3 className="text-lg font-semibold mb-4 text-gray-600">Disease Cases Over Months</h3>
           </CardHeader>
           <CardBody>
-          <Bar data={stats.diseaseCasesOverMonths} options={options} />
+          <Bar data={chartData} options={options} />
           </CardBody>
         </Card>
 
@@ -156,14 +159,14 @@ const Dashboard = () => {
                     return (
                       <TableRow key={disease.diseaseName}>
                         <TableCell>
-                        <User
-            avatarProps={{radius: "lg", src: disease.image, onClick: () => setImageModal({ isOpen: true, src: disease.image }),}}
-            name={disease.diseaseName}
-            alt="image"
-            size='sm'
-            referrerPolicy="no-referrer" 
-          >
-          </User>
+                          <User
+                            avatarProps={{radius: "lg", src: disease.image, onClick: () => setImageModal({ isOpen: true, src: disease.image }),}}
+                            name={disease.diseaseName}
+                            alt="image"
+                            size='sm'
+                            referrerPolicy="no-referrer" 
+                          >
+                          </User>
                         </TableCell>
                         <TableCell>{disease.description}</TableCell>
                         <TableCell>{disease.totalCases}</TableCell>

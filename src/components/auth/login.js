@@ -135,67 +135,65 @@ const Login = () => {
         </Box>
 
         {/* Form Section */}
-        <Box flex="1" bg="white" p={{ base: '6', md: '8' }} display="flex" flexDirection="column" alignItems="center" justifyContent={"center"}>
+        <Box flex="1" bg="white" p={{ base: '6', md: '8' }} display="flex" flexDirection="column" alignItems="center" justifyContent="center">
           <Text fontSize="xl" fontWeight="bold" color="green.600" mb="4">
             SIGN IN
           </Text>
 
-          {/* Email Input */}
-          <Input
-            placeholder="Enter your email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            mb="4"
-            width="100%"
-            maxW="300px"
-          />
-
-          {/* Password Input */}
-          <InputGroup size="md" width="100%" maxW="300px" mb="4">
+          <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '300px' }}>
+            {/* Email Input */}
             <Input
-              type={showPassword ? 'text' : 'password'}
-              placeholder="Enter your password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              mb="4"
             />
-            <InputRightElement width="4.5rem">
-              <Button h="1.75rem" size="sm" onClick={handleClickShowPassword}>
-                {showPassword ? <ViewOffIcon /> : <ViewIcon />}
-              </Button>
-            </InputRightElement>
-          </InputGroup>
 
-          {/* Forgot Password */}
-          <Text
-            as="a"
-            color="green.600"
-            cursor="pointer"
-            fontSize="sm"
-            alignSelf="flex-end"
-            onClick={() => navigate('/forgot-password')}
-            mb="4"
-            width="100%"
-            textAlign={'right'}
-            px={10}
-          >
-            Forgot Password?
-          </Text>
+            {/* Password Input */}
+            <InputGroup size="md" mb="4">
+              <Input
+                type={showPassword ? 'text' : 'password'}
+                placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+              <InputRightElement width="4.5rem">
+                <Button h="1.75rem" size="sm" onClick={handleClickShowPassword}>
+                  {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
 
-          {/* Login Button */}
-          <Button colorScheme="green" width="100%" maxW="300px" mb="4" onClick={handleSubmit} isLoading={isLoading}>
-            {isLoading ? <Spinner size="sm" /> : 'Login'}
-          </Button>
+            {/* Forgot Password */}
+            <Text
+              as="a"
+              color="green.600"
+              cursor="pointer"
+              fontSize="sm"
+              alignSelf="flex-end"
+              onClick={() => navigate('/forgot-password')}
+              mb="4"
+              textAlign="right"
+            >
+              Forgot Password?
+            </Text>
+
+            {/* Login Button */}
+            <Button colorScheme="green" width="100%" type="submit" isLoading={isLoading}>
+              {isLoading ? <Spinner size="sm" /> : 'Login'}
+            </Button>
+          </form>
 
           {/* Sign Up Link */}
-          <Text fontSize="sm" mb="2">
+          {/* <Text fontSize="sm" mt="4">
             Don't have an account?{' '}
             <Text as="span" color="green.600" cursor="pointer" fontWeight="bold" onClick={() => navigate('/signup')}>
               Sign Up
             </Text>
-          </Text>
+          </Text> */}
 
           {/* Divider */}
-          <Text fontSize="sm" color="gray.500" mb="4">
+          <Text fontSize="sm" color="gray.500" my="4">
             OR
           </Text>
 
