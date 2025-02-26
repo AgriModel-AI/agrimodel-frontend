@@ -145,26 +145,37 @@ const MobileNav = ({ onOpen, ...rest }) => {
         <Flex alignItems={'center'}>
           <Menu>
             <MenuButton py={0} transition="all 0.3s" _focus={{ boxShadow: 'none' }} onClick={handleNotification}>
-              <Badge color="danger" content={notifications.filter(notification => !notification.isRead).length} isInvisible={false} shape="circle">
-                <FiBell size={20} />
-              </Badge>
+              {
+                notifications.filter(notification => !notification.isRead).length === 0 ? 
+                  <FiBell size={20} />
+                :
+                <Badge color="danger" content={notifications.filter(notification => !notification.isRead).length} isInvisible={false} shape="circle">
+                  <FiBell size={20} />
+                </Badge>
+              }
             </MenuButton>
             <MenuList maxH="300px" w={"450px"} overflowY="auto" zIndex="1500">
               <Box px={4} py={2} borderBottom="1px" borderColor="gray.200" bg="gray.50" position="sticky" top={0} zIndex={1}>
                 <Text fontSize="lg" fontWeight="bold">Notifications</Text>
               </Box>
               {/* Notifications list */}
-              {notifications.map((notification, index) => (
-                <>
-                  <MenuItem key={index} py={2}>
-                    <Box>
-                      <Text fontSize="base" fontWeight="semibold">📣 #{notification.notificationId}</Text>
-                      <Text fontSize="sm">{notification.message} {formatDate(notification.timestamp)}</Text>
-                    </Box>
-                  </MenuItem>
-                  <Divider mt={2} />
-                </>
-              ))}
+              {notifications.length === 0 ? (
+                <MenuItem isDisabled>
+                  <Text fontSize="sm" color="gray.500">There are no notifications to display.</Text>
+                </MenuItem>
+              ) : (
+                notifications.map((notification, index) => (
+                  <>
+                    <MenuItem key={index} py={2}>
+                      <Box>
+                        <Text fontSize="base" fontWeight="semibold">📣 #{notification.notificationId}</Text>
+                        <Text fontSize="sm">{notification.message} {formatDate(notification.timestamp)}</Text>
+                      </Box>
+                    </MenuItem>
+                    <Divider mt={2} />
+                  </>
+                ))
+              )}
             </MenuList>
           </Menu>
         </Flex>
