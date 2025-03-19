@@ -1,24 +1,40 @@
-# Use official Node.js 22.12.0 base image
-FROM node:22.12.0-alpine
+# Use the Node alpine official image
+# https://hub.docker.com/_/node
+FROM node:lts-alpine AS build
 
-# set for base and all layer that inherit from it
-ENV NODE_ENV production
+# Set config
+ENV NPM_CONFIG_UPDATE_NOTIFIER=false
+ENV NPM_CONFIG_FUND=false
 
-
-# Set working directory
+# Create and change to the app directory.
 WORKDIR /app
 
-# Copy package.json and package-lock.json first
+# Copy the files to the container image
 COPY package*.json ./
 
-# Install dependencies
-RUN npm install --omit=dev --force --frozen-lockfile --prod=false
+# Install packages
+RUN npm ci
 
-# Copy the entire project
-COPY . .
+# Copy local code to the container image.
+COPY . ./
 
-# Expose port
-EXPOSE 3000
+# Build the app.
+RUN npm run build
 
-# Start the app using a static server
-CMD ["npm", "start"]
+# Use the Caddy image
+FROM caddy
+
+# Create and change to the app directory.
+WORKDIR /app
+
+# Copy Caddyfile to the container image.
+COPY Caddyfile ./
+
+# Copy local code to the container image.
+RUN caddy fmt Caddyfile --overwrite
+
+# Copy files to the container image.
+COPY --from=build /app/dist ./dist
+
+# Use Caddy to run/serve the app
+CMD ["caddy", "run", "--config", "Caddyfile", "--adapter", "caddyfile"]
