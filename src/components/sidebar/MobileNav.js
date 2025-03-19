@@ -113,9 +113,13 @@ const MobileNav = ({ onOpen, ...rest }) => {
   }, [loading, userDetails.profilePicture]);
 
   const handleNotification = async() => {
+      setIsNotificationOpen(!isNotificationOpen);
+      setIsMenuOpen(false);
+  }
+
+  const handleNotificationRead = async() => {
     try {
       await dispatch(markNotificationsAsRead());
-      setIsNotificationOpen(!isNotificationOpen);
     } catch (error) {
       console.log(error);
     }
@@ -163,7 +167,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
               icon={
                 <>
                   <FiBell size={20} />
-                  {notifications.filter(notification => !notification.isRead).length > 0 && (
+                  {/* {notifications.filter(notification => !notification.isRead).length > 0 && (
                     <Box
                       position="absolute"
                       top="-2px"
@@ -182,19 +186,19 @@ const MobileNav = ({ onOpen, ...rest }) => {
                     >
                       {notifications.filter(notification => !notification.isRead).length}
                     </Box>
-                  )}
+                  )} */}
                 </>
               }
               variant="ghost"
-              onClick={handleNotification}
               _hover={{ bg: 'gray.100' }}
+              onClick={handleNotification}
             />
             
             {notifications.filter(notification => !notification.isRead).length > 0 && (
               <Box
                 position="absolute"
-                top="-2px"
-                right="-2px"
+                top="5px"
+                right="5px"
                 transform="translate(25%, -25%)"
               >
                 <Box
@@ -262,14 +266,14 @@ const MobileNav = ({ onOpen, ...rest }) => {
                       <Text fontSize="md" fontWeight="semibold">Notifications</Text>
                       <Box 
                         ml={2} 
-                        bg="red.500" 
+                        bg="gray.500" 
                         color="white" 
                         borderRadius="full" 
                         px={2} 
                         py={0.5} 
                         fontSize="xs"
                       >
-                        {notifications.filter(notification => !notification.isRead).length} new
+                        {notifications.length}
                       </Box>
                     </Flex>
                     
@@ -279,6 +283,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
                       variant="ghost" 
                       fontWeight="medium"
                       leftIcon={<Icon as={FiBell} size="sm" />}
+                      onClick={handleNotificationRead}
                     >
                       Mark all read
                     </Button>
@@ -366,7 +371,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
                                     borderRadius="full" 
                                     px={1.5} 
                                     py={0.5} 
-                                    fontSize="2xs" 
+                                    fontSize="sm" 
                                     fontWeight="medium"
                                   >
                                     NEW
