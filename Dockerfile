@@ -8,7 +8,7 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies using npm
-RUN npm install --omit=dev
+RUN npm install --omit=dev --force
 
 # Copy the entire project (excluding files in .dockerignore)
 COPY . .
