@@ -1,40 +1,24 @@
-# Use the Node alpine official image
-# https://hub.docker.com/_/node
-FROM node:lts-alpine AS build
+# Use official Node.js 22.12.0 base image
+FROM node:22.12.0-alpine
 
-# Set config
-ENV NPM_CONFIG_UPDATE_NOTIFIER=false
-ENV NPM_CONFIG_FUND=false
-
-# Create and change to the app directory.
+# Set working directory inside the container
 WORKDIR /app
 
-# Copy the files to the container image
+# Copy package.json and package-lock.json first to leverage Docker cache
 COPY package*.json ./
 
-# Install packages
-RUN npm ci --force
+# Install dependencies using npm
+RUN npm install --omit=dev --force
 
-# Copy local code to the container image.
-COPY . ./
+# Copy the entire project (excluding files in .dockerignore)
+COPY . .
 
-# Build the app.
+# Build the React application
 RUN npm run build
 
-# Use the Caddy image
-FROM caddy
+# Expose the port the app runs on
+EXPOSE 3000
 
-# Create and change to the app directory.
-WORKDIR /app
-
-# Copy Caddyfile to the container image.
-COPY Caddyfile ./
-
-# Copy local code to the container image.
-RUN caddy fmt Caddyfile --overwrite
-
-# Copy files to the container image.
-COPY --from=build /app/dist ./dist
-
-# Use Caddy to run/serve the app
-CMD ["caddy", "run", "--config", "Caddyfile", "--adapter", "caddyfile"]
+# Start the app using a static server
+# CMD ["npx", "serve", "-s", "build", "-l", "3000"]
+CMD ["sh", "-c", "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL npm run build && npx serve -s build -l 3000"]
