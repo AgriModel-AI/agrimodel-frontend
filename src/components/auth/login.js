@@ -350,20 +350,7 @@ const Login = () => {
                 Sign in with Google
               </MotionBox>
 
-              {/* Sign Up Link */}
-              <Text fontSize="sm" color="gray.600" pt={4}>
-                Don't have an account?{" "}
-                <Text
-                  as="span"
-                  color={primaryColor}
-                  cursor="pointer"
-                  fontWeight="medium"
-                  _hover={{ textDecoration: 'underline' }}
-                  onClick={() => navigate('/register')}
-                >
-                  Sign up
-                </Text>
-              </Text>
+              
             </VStack>
           </Flex>
         </Box>

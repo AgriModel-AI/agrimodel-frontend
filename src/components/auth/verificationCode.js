@@ -1,134 +1,164 @@
 import React, { useState } from 'react';
 import {
-  Box,
-  Button,
-  Text,
-  VStack,
-  HStack,
-  PinInputField,
-  PinInput
+  Box, Button, Text, VStack, HStack, PinInput, PinInputField,
+  Container, Heading, Icon, useColorModeValue, ScaleFade,
+  useToast, useInterval
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+import { LockIcon, ArrowBackIcon } from '@chakra-ui/icons';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
-
-const imageUrl = './assets/adult-harvesting-coffee.jpg';
+const MotionBox = motion(Box);
 
 const VerificationCode = () => {
   const navigate = useNavigate();
-  const [code, setCode] = useState(new Array(4).fill(''));
-
-  const handleChange = (value, index) => {
-    const newCode = [...code];
-    newCode[index] = value;
-    setCode(newCode);
-  };
+  const location = useLocation();
+  const toast = useToast();
+  const email = new URLSearchParams(location.search).get('email') || 'your email';
+  
+  const [code, setCode] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [resendTimer, setResendTimer] = useState(0);
+  
+  // Modern color scheme
+  const bg = useColorModeValue('white', 'gray.800');
+  const containerBg = useColorModeValue('gray.50', 'gray.900');
+  const accentColor = 'green.500';
+  const textColor = useColorModeValue('gray.800', 'white');
+  const subTextColor = useColorModeValue('gray.600', 'gray.400');
+  
+  useInterval(() => {
+    if (resendTimer > 0) {
+      setResendTimer(resendTimer - 1);
+    }
+  }, resendTimer > 0 ? 1000 : null);
 
   const handleComplete = (value) => {
-    console.log("Code entered:", value);
-    navigate('/reset-password');
+    setCode(value);
+    setIsSubmitting(true);
+    
+    // Simulate verification
+    setTimeout(() => {
+      setIsSubmitting(false);
+      navigate(`/reset-password?email=${email}&code=${value}`);
+    }, 1500);
+  };
+  
+  const handleResendCode = () => {
+    toast({
+      title: 'Code resent',
+      description: 'A new verification code has been sent to your email',
+      status: 'success',
+      duration: 3000,
+      isClosable: true,
+      position: 'top',
+    });
+    setResendTimer(60);
   };
 
   return (
-    <Box
-      display="flex"
+    <Box 
+      minH="100vh" 
+      display="flex" 
+      alignItems="center" 
       justifyContent="center"
-      alignItems="center"
-      height="100vh"
-      width="100vw"
-      overflow="hidden"
+      bg={containerBg}
+      py={12}
+      px={4}
     >
-      <Box
-        display="flex"
-        height="450px"
-        width="650px"
-        boxShadow="lg"
-        borderRadius="md"
-        overflow="hidden"
-      >
-        {/* Image Section */}
-        <Box
-          flex="1"
-          bgImage={`url(${imageUrl})`}
-          bgSize="cover"
-          bgPosition="center"
-          borderTopLeftRadius="md"
-          borderBottomLeftRadius="md"
-          position="relative"
-        >
-          <Text
-            position="absolute"
-            top="50%"
-            left="50%"
-            transform="translate(-50%, -50%)"
-            color="white"
-            fontWeight="bold"
-            fontSize="lg"
+      <Container maxW="md" p={0}>
+        <ScaleFade initialScale={0.9} in={true}>
+          <MotionBox
+            bg={bg}
+            p={8}
+            borderRadius="xl"
+            boxShadow="xl"
+            w="100%"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            AgriModel
-          </Text>
-          <Text
-            position="absolute"
-            bottom="5"
-            left="50%"
-            transform="translateX(-50%)"
-            color="white"
-            fontWeight="bold"
-            fontSize="sm"
-          >
-            xxxxxx
-          </Text>
-        </Box>
+            <VStack spacing={6} align="stretch">
+              <Box textAlign="center">
+                <Icon as={LockIcon} w={12} h={12} color={accentColor} mb={4} />
+                <Heading as="h2" size="lg" color={textColor} mb={2}>
+                  Verification Code
+                </Heading>
+                <Text color={subTextColor} fontSize="md">
+                  We've sent a code to <Text as="span" fontWeight="bold">{email}</Text>
+                </Text>
+              </Box>
 
-        {/* Form Section */}
-        <VStack
-          flex="1"
-          p="6"
-          justify="center"
-          align="center"
-          borderTopRightRadius="md"
-          borderBottomRightRadius="md"
-          bg="white"
-          spacing="4"
-        >
-          <Text fontSize="xl" fontWeight="bold" color="green.700">
-            Enter Verification Code
-          </Text>
-          <Text fontSize="sm" color="black" textAlign="center">
-            We have sent a code to your e-mail XXXXXXXXX
-          </Text>
+              <VStack spacing={6} align="center" my={6}>
+                <HStack spacing={3}>
+                  <PinInput 
+                    size="lg" 
+                    otp 
+                    onComplete={handleComplete}
+                    isDisabled={isSubmitting}
+                  >
+                    <PinInputField 
+                      borderColor="gray.300" 
+                      _hover={{ borderColor: accentColor }}
+                      _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
+                      fontSize="xl"
+                    />
+                    <PinInputField 
+                      borderColor="gray.300" 
+                      _hover={{ borderColor: accentColor }}
+                      _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
+                      fontSize="xl"
+                    />
+                    <PinInputField 
+                      borderColor="gray.300" 
+                      _hover={{ borderColor: accentColor }}
+                      _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
+                      fontSize="xl"
+                    />
+                    <PinInputField 
+                      borderColor="gray.300" 
+                      _hover={{ borderColor: accentColor }}
+                      _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
+                      fontSize="xl"
+                    />
+                  </PinInput>
+                </HStack>
+                
+                {isSubmitting && (
+                  <Text fontSize="sm" color={accentColor} fontWeight="medium">
+                    Verifying code...
+                  </Text>
+                )}
+              </VStack>
 
-          {/* Code Input Fields */}
-          <HStack spacing="4" mt="2" mb="8">
-          <PinInput onComplete={handleComplete}>
-            <PinInputField />
-            <PinInputField />
-            <PinInputField />
-            <PinInputField />
-          </PinInput>
-          </HStack>
-
-          {/* Verify Button */}
-          <Button
-            colorScheme="green"
-            width="270px"
-            fontWeight="bold"
-            onClick={() => navigate('/reset-password')}
-          >
-            Verify
-          </Button>
-
-          {/* Resend Code Option */}
-          <Text
-            fontSize="0.85rem"
-            color="black"
-            mt="4"
-            cursor="pointer"
-            _hover={{ color: 'blue.500' }}
-          >
-            Didn't receive code? Resend Code
-          </Text>
-        </VStack>
-      </Box>
+              <HStack justify="center" mt={4}>
+                <Text fontSize="sm" color={subTextColor}>
+                  Didn't receive a code?
+                </Text>
+                <Button 
+                  variant="link" 
+                  colorScheme="green" 
+                  size="sm"
+                  isDisabled={resendTimer > 0}
+                  onClick={handleResendCode}
+                >
+                  {resendTimer > 0 ? `Resend in ${resendTimer}s` : 'Resend'}
+                </Button>
+              </HStack>
+              
+              <Button 
+                mt={4}
+                onClick={() => navigate('/login')}
+                leftIcon={<ArrowBackIcon />}
+                variant="ghost"
+                size="sm"
+              >
+                Back to login
+              </Button>
+            </VStack>
+          </MotionBox>
+        </ScaleFade>
+      </Container>
     </Box>
   );
 };

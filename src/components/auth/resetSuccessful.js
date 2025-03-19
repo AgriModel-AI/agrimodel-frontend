@@ -1,103 +1,93 @@
 import React from 'react';
 import {
-  Box,
-  Button,
-  Text,
-  VStack,
-  Image,
-  Icon,
+  Box, Button, Text, VStack, Heading, Icon, Container,
+  useColorModeValue, ScaleFade, Circle
 } from '@chakra-ui/react';
-import { CheckCircleIcon } from '@chakra-ui/icons'; // Chakra's check circle icon
+import { CheckCircleIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 
-const imageUrl = './assets/adult-harvesting-coffee.jpg';
+const MotionBox = motion(Box);
 
 const ResetSuccessful = () => {
   const navigate = useNavigate();
-
+  
+  // Modern color scheme
+  const bg = useColorModeValue('white', 'gray.800');
+  const containerBg = useColorModeValue('gray.50', 'gray.900');
+  const textColor = useColorModeValue('gray.800', 'white');
+  const subTextColor = useColorModeValue('gray.600', 'gray.400');
+  const iconBg = useColorModeValue('green.50', 'green.900');
+  
   return (
-    <Box
-      display="flex"
+    <Box 
+      minH="100vh" 
+      display="flex" 
+      alignItems="center" 
       justifyContent="center"
-      alignItems="center"
-      height="100vh"
-      width="100vw"
-      overflow="hidden"
+      py={12}
+      px={4}
     >
-      <Box
-        display="flex"
-        height="450px"
-        width="650px"
-        boxShadow="lg"
-        borderRadius="md"
-        overflow="hidden"
-      >
-        {/* Left Image Box */}
-        <Box
-          flex="1"
-          position="relative"
-          backgroundImage={`url(${imageUrl})`}
-          backgroundSize="cover"
-          backgroundPosition="center"
-          borderTopLeftRadius="md"
-          borderBottomLeftRadius="md"
-        >
-          <Text
-            position="absolute"
-            top="50%"
-            left="50%"
-            transform="translate(-50%, -50%)"
-            color="white"
-            fontWeight="bold"
-            fontSize="lg"
+      <Container maxW="md" p={0}>
+        <ScaleFade initialScale={0.9} in={true}>
+          <MotionBox
+            bg={bg}
+            p={8}
+            borderRadius="xl"
+            boxShadow="xl"
+            w="100%"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
             textAlign="center"
           >
-            AgriModel
-          </Text>
-          <Text
-            position="absolute"
-            bottom="5"
-            left="50%"
-            transform="translateX(-50%)"
-            color="white"
-            fontWeight="bold"
-            fontSize="sm"
-          >
-            xxxxxx
-          </Text>
-        </Box>
-
-        {/* Success Message Box */}
-        <VStack
-          flex="1"
-          p="6"
-          spacing="4"
-          justifyContent="center"
-          alignItems="center"
-          borderTopRightRadius="md"
-          borderBottomRightRadius="md"
-          bg="white"
-        >
-          <Icon as={CheckCircleIcon} boxSize="24" color="green.700" />
-
-          <Text fontSize="2xl" fontWeight="bold" color="green.700" textAlign="center">
-            Successful
-          </Text>
-
-          <Text fontSize="sm" color="black" textAlign="center" mb="8">
-            Congratulations! Your password has been changed.
-          </Text>
-
-          <Button
-            colorScheme="green"
-            width="full"
-            maxW="270px"
-            onClick={() => navigate('/login')}
-          >
-            Continue
-          </Button>
-        </VStack>
-      </Box>
+            <Circle 
+              size="120px" 
+              bg={iconBg} 
+              mx="auto" 
+              mb={6}
+              animate={{ scale: [0.8, 1.2, 1] }}
+              transition={{ duration: 0.5 }}
+            >
+              <Icon 
+                as={CheckCircleIcon} 
+                w={16} 
+                h={16} 
+                color="green.500" 
+              />
+            </Circle>
+            
+            <Heading 
+              as="h2" 
+              size="xl" 
+              color={textColor} 
+              mb={4}
+              bgGradient="linear(to-r, green.400, green.600)"
+              bgClip="text"
+            >
+              Password Reset Complete
+            </Heading>
+            
+            <Text fontSize="lg" color={subTextColor} mb={8}>
+              Your password has been updated successfully. You can now log in with your new credentials.
+            </Text>
+            
+            <MotionBox
+              as={Button}
+              colorScheme="green"
+              size="lg"
+              width="full"
+              onClick={() => navigate('/login')}
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              borderRadius="md"
+              boxShadow="md"
+            >
+              Sign In
+            </MotionBox>
+          </MotionBox>
+        </ScaleFade>
+      </Container>
     </Box>
   );
 };

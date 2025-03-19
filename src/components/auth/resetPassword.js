@@ -1,57 +1,59 @@
 import React, { useState } from 'react';
 import {
-  Box,
-  Button,
-  Text,
-  VStack,
-  HStack,
-  PinInputField,
-  PinInput,
-  Input,
-  InputGroup,
-  InputRightElement,
-  useToast,
-  Spinner,
-  Icon,
+  Box, Button, Text, VStack, HStack, PinInput, PinInputField,
+  Input, InputGroup, InputRightElement, useToast, Container,
+  Heading, Flex, useColorModeValue, Icon, ScaleFade,
+  FormControl, FormLabel, FormErrorMessage
 } from '@chakra-ui/react';
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import { ViewIcon, ViewOffIcon, ArrowBackIcon, LockIcon } from '@chakra-ui/icons';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { motion } from 'framer-motion';
+
+const MotionBox = motion(Box);
 
 const ResetPassword = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const toast = useToast();
   const email = new URLSearchParams(location.search).get('email') || '';
-
-  const [step, setStep] = useState('code'); // 'code' or 'password'
+  
+  const [step, setStep] = useState('code');
   const [code, setCode] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
 
+  // Modern color scheme
+  const bg = useColorModeValue('white', 'gray.800');
+  const containerBg = useColorModeValue('gray.50', 'gray.900');
+  const accentColor = 'green.500';
+  const textColor = useColorModeValue('gray.800', 'white');
+  const subTextColor = useColorModeValue('gray.600', 'gray.400');
+  
   const handleCompleteCode = (value) => {
     setCode(value);
-    setStep('password'); // Move to the password step
+    setStep('password');
   };
 
-  const handleClickShowNewPassword = () => setShowNewPassword(!showNewPassword);
-  const handleClickShowConfirmPassword = () => setShowConfirmPassword(!showConfirmPassword);
+  const validatePassword = () => {
+    if (newPassword.length < 8) {
+      setPasswordError('Password must be at least 8 characters');
+      return false;
+    }
+    if (newPassword !== confirmPassword) {
+      setPasswordError('Passwords do not match');
+      return false;
+    }
+    setPasswordError('');
+    return true;
+  };
 
   const handleSubmit = async () => {
-    if (newPassword !== confirmPassword) {
-      toast({
-        title: 'Password mismatch',
-        description: 'Passwords do not match. Please try again.',
-        status: 'error',
-        duration: 3000,
-        isClosable: true,
-      });
-      return;
-    }
+    if (!validatePassword()) return;
 
     setIsLoading(true);
     try {
@@ -68,6 +70,7 @@ const ResetPassword = () => {
         status: 'success',
         duration: 3000,
         isClosable: true,
+        position: 'top',
       });
       navigate('/reset-password-successful');
     } catch (error) {
@@ -77,6 +80,7 @@ const ResetPassword = () => {
         status: 'error',
         duration: 3000,
         isClosable: true,
+        position: 'top',
       });
     } finally {
       setIsLoading(false);
@@ -84,128 +88,185 @@ const ResetPassword = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" height="100vh" width="100vw" overflow="hidden">
-      <Box
-        display="flex"
-        flexDirection="column"
-        width="350px"
-        height="420px"
-        boxShadow="lg"
-        borderRadius="md"
-        p="8"
-        bg="white"
-        justifyContent="center"
-        alignItems="center"
-      >
-        {/* Form Section */}
-        <motion.div
-          initial={{ opacity: 0, x: 100 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
-          style={{ width: '100%', height: '100%' }}
-        >
-          <VStack
-            justify="center"
-            align="center"
-            spacing="6"
-            width="100%"
-            textAlign="center"
+    <Box 
+      minH="100vh" 
+      display="flex" 
+      alignItems="center" 
+      justifyContent="center"
+      py={12}
+      px={4}
+    >
+      <Container maxW="md" p={0}>
+        <ScaleFade initialScale={0.9} in={true}>
+          <MotionBox
+            bg={bg}
+            p={8}
+            borderRadius="xl"
+            boxShadow="xl"
+            w="100%"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            {step === 'code' && (
-              <>
-                <Text fontSize="xl" fontWeight="bold" color="green.700">
-                  Enter Verification Code
-                </Text>
-                <Text fontSize="sm" color="black" textAlign="center">
-                  We have sent a code to your email: {email}
-                </Text>
-                <HStack spacing="4" mt="8">
-                  <PinInput onComplete={handleCompleteCode}>
-                    <PinInputField />
-                    <PinInputField />
-                    <PinInputField />
-                    <PinInputField />
-                  </PinInput>
+            {step === 'code' ? (
+              <VStack spacing={6} align="stretch">
+                <Box textAlign="center">
+                  <Icon as={LockIcon} w={12} h={12} color={accentColor} mb={4} />
+                  <Heading as="h2" size="lg" color={textColor} mb={2}>
+                    Verification Code
+                  </Heading>
+                  <Text color={subTextColor} fontSize="md">
+                    We've sent a code to <Text as="span" fontWeight="bold">{email}</Text>
+                  </Text>
+                </Box>
+
+                <VStack spacing={6} align="center" my={6}>
+                  <HStack spacing={3}>
+                    <PinInput size="lg" otp onComplete={handleCompleteCode}>
+                      <PinInputField 
+                        borderColor="gray.300" 
+                        _hover={{ borderColor: accentColor }}
+                        _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
+                        fontSize="xl"
+                      />
+                      <PinInputField 
+                        borderColor="gray.300" 
+                        _hover={{ borderColor: accentColor }}
+                        _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
+                        fontSize="xl"
+                      />
+                      <PinInputField 
+                        borderColor="gray.300" 
+                        _hover={{ borderColor: accentColor }}
+                        _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
+                        fontSize="xl"
+                      />
+                      <PinInputField 
+                        borderColor="gray.300" 
+                        _hover={{ borderColor: accentColor }}
+                        _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
+                        fontSize="xl"
+                      />
+                    </PinInput>
+                  </HStack>
+                </VStack>
+
+                <HStack justify="center" mt={4}>
+                  <Text fontSize="sm" color={subTextColor}>
+                    Didn't receive a code?
+                  </Text>
+                  <Button variant="link" colorScheme="green" size="sm">
+                    Resend
+                  </Button>
                 </HStack>
-              </>
-            )}
-
-            {step === 'password' && (
-              <>
-                <Text fontSize="xl" fontWeight="bold" color="green.700">
-                  Reset Your Password
-                </Text>
-                <Text fontSize="sm" color="black" textAlign="center">
-                  Enter your new password to reset your account
-                </Text>
-                <InputGroup size="md" width="100%" mt="4">
-                  <Input
-                    pr="4.5rem"
-                    type={showNewPassword ? 'text' : 'password'}
-                    placeholder="Enter your new password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    focusBorderColor="green.700"
-                    _hover={{ borderColor: 'gray.400' }}
-                  />
-                  <InputRightElement width="3rem">
-                    <Button
-                      h="1.75rem"
-                      size="sm"
-                      onClick={handleClickShowNewPassword}
-                      variant="ghost"
-                    >
-                      <Icon as={showNewPassword ? ViewOffIcon : ViewIcon} />
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-
-                <InputGroup size="md" width="100%" mt="4">
-                  <Input
-                    pr="4.5rem"
-                    type={showConfirmPassword ? 'text' : 'password'}
-                    placeholder="Confirm password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    focusBorderColor="green.700"
-                    _hover={{ borderColor: 'gray.400' }}
-                  />
-                  <InputRightElement width="3rem">
-                    <Button
-                      h="1.75rem"
-                      size="sm"
-                      onClick={handleClickShowConfirmPassword}
-                      variant="ghost"
-                    >
-                      <Icon as={showConfirmPassword ? ViewOffIcon : ViewIcon} />
-                    </Button>
-                  </InputRightElement>
-                </InputGroup>
-
-                <Button
-                  colorScheme="green"
-                  width="100%"
-                  onClick={handleSubmit}
-                  isLoading={isLoading}
-                  mt="6"
+                
+                <Button 
+                  mt={4}
+                  onClick={() => navigate('/login')}
+                  leftIcon={<ArrowBackIcon />}
+                  variant="ghost"
+                  size="sm"
                 >
-                  {isLoading ? <Spinner size="sm" /> : 'Continue'}
+                  Back to login
                 </Button>
+              </VStack>
+            ) : (
+              <VStack spacing={6} align="stretch">
+                <Box textAlign="center">
+                  <Icon as={LockIcon} w={12} h={12} color={accentColor} mb={4} />
+                  <Heading as="h2" size="lg" color={textColor} mb={2}>
+                    Set New Password
+                  </Heading>
+                  <Text color={subTextColor} fontSize="md">
+                    Create a strong password for your account
+                  </Text>
+                </Box>
 
-                <Button
-                  variant="outline"
-                  colorScheme="green"
-                  width="100%"
-                  onClick={() => setStep('code')}
-                  mt="2"
-                >
-                  Back
-                </Button>
-              </>
+                <FormControl isInvalid={passwordError !== ''}>
+                  <FormLabel htmlFor="new-password" fontWeight="medium">New Password</FormLabel>
+                  <InputGroup>
+                    <Input
+                      id="new-password"
+                      type={showNewPassword ? 'text' : 'password'}
+                      placeholder="Enter your new password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      borderRadius="md"
+                      size="md"
+                      _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
+                    />
+                    <InputRightElement>
+                      <Button
+                        variant="ghost"
+                        onClick={() => setShowNewPassword(!showNewPassword)}
+                        color="gray.500"
+                        size="sm"
+                        _hover={{ color: accentColor }}
+                      >
+                        <Icon as={showNewPassword ? ViewOffIcon : ViewIcon} />
+                      </Button>
+                    </InputRightElement>
+                  </InputGroup>
+                </FormControl>
+
+                <FormControl isInvalid={passwordError !== ''}>
+                  <FormLabel htmlFor="confirm-password" fontWeight="medium">Confirm Password</FormLabel>
+                  <InputGroup>
+                    <Input
+                      id="confirm-password"
+                      type={showConfirmPassword ? 'text' : 'password'}
+                      placeholder="Confirm your password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      borderRadius="md"
+                      size="md"
+                      _focus={{ borderColor: accentColor, boxShadow: `0 0 0 1px ${accentColor}` }}
+                    />
+                    <InputRightElement>
+                      <Button
+                        variant="ghost"
+                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        color="gray.500"
+                        size="sm"
+                        _hover={{ color: accentColor }}
+                      >
+                        <Icon as={showConfirmPassword ? ViewOffIcon : ViewIcon} />
+                      </Button>
+                    </InputRightElement>
+                  </InputGroup>
+                  {passwordError && <FormErrorMessage>{passwordError}</FormErrorMessage>}
+                </FormControl>
+
+                <Flex direction="column" gap={4} mt={4}>
+                  <MotionBox
+                    as={Button}
+                    colorScheme="green"
+                    size="md"
+                    isLoading={isLoading}
+                    onClick={handleSubmit}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    borderRadius="md"
+                    boxShadow="md"
+                  >
+                    Reset Password
+                  </MotionBox>
+                  
+                  <Button 
+                    variant="outline" 
+                    colorScheme="green" 
+                    onClick={() => setStep('code')}
+                    size="md"
+                    borderRadius="md"
+                  >
+                    Back
+                  </Button>
+                </Flex>
+              </VStack>
             )}
-          </VStack>
-        </motion.div>
-      </Box>
+          </MotionBox>
+        </ScaleFade>
+      </Container>
     </Box>
   );
 };
