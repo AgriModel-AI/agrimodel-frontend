@@ -21,4 +21,4 @@ COPY . .
 EXPOSE 3000
 
 # Start the app using a static server
-CMD ["npx", "serve", "-s", "build", "-l", "3000"]
+CMD ["npm", "start"]
