@@ -20,5 +20,5 @@ COPY . .
 # Expose port
 EXPOSE 3000
 
-# Build the app at runtime using environment variables
-CMD ["sh", "-c", "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL npm run build && npx serve -s build -l 3000"]
+# Start the app using a static server
+CMD ["npx", "serve", "-s", "build", "-l", "3000"]
