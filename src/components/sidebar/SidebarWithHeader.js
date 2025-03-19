@@ -19,7 +19,7 @@ const SidebarWithHeader = () => {
 
   return (
     <Box minH="100vh" className="bg-gray-100">
-      <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'block' }} />
+      <SidebarContent onClose={() => onClose} display={{ base: 'none', md: 'block' }}/>
       <Drawer
         isOpen={isOpen}
         placement="left"
@@ -33,13 +33,13 @@ const SidebarWithHeader = () => {
       </Drawer>
       {/* mobilenav */}
       <MobileNav onOpen={onOpen} />
-      <Box ml={{ base: 0, md: 60 }}  p="4" overflowY="auto" maxH="100vh" sx={{
+      <Box ml={{ base: 0, md: 72 }}  p="4" overflowY="auto" maxH="100vh" sx={{
           '&::-webkit-scrollbar': {
             display: 'none', // Hides scrollbar for Chrome, Safari, and Opera
           },
           msOverflowStyle: 'none', // Hides scrollbar for Internet Explorer and Edge
           scrollbarWidth: 'none', 
-          paddingTop: '95px'
+          paddingTop: '95px',
         }}>
         <Outlet />
       </Box>

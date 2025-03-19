@@ -2,8 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
-
-import { FiMenu, FiBell, FiChevronDown, FiLogOut, FiUser } from 'react-icons/fi';
+import { FiMenu, FiBell, FiLogOut, FiMoreVertical, FiChevronRight, FiChevronDown, FiUser } from 'react-icons/fi';
 
 import {
   IconButton,
@@ -27,6 +26,8 @@ import {
   AlertDialogOverlay,
   Button,
   Image,
+  Divider,
+  Icon,
   Tooltip
 } from '@chakra-ui/react';
 import { Link, useNavigate } from "react-router-dom";
@@ -189,87 +190,212 @@ const MobileNav = ({ onOpen, ...rest }) => {
               _hover={{ bg: 'gray.100' }}
             />
             
+            {notifications.filter(notification => !notification.isRead).length > 0 && (
+              <Box
+                position="absolute"
+                top="-2px"
+                right="-2px"
+                transform="translate(25%, -25%)"
+              >
+                <Box
+                  as={motion.div}
+                  initial={{ scale: 0.5 }}
+                  animate={{ scale: [0.5, 1.2, 1] }}
+                  transition={{ duration: 0.3 }}
+                  bg="red.500"
+                  color="white"
+                  borderRadius="full"
+                  minW="20px"
+                  h="20px"
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  fontSize="xs"
+                  fontWeight="bold"
+                  px={1}
+                  border="2px solid white"
+                  boxShadow="0 2px 5px rgba(0,0,0,0.2)"
+                >
+                  {notifications.filter(notification => !notification.isRead).length}
+                </Box>
+              </Box>
+            )}
+  
+            {/* Redesigned Notification Panel */}
             <AnimatePresence>
               {isNotificationOpen && (
                 <MotionBox
                   position="absolute"
                   top="45px"
                   right="-100px"
-                  width="400px"
+                  width="380px"
                   zIndex={1500}
-                  boxShadow="lg"
+                  boxShadow="xl"
                   bg="white"
                   borderRadius="xl"
                   overflow="hidden"
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
+                  initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={{ opacity: 0, y: -10, scale: 0.95 }}
                   transition={{ duration: 0.2 }}
                 >
-                  <Box px={4} py={3} borderBottom="1px" borderColor="gray.200" bg="gray.50">
-                    <Flex justify="space-between" align="center">
+                  {/* Header */}
+                  <Flex 
+                    px={4} 
+                    py={3} 
+                    borderBottom="1px" 
+                    borderColor="gray.200" 
+                    bg="gray.50" 
+                    justify="space-between" 
+                    align="center"
+                  >
+                    <Flex align="center">
+                      <Box 
+                        bg="green.100" 
+                        p={1.5} 
+                        borderRadius="md" 
+                        color="green.600" 
+                        mr={2}
+                      >
+                        <FiBell size={14} />
+                      </Box>
                       <Text fontSize="md" fontWeight="semibold">Notifications</Text>
-                      <Text fontSize="xs" color="green.500" cursor="pointer" _hover={{ textDecoration: 'underline' }}>
-                        Mark all as read
-                      </Text>
+                      <Box 
+                        ml={2} 
+                        bg="red.500" 
+                        color="white" 
+                        borderRadius="full" 
+                        px={2} 
+                        py={0.5} 
+                        fontSize="xs"
+                      >
+                        {notifications.filter(notification => !notification.isRead).length} new
+                      </Box>
                     </Flex>
-                  </Box>
+                    
+                    <Button 
+                      size="xs" 
+                      colorScheme="green" 
+                      variant="ghost" 
+                      fontWeight="medium"
+                      leftIcon={<Icon as={FiBell} size="sm" />}
+                    >
+                      Mark all read
+                    </Button>
+                  </Flex>
                   
-                  <Box maxH="350px" overflowY="auto">
+                  {/* Notification List */}
+                  <Box maxH="400px" overflowY="auto" py={2}>
                     {notifications.length === 0 ? (
-                      <Box p={6} textAlign="center">
-                        <Box fontSize="lg" color="gray.400" mb={2}>🔔</Box>
-                        <Text fontSize="sm" color="gray.500">You have no notifications</Text>
+                      <Box p={8} textAlign="center">
+                        <Box 
+                          mx="auto" 
+                          mb={4} 
+                          bg="gray.100" 
+                          w="60px" 
+                          h="60px" 
+                          borderRadius="full" 
+                          display="flex" 
+                          alignItems="center" 
+                          justifyContent="center"
+                        >
+                          <FiBell size={24} color="#A0AEC0" />
+                        </Box>
+                        <Text fontWeight="medium" color="gray.500">No notifications yet</Text>
+                        <Text fontSize="sm" color="gray.400" mt={1}>
+                          We'll notify you when something arrives
+                        </Text>
                       </Box>
                     ) : (
                       notifications.map((notification, index) => (
                         <MotionBox 
                           key={notification.notificationId}
-                          initial={{ opacity: 0, y: 5 }}
-                          animate={{ opacity: 1, y: 0 }}
+                          initial={{ opacity: 0, x: -5 }}
+                          animate={{ opacity: 1, x: 0 }}
                           transition={{ delay: index * 0.05 }}
+                          whileHover={{ backgroundColor: "gray.50" }}
                         >
-                          <Box 
-                            p={4} 
-                            borderBottom="1px" 
-                            borderColor="gray.100"
-                            bg={!notification.isRead ? 'green.50' : 'white'}
-                            _hover={{ bg: 'gray.50' }}
+                          <Flex 
+                            px={4} 
+                            py={3}
+                            borderLeft="4px solid" 
+                            borderLeftColor={!notification.isRead ? "green.400" : "transparent"}
+                            position="relative"
+                            overflow="hidden"
                             cursor="pointer"
                           >
-                            <Flex justify="space-between" align="flex-start">
-                              <Box>
-                                <Flex align="center" mb={1}>
-                                  <Box 
-                                    w="8px" 
-                                    h="8px" 
-                                    borderRadius="full" 
-                                    bg={!notification.isRead ? 'green.500' : 'transparent'} 
-                                    mr={2}
-                                  />
-                                  <Text fontSize="sm" fontWeight="semibold">
-                                    Notification #{notification.notificationId}
-                                  </Text>
-                                </Flex>
-                                <Text fontSize="sm" color="gray.600">{notification.message}</Text>
+                            {/* Notification Item - Redesigned */}
+                            {!notification.isRead && (
+                              <Box 
+                                position="absolute" 
+                                top={0} 
+                                left={0} 
+                                bottom={0} 
+                                w="1px" 
+                                bg="green.400" 
+                              />
+                            )}
+                            
+                            {/* Left: Icon with status */}
+                            <Flex 
+                              mr={3} 
+                              h="38px" 
+                              w="38px" 
+                              bg={!notification.isRead ? "green.100" : "gray.100"} 
+                              borderRadius="lg" 
+                              justify="center" 
+                              align="center"
+                              flexShrink={0}
+                            >
+                              <Box color={!notification.isRead ? "green.500" : "gray.500"}>
+                                <FiBell size={18} />
                               </Box>
-                              <Text fontSize="xs" color="gray.400" ml={3}>
+                            </Flex>
+                            
+                            {/* Center: Content */}
+                            <Box flex="1">
+                              <Flex align="center" mb={0.5}>
+                                <Text fontSize="sm" fontWeight={!notification.isRead ? "semibold" : "medium"} noOfLines={1}>
+                                  Notification #{notification.notificationId}
+                                </Text>
+                                {!notification.isRead && (
+                                  <Box 
+                                    ml={2} 
+                                    bg="green.100" 
+                                    color="green.600" 
+                                    borderRadius="full" 
+                                    px={1.5} 
+                                    py={0.5} 
+                                    fontSize="2xs" 
+                                    fontWeight="medium"
+                                  >
+                                    NEW
+                                  </Box>
+                                )}
+                              </Flex>
+                              <Text 
+                                fontSize="sm" 
+                                color={!notification.isRead ? "gray.700" : "gray.500"} 
+                                fontWeight={!notification.isRead ? "medium" : "normal"}
+                                noOfLines={2}
+                              >
+                                {notification.message}
+                              </Text>
+                              
+                              {/* Time */}
+                              <Text fontSize="xs" color="gray.400" mt={1}>
                                 {formatDate(notification.timestamp)}
                               </Text>
-                            </Flex>
-                          </Box>
+                            </Box>
+                          </Flex>
+                          
+                          {index < notifications.length - 1 && (
+                            <Divider borderColor="gray.100" />
+                          )}
                         </MotionBox>
                       ))
                     )}
                   </Box>
-                  
-                  {notifications.length > 0 && (
-                    <Box p={3} borderTop="1px" borderColor="gray.100" bg="gray.50" textAlign="center">
-                      <Text fontSize="sm" color="green.600" fontWeight="medium" cursor="pointer" _hover={{ textDecoration: 'underline' }}>
-                        View all notifications
-                      </Text>
-                    </Box>
-                  )}
                 </MotionBox>
               )}
             </AnimatePresence>
@@ -375,6 +501,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
           </MenuList>
         </Menu>
       </HStack>
+      
 
       {/* Logout Confirmation Dialog */}
       <AlertDialog
