@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { io } from 'socket.io-client';
-import { FiMenu, FiBell, FiLogOut, FiMoreVertical, FiChevronRight, FiChevronDown, FiUser } from 'react-icons/fi';
+import { FiMenu, FiBell, FiLogOut, FiChevronDown, FiUser } from 'react-icons/fi';
 
 import {
   IconButton,
@@ -83,7 +83,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
     return () => {
       socket.disconnect();
     };
-  }, [dispatch]);
+  }, [dispatch, toast]);
 
   useEffect(() => {
     if (!hasFetchedNotification) {

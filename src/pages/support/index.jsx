@@ -14,7 +14,6 @@ import {
   Breadcrumbs,
   BreadcrumbItem,
   Avatar,
-  CardBody,
   CardFooter,
   Divider,
 } from "@nextui-org/react";

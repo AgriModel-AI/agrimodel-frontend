@@ -11,7 +11,7 @@ import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from 
 import { Link } from 'react-router-dom';
 import { fetchDashboardStats } from '../../redux/slices/dashboardStatsSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { FiDownload, FiCalendar, FiFilter, FiBarChart2, FiTrendingUp, FiPieChart, FiRefreshCw, FiUsers, FiShield, FiLayers } from 'react-icons/fi';
+import { FiDownload, FiCalendar, FiBarChart2, FiTrendingUp, FiPieChart, FiRefreshCw, FiUsers, FiShield, FiLayers } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);

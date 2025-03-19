@@ -2,24 +2,22 @@ import React, { useState, useEffect } from "react";
 import {
   Breadcrumbs,
   BreadcrumbItem,
-  Card,
-  Divider,
 } from "@nextui-org/react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchCommunities } from "../../redux/slices/communitySlice";
-import { Image, Spinner, Center, useToast } from "@chakra-ui/react";
+import { Spinner, Center } from "@chakra-ui/react";
 import { FaUserSlash, FaCalendarAlt, FaUsers, FaFileAlt, FaEnvelope } from "react-icons/fa";
 
 const CommunityDetails = () => {
-  const [isModalOpen, setModalOpen] = useState(false);
+  // const [isModalOpen, setModalOpen] = useState(false);
   const [community, setCommunity] = useState(null);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("id");
-  const toast = useToast();
+  // const toast = useToast();
 
   const { communities, hasFetched } = useSelector((state) => state.communities);
 

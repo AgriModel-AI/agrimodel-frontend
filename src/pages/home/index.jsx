@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { Button, Image, Link, Dropdown } from "@nextui-org/react";
+import React, { useState, useEffect } from "react";
+import { Button, Image, Link } from "@nextui-org/react";
 import { FaGooglePlay, FaApple, FaFacebook, FaInstagram, FaTwitter, FaLinkedin, FaLeaf, FaCamera, FaUsers, FaGlobe, FaChevronDown } from "react-icons/fa";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 

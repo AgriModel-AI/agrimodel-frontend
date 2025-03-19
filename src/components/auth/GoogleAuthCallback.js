@@ -34,7 +34,7 @@ const GoogleAuthCallback = () => {
       console.error('Tokens are missing from the URL.');
       navigate('/login');
     }
-  }, [navigate, location]);
+  }, [navigate, location, dispatch]);
 
   return (
     <Box display="flex" justifyContent="center" alignItems="center" height="100vh" bg="gray.100">

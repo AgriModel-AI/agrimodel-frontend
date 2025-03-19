@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Box, Button, Text, VStack, HStack, PinInput, PinInputField,
   useToast, Container, Heading, Icon, useColorModeValue, 
-  ScaleFade, Flex, useInterval, Spinner
+  ScaleFade, Flex, useInterval
 } from '@chakra-ui/react';
 import { CheckIcon, EmailIcon, ArrowBackIcon } from '@chakra-ui/icons';
 import { useNavigate, useLocation } from 'react-router-dom';

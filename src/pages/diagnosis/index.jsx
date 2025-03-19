@@ -27,7 +27,7 @@ import { MdAssignment } from "react-icons/md";
 import { SearchIcon } from "../../components/diseases/SearchIcon";
 import { ChevronDownIcon } from "../../components/diseases/ChevronDownIcon";
 import { capitalize } from "../../components/diseases/utils";
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import { fetchDiagnosisResults } from "../../redux/slices/diagnosisResult";
 import { useDispatch, useSelector } from "react-redux";
 import { formatDate } from "../../utils/dateUtil";
@@ -52,7 +52,7 @@ const INITIAL_VISIBLE_COLUMNS = ["image_path", "user", "district", "disease", "d
 export default function Disease() {
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const {results, hasFetched} = useSelector((state) => state.diagnosis)
 
@@ -99,7 +99,7 @@ export default function Disease() {
     
 
     return filteredUsers;
-  }, [results, filterValue, statusFilter]);
+  }, [results, hasSearchFilter, filterValue]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -279,15 +279,7 @@ export default function Disease() {
         </div>
       </div>
     );
-  }, [
-    filterValue,
-    statusFilter,
-    visibleColumns,
-    onRowsPerPageChange,
-    results.length,
-    onSearchChange,
-    hasSearchFilter,
-  ]);
+  }, [filterValue, onSearchChange, visibleColumns, results.length, onRowsPerPageChange, onClear]);
 
   const bottomContent = React.useMemo(() => {
     return (
@@ -316,7 +308,7 @@ export default function Disease() {
         </div>
       </div>
     );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+  }, [selectedKeys, filteredItems.length, page, pages, onPreviousPage, onNextPage]);
 
   return (
     <div className="px-4 sm:px-2 md:px-10 lg:px-20 mt-4">
