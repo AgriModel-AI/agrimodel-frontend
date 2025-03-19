@@ -8,7 +8,15 @@ import {
   InputRightElement,
   Image,
   useToast,
-  Spinner,
+  Flex,
+  VStack,
+  Heading,
+  FormControl,
+  FormLabel,
+  Divider,
+  useColorModeValue,
+  ScaleFade,
+  SlideFade,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +24,9 @@ import { login, logout } from '../../redux/slices/userSlice';
 import axiosInstance from '../../utils/axiosConfig';
 import { useDispatch } from 'react-redux';
 import { AiOutlineGoogle } from 'react-icons/ai';
+import { motion } from 'framer-motion';
 
+const MotionBox = motion(Box);
 const imageUrl = './assets/adult-harvesting-coffee.jpg';
 
 const Login = () => {
@@ -28,6 +38,13 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Color mode values for dark/light theme support
+  const cardBg = useColorModeValue('white', 'gray.800');
+  const inputBg = useColorModeValue('gray.50', 'gray.700');
+  const borderColor = useColorModeValue('gray.200', 'gray.600');
+  const primaryColor = 'green.500';
+  const secondaryColor = 'green.600';
 
   useEffect(() => {
     dispatch(logout());
@@ -43,6 +60,7 @@ const Login = () => {
         status: 'warning',
         duration: 3000,
         isClosable: true,
+        position: 'top',
       });
       return false;
     }
@@ -53,6 +71,7 @@ const Login = () => {
         status: 'warning',
         duration: 3000,
         isClosable: true,
+        position: 'top',
       });
       return false;
     }
@@ -63,6 +82,7 @@ const Login = () => {
         status: 'warning',
         duration: 3000,
         isClosable: true,
+        position: 'top',
       });
       return false;
     }
@@ -89,6 +109,7 @@ const Login = () => {
         status: 'success',
         duration: 3000,
         isClosable: true,
+        position: 'top',
       });
       navigate('/dashboard');
     } catch (error) {
@@ -98,6 +119,7 @@ const Login = () => {
         status: 'error',
         duration: 3000,
         isClosable: true,
+        position: 'top',
       });
     } finally {
       setIsLoading(false);
@@ -105,111 +127,247 @@ const Login = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="center" alignItems="center" height="100vh" px="1">
-      <Box
-        display="flex"
-        flexDirection={{ base: 'column', md: 'row' }}
-        width={{ base: '100%', sm: '100%', md: '700px', lg: '800px' }}
-        boxShadow="md"
-        borderRadius="md"
-        overflow="hidden"
-      >
-        {/* Image Section */}
+    <Box 
+      display="flex" 
+      justifyContent="center" 
+      alignItems="center" 
+      minHeight="100vh"
+      bgGradient="linear(to-br, gray.50, green.50)"
+      p={4}
+    >
+      <ScaleFade initialScale={0.9} in={true}>
         <Box
-          flex="1"
-          display={{ base: 'none', md: 'block' }}
-          position="relative"
+          display="flex"
+          flexDirection={{ base: 'column', md: 'row' }}
+          width={{ base: '100%', sm: '450px', md: '800px', lg: '900px' }}
+          boxShadow="xl"
+          borderRadius="2xl"
+          overflow="hidden"
+          bg={cardBg}
         >
-          <Image src={imageUrl} alt="Login background" objectFit="cover" height="100%" width="100%" />
-          <Text
-            position="absolute"
-            bottom="8"
-            left="50%"
-            transform="translateX(-50%)"
-            color="white"
-            fontWeight="bold"
-            textAlign="center"
+          {/* Image Section with Overlay */}
+          <Box
+            flex="1.2"
+            display={{ base: 'none', md: 'block' }}
+            position="relative"
           >
-            AgriModel
-          </Text>
-        </Box>
-
-        {/* Form Section */}
-        <Box flex="1" bg="white" p={{ base: '6', md: '8' }} display="flex" flexDirection="column" alignItems="center" justifyContent="center">
-          <Text fontSize="xl" fontWeight="bold" color="green.600" mb="4">
-            SIGN IN
-          </Text>
-
-          <form onSubmit={handleSubmit} style={{ width: '100%', maxWidth: '300px' }}>
-            {/* Email Input */}
-            <Input
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              mb="4"
+            <Box
+              position="absolute"
+              top="0"
+              left="0"
+              right="0"
+              bottom="0"
+              bgGradient="linear(to-b, rgba(0,0,0,0.3), rgba(0,0,0,0.7))"
+              zIndex="1"
             />
-
-            {/* Password Input */}
-            <InputGroup size="md" mb="4">
-              <Input
-                type={showPassword ? 'text' : 'password'}
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <InputRightElement width="4.5rem">
-                <Button h="1.75rem" size="sm" onClick={handleClickShowPassword}>
-                  {showPassword ? <ViewOffIcon /> : <ViewIcon />}
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-
-            {/* Forgot Password */}
-            <Text
-              as="a"
-              color="green.600"
-              cursor="pointer"
-              fontSize="sm"
-              alignSelf="flex-end"
-              onClick={() => navigate('/forgot-password')}
-              mb="4"
-              textAlign="right"
+            <Image 
+              src={imageUrl} 
+              alt="Login background" 
+              objectFit="cover" 
+              height="100%" 
+              width="100%" 
+            />
+            <VStack
+              position="absolute"
+              bottom="10"
+              left="50%"
+              transform="translateX(-50%)"
+              color="white"
+              textAlign="center"
+              spacing={3}
+              zIndex="2"
             >
-              Forgot Password?
-            </Text>
+              <Heading fontSize="4xl" fontWeight="extrabold">
+                AgriModel
+              </Heading>
+              <Text maxW="80%" fontSize="md">
+                Advanced agricultural solutions for sustainable farming
+              </Text>
+            </VStack>
+          </Box>
 
-            {/* Login Button */}
-            <Button colorScheme="green" width="100%" type="submit" isLoading={isLoading}>
-              {isLoading ? <Spinner size="sm" /> : 'Login'}
-            </Button>
-          </form>
-
-          {/* Sign Up Link */}
-          {/* <Text fontSize="sm" mt="4">
-            Don't have an account?{' '}
-            <Text as="span" color="green.600" cursor="pointer" fontWeight="bold" onClick={() => navigate('/signup')}>
-              Sign Up
-            </Text>
-          </Text> */}
-
-          {/* Divider */}
-          <Text fontSize="sm" color="gray.500" my="4">
-            OR
-          </Text>
-
-          {/* Google Sign-In Button */}
-          <Button
-            variant="outline"
-            colorScheme="red"
-            width="100%"
-            maxW="300px"
-            leftIcon={<AiOutlineGoogle />}
-            onClick={() => window.location.href = `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/google-auth`}
+          {/* Form Section */}
+          <Flex 
+            flex="1" 
+            bg={cardBg} 
+            p={{ base: '6', md: '10' }} 
+            direction="column" 
+            alignItems="center" 
+            justifyContent="center"
           >
-            Sign in with Google
-          </Button>
+            <VStack w="100%" maxW="350px" spacing={8}>
+              <SlideFade in={true} offsetY="-20px">
+                <VStack spacing={1} mb={4}>
+                  <Box 
+                    display={{ base: 'block', md: 'none' }}
+                    mb={4}
+                  >
+                    <Heading color={primaryColor} fontSize="2xl" fontWeight="extrabold">
+                      AgriModel
+                    </Heading>
+                  </Box>
+                  <Heading 
+                    fontSize="xl" 
+                    fontWeight="bold" 
+                    color={secondaryColor} 
+                    letterSpacing="wide"
+                  >
+                    WELCOME BACK
+                  </Heading>
+                  <Text color="gray.500" fontSize="sm">
+                    Sign in to your account
+                  </Text>
+                </VStack>
+              </SlideFade>
+
+              <form onSubmit={handleSubmit} style={{ width: '100%' }}>
+                <VStack spacing={5} align="flex-start">
+                  {/* Email Input */}
+                  <FormControl>
+                    <FormLabel fontSize="sm" fontWeight="medium">Email</FormLabel>
+                    <InputGroup size="md">
+                      <Input
+                        bg={inputBg}
+                        borderColor={borderColor}
+                        borderRadius="lg"
+                        fontSize="md"
+                        type="email"
+                        placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        _focus={{
+                          borderColor: primaryColor,
+                          boxShadow: `0 0 0 1px ${primaryColor}`
+                        }}
+                        _hover={{
+                          borderColor: 'gray.300'
+                        }}
+                      />
+                    </InputGroup>
+                  </FormControl>
+
+                  {/* Password Input */}
+                  <FormControl>
+                    <Flex justify="space-between" align="center">
+                      <FormLabel fontSize="sm" fontWeight="medium">Password</FormLabel>
+                      <Text
+                        as="a"
+                        color={primaryColor}
+                        cursor="pointer"
+                        fontSize="xs"
+                        fontWeight="medium"
+                        onClick={() => navigate('/forgot-password')}
+                        _hover={{ textDecoration: 'underline' }}
+                      >
+                        Forgot Password?
+                      </Text>
+                    </Flex>
+                    <InputGroup size="md">
+                      <Input
+                        bg={inputBg}
+                        borderColor={borderColor}
+                        borderRadius="lg"
+                        type={showPassword ? 'text' : 'password'}
+                        placeholder="Enter your password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        _focus={{
+                          borderColor: primaryColor,
+                          boxShadow: `0 0 0 1px ${primaryColor}`
+                        }}
+                        _hover={{
+                          borderColor: 'gray.300'
+                        }}
+                      />
+                      <InputRightElement width="3rem">
+                        <Button 
+                          h="1.5rem" 
+                          size="sm" 
+                          variant="ghost"
+                          color="gray.400"
+                          onClick={handleClickShowPassword}
+                          _hover={{
+                            color: primaryColor
+                          }}
+                        >
+                          {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                        </Button>
+                      </InputRightElement>
+                    </InputGroup>
+                  </FormControl>
+
+                  {/* Login Button */}
+                  <MotionBox
+                    as={Button}
+                    width="100%"
+                    colorScheme="green"
+                    size="md"
+                    type="submit"
+                    isLoading={isLoading}
+                    borderRadius="lg"
+                    mt={2}
+                    boxShadow="md"
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    bgGradient={`linear(to-r, ${primaryColor}, ${secondaryColor})`}
+                    _hover={{
+                      bgGradient: `linear(to-r, ${secondaryColor}, ${primaryColor})`,
+                      boxShadow: 'lg'
+                    }}
+                  >
+                    Sign in
+                  </MotionBox>
+                </VStack>
+              </form>
+
+              <Flex align="center" width="100%" my={2}>
+                <Divider borderColor="gray.300" />
+                <Text px={3} color="gray.500" fontSize="sm" fontWeight="medium">
+                  OR
+                </Text>
+                <Divider borderColor="gray.300" />
+              </Flex>
+
+              {/* Google Sign-In Button */}
+              <MotionBox
+                as={Button}
+                variant="outline"
+                width="100%"
+                height="42px"
+                leftIcon={<AiOutlineGoogle size="20px" />}
+                onClick={() => window.location.href = `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/google-auth`}
+                borderRadius="lg"
+                borderWidth="1px"
+                borderColor={borderColor}
+                color="gray.700"
+                _hover={{
+                  bg: 'gray.50',
+                  borderColor: 'gray.400'
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                Sign in with Google
+              </MotionBox>
+
+              {/* Sign Up Link */}
+              <Text fontSize="sm" color="gray.600" pt={4}>
+                Don't have an account?{" "}
+                <Text
+                  as="span"
+                  color={primaryColor}
+                  cursor="pointer"
+                  fontWeight="medium"
+                  _hover={{ textDecoration: 'underline' }}
+                  onClick={() => navigate('/register')}
+                >
+                  Sign up
+                </Text>
+              </Text>
+            </VStack>
+          </Flex>
         </Box>
-      </Box>
+      </ScaleFade>
     </Box>
   );
 };
