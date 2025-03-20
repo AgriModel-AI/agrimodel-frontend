@@ -15,12 +15,14 @@ import { motion } from 'framer-motion';
 import NavItem from './NavItem';
 
 import { FiHome, FiClipboard, FiActivity, FiHelpCircle, FiUsers, FiUser } from 'react-icons/fi';
+import { RiSeedlingLine } from "react-icons/ri";
 import { Link, useLocation } from 'react-router-dom';
 
 const MotionBox = motion(Box);
 
 const LinkItems = [
   { name: 'Dashboard', icon: FiHome, url: '/dashboard' },
+  { name: 'Crops', icon: RiSeedlingLine, url: '/dashboard/crops' },
   { name: 'Diseases', icon: FiActivity, url: '/dashboard/diseases' },
   { name: 'Diagnosis Results', icon: FiClipboard, url: '/dashboard/diagnosis' },
   { name: 'Users', icon: FiUser, url: '/dashboard/clients' },

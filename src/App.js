@@ -8,6 +8,8 @@ import Home from './pages/home/index';
 import Dashboard from './pages/dashboard/index';
 import Diseases from './pages/diseases/index';
 import DiseasesAdd from './pages/diseases/form';
+import Crops from './pages/crops/index';
+import CropsAdd from './pages/crops/form';
 import Diagnosis from './pages/diagnosis/index';
 import Clients from './pages/clients/index';
 import Community from './pages/community/index';
@@ -26,6 +28,7 @@ import ForbiddenPage from './pages/403';
 import VerifyAccount from './components/auth/verifyAccount';
 import GoogleAuthCallback from './components/auth/GoogleAuthCallback';
 import DiseaseUpdate from './pages/diseases/update';
+import CropUpdate from './pages/crops/update';
 import AccountBlocked from './pages/auth/AccountBlocked';
 import CommunityUpdate from './pages/community/update';
 import CommunityDetails from './pages/community/CommunityDetails';
@@ -54,6 +57,9 @@ export default function App() {
             <Route path="/dashboard/diseases" element={<Diseases />} />
             <Route path="/dashboard/diseases/add" element={<DiseasesAdd />} />
             <Route path="/dashboard/diseases/update" element={<DiseaseUpdate />} />
+            <Route path="/dashboard/crops" element={<Crops />} />
+            <Route path="/dashboard/crops/add" element={<CropsAdd />} />
+            <Route path="/dashboard/crops/update" element={<CropUpdate />} />
             <Route path="/dashboard/diagnosis" element={<Diagnosis />} />
             <Route path="/dashboard/clients" element={<Clients />} />
             <Route path="/dashboard/clients/view" element={<ClientDetails />} />
