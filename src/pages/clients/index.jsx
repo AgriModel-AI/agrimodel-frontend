@@ -284,7 +284,7 @@ export default function Disease() {
               </DropdownMenu>
             </Dropdown>
             <div className="flex gap-3">            
-            <Button color="primary" endContent={<PlusIcon />} onClick={()=> {navigate("/dashboard/clients/create-admin");}}>
+            <Button color="primary" endContent={<PlusIcon />} onPress={()=> {navigate("/dashboard/clients/create-admin");}}>
               Create New Admin
             </Button>
           </div>

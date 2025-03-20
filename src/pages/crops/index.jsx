@@ -31,7 +31,7 @@ import {Breadcrumbs, BreadcrumbItem} from "@nextui-org/react";
 import { PlusIcon } from "../../components/crops/PlusIcon";
 import { VerticalDotsIcon } from "../../components/crops/VerticalDotsIcon";
 import { SearchIcon } from "../../components/crops/SearchIcon";
-import { FaStethoscope } from "react-icons/fa";
+import { RiSeedlingLine } from "react-icons/ri";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { deleteCrop, fetchCrop } from "../../redux/slices/cropSlice";
@@ -128,7 +128,7 @@ export default function Crop() {
       .then(() => {
         toast({
           title: "Success",
-          description: "Disease deleted successfully",
+          description: "Crop deleted successfully",
           status: "success",
           duration: 3000,
         });
@@ -136,7 +136,7 @@ export default function Crop() {
       .catch(() => {
         toast({
           title: "Error",
-          description: "Failed to delete disease",
+          description: "Failed to delete crop",
           status: "error",
           duration: 3000,
         });
@@ -177,7 +177,7 @@ export default function Crop() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu>
-                <DropdownItem href={`/dashboard/crops/update?id=${user.cropId}`}>Edit</DropdownItem>
+                <DropdownItem onPress={() => navigate(`/dashboard/crops/update?id=${user.cropId}`)}>Edit</DropdownItem>
                 <DropdownItem onPress={() => handleDeleteClick(user.cropId)}>Delete</DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -228,8 +228,8 @@ export default function Crop() {
         </Breadcrumbs>
 
         <div className="flex items-center my-4 space-x-3">
-          <FaStethoscope size={28} color="#1a73e8" />
-          <h2 className="text-2xl font-bold text-gray-800">crops</h2>
+          <RiSeedlingLine size={28} color="#1a73e8" />
+          <h2 className="text-2xl font-bold text-gray-800">Crops</h2>
         </div>
 
         <div className="flex justify-between gap-3 items-end">
@@ -339,7 +339,7 @@ export default function Crop() {
             <>
             <ModalHeader className="flex flex-col gap-1">Confirm Deletion</ModalHeader>
               <ModalBody>
-                Are you sure you want to delete this disease? This action cannot be undone.
+                Are you sure you want to delete this crop? This action cannot be undone.
               </ModalBody>
               <ModalFooter>
                 <Button color="danger" variant="light" onPress={onClose}>
@@ -355,9 +355,9 @@ export default function Crop() {
       </Modal>
       <Modal isOpen={imageModal.isOpen} onClose={onCloseModal}>
         <ModalContent>
-          <ModalHeader>Disease Image</ModalHeader>
+          <ModalHeader>Crop Image</ModalHeader>
           <ModalBody>
-            <img src={imageModal.src} alt="Disease" className="w-full h-auto" />
+            <img src={imageModal.src} alt="Crop" className="w-full h-auto" />
           </ModalBody>
         </ModalContent>
       </Modal>

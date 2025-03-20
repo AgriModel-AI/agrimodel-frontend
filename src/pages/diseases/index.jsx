@@ -31,11 +31,11 @@ import {Breadcrumbs, BreadcrumbItem} from "@nextui-org/react";
 import { PlusIcon } from "../../components/diseases/PlusIcon";
 import { VerticalDotsIcon } from "../../components/diseases/VerticalDotsIcon";
 import { SearchIcon } from "../../components/diseases/SearchIcon";
-import { FaStethoscope } from "react-icons/fa";
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { deleteDisease, fetchDiseases } from "../../redux/slices/diseaseSlice";
 import { useToast } from "@chakra-ui/react";
+import { FiActivity } from 'react-icons/fi';
 
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "description", "symptoms", "treatment", "prevention", "actions"];
@@ -179,7 +179,7 @@ export default function Disease() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu>
-                <DropdownItem href={`/dashboard/diseases/update?id=${user.diseaseId}`}>Edit</DropdownItem>
+                <DropdownItem onPress={() => navigate(`/dashboard/diseases/update?id=${user.diseaseId}`)}>Edit</DropdownItem>
                 <DropdownItem onPress={() => handleDeleteClick(user.diseaseId)}>Delete</DropdownItem>
               </DropdownMenu>
             </Dropdown>
@@ -230,7 +230,7 @@ export default function Disease() {
         </Breadcrumbs>
 
         <div className="flex items-center my-4 space-x-3">
-          <FaStethoscope size={28} color="#1a73e8" />
+          <FiActivity size={28} color="#1a73e8" />
           <h2 className="text-2xl font-bold text-gray-800">Diseases</h2>
         </div>
 

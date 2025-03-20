@@ -11,10 +11,10 @@ import {
 import { useMediaQuery } from "react-responsive";
 import { useToast } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
-import { updateDisease, fetchDiseases } from "../../redux/slices/diseaseSlice";
+import { updateCrop, fetchCrop } from "../../redux/slices/cropSlice";
 import { useLocation, useNavigate } from "react-router-dom";
 
-const DiseaseUpdate = () => {
+const CropUdate = () => {
   const isSmallScreen = useMediaQuery({ maxWidth: 640 });
   const toast = useToast();
   const dispatch = useDispatch();
@@ -22,47 +22,45 @@ const DiseaseUpdate = () => {
   const location = useLocation();
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("id");
-  const { diseases, hasFetched } = useSelector((state) => state.diseases);
+  const { crops, hasFetched } = useSelector((state) => state.crops);
 
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    symptoms: "",
-    treatment: "",
-    prevention: "",
+    growingConditions: "",
+    harvestTime: "",
     images: [],
-    relatedDiseases: "",
   });
   const [errors, setErrors] = useState({});
 
-  // Fetch diseases if not already fetched
+  // Fetch crops if not already fetched
   useEffect(() => {
     if (!hasFetched) {
-      dispatch(fetchDiseases());
+      dispatch(fetchCrop());
     }
   }, [hasFetched, dispatch]);
 
   // Populate form data for update
   useEffect(() => {
-    if (id && hasFetched && diseases.length > 0) {
-      const existingDisease = diseases.find((disease) => disease.diseaseId === Number(id));
+    if (id && hasFetched && crops.length > 0) {
+      const existingCrop = crops.find((crop) => crop.cropId === Number(id));
       
-      if (existingDisease) {
+      if (existingCrop) {
         
         setFormData({
-          name: existingDisease.name || "",
-          description: existingDisease.description || "",
-          symptoms: existingDisease.symptoms || "",
-          treatment: existingDisease.treatment || "",
-          prevention: existingDisease.prevention || "",
+          name: existingCrop.name || "",
+          description: existingCrop.description || "",
+          growingConditions: existingCrop.growingConditions || "",
+          harvestTime: existingCrop.harvestTime || "",
+          prevention: existingCrop.prevention || "",
           images: [], // Images not prefilled for updates
-          relatedDiseases: existingDisease.relatedDiseases || "",
+          relatedcrops: existingCrop.relatedcrops || "",
         });
       } else {
-        console.log("No matching disease found with ID:", id);
+        console.log("No matching Crop found with ID:", id);
       }
     }
-  }, [id, hasFetched, diseases]);
+  }, [id, hasFetched, crops]);
 
 
   const handleChange = (e) => {
@@ -82,11 +80,10 @@ const DiseaseUpdate = () => {
 
   const validate = () => {
     let tempErrors = {};
-    if (!formData.name.trim()) tempErrors.name = "Disease name is required.";
+    if (!formData.name.trim()) tempErrors.name = "Crop name is required.";
     if (!formData.description.trim()) tempErrors.description = "Description is required.";
-    if (!formData.symptoms.trim()) tempErrors.symptoms = "Symptoms are required.";
-    if (!formData.treatment.trim()) tempErrors.treatment = "Treatment is required.";
-    if (!formData.prevention.trim()) tempErrors.prevention = "Prevention is required.";
+    if (!formData.growingConditions.trim()) tempErrors.growingConditions = "Growing Conditions are required.";
+    if (!formData.harvestTime.trim()) tempErrors.harvestTime = "Harvest Time is required.";
 
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
@@ -98,25 +95,23 @@ const DiseaseUpdate = () => {
       const payload = new FormData();
       payload.append("name", formData.name);
       payload.append("description", formData.description);
-      payload.append("symptoms", formData.symptoms);
-      payload.append("treatment", formData.treatment);
-      payload.append("prevention", formData.prevention);
-      payload.append("relatedDiseases", formData.relatedDiseases);
+      payload.append("growingConditions", formData.growingConditions);
+      payload.append("harvestTime", formData.harvestTime);
       formData.images.forEach((file) => payload.append("images", file));
 
       try {
-          await dispatch(updateDisease({ diseaseId: id, updatedData: payload })).unwrap();
+          await dispatch(updateCrop({ cropId: id, updatedData: payload })).unwrap();
           toast({
-            title: "Disease updated successfully!",
+            title: "Crop updated successfully!",
             status: "success",
             duration: 3000,
             isClosable: true,
           });
-        navigate("/dashboard/diseases");
+        navigate("/dashboard/crops");
       } catch (error) {
         const errorMessage = typeof error === 'object' && error.message
           ? error.message
-          : "Failed to save disease. Please try again later.";
+          : "Failed to save crop. Please try again later.";
         toast({
           title: "Error",
           description: errorMessage,
@@ -139,14 +134,14 @@ const DiseaseUpdate = () => {
     <div className={`px-4 md:px-8 lg:px-16 py-8`}>
       <Breadcrumbs className="mb-6">
         <BreadcrumbItem href="/dashboard">Dashboard</BreadcrumbItem>
-        <BreadcrumbItem href="/dashboard/diseases">Diseases</BreadcrumbItem>
-        <BreadcrumbItem isCurrent href={`/dashboard/diseases/update?id=${id}`}>Edit</BreadcrumbItem>
+        <BreadcrumbItem href="/dashboard/crops">crops</BreadcrumbItem>
+        <BreadcrumbItem isCurrent href={`/dashboard/crops/update?id=${id}`}>Edit</BreadcrumbItem>
       </Breadcrumbs>
 
       <div className={`flex ${isSmallScreen ? "flex-col" : "flex-row"} justify-center items-center`}>
         <Card className="w-full max-w-lg p-6 shadow-lg">
           <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
-            <h3 className="text-lg font-semibold text-center mb-2">EDIT DISEASE INFORMATION</h3>
+            <h3 className="text-lg font-semibold text-center mb-2">EDIT CROP INFORMATION</h3>
 
             <Input
               label="Images"
@@ -159,8 +154,8 @@ const DiseaseUpdate = () => {
             />
 
             <Input
-              label="Disease Name"
-              placeholder="Enter disease name"
+              label="Crop Name"
+              placeholder="Enter crop name"
               fullWidth
               name="name"
               value={formData.name}
@@ -183,51 +178,28 @@ const DiseaseUpdate = () => {
             />
 
             <Textarea
-              label="Symptoms"
-              placeholder="List symptoms, separated by commas"
+              label="Growing Conditions"
+              placeholder="Growing Conditions"
               fullWidth
-              name="symptoms"
-              value={formData.symptoms}
+              name="growingConditions"
+              value={formData.growingConditions}
               onChange={handleChange}
-              helperText={errors.symptoms}
+              helperText={errors.growingConditions}
               helperColor="error"
               minRows={2}
             />
 
             <Textarea
-              label="Treatment"
-              placeholder="List treatments, separated by commas"
+              label="Harvest Time"
+              placeholder="Harvest Times"
               fullWidth
-              name="treatment"
-              value={formData.treatment}
+              name="harvestTime"
+              value={formData.harvestTime}
               onChange={handleChange}
-              helperText={errors.treatment}
+              helperText={errors.harvestTime}
               helperColor="error"
               minRows={2}
             />
-
-            <Textarea
-              label="Prevention"
-              placeholder="List prevention methods, separated by commas"
-              fullWidth
-              name="prevention"
-              value={formData.prevention}
-              onChange={handleChange}
-              helperText={errors.prevention}
-              helperColor="error"
-              minRows={2}
-            />
-
-            <Input
-              label="Related Diseases"
-              placeholder="Enter related disease IDs, separated by commas"
-              fullWidth
-              name="relatedDiseases"
-              value={formData.relatedDiseases}
-              onChange={handleChange}
-              clearable
-            />
-
             <Spacer y={1} />
             <Button color="primary" type="submit" className="w-full">Update</Button>
           </form>
@@ -237,4 +209,4 @@ const DiseaseUpdate = () => {
   );
 };
 
-export default DiseaseUpdate;
+export default CropUdate;

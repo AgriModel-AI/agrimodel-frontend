@@ -191,8 +191,8 @@ export default function Disease() {
                 </Button>
               </DropdownTrigger>
               <DropdownMenu>
-                <DropdownItem href={`/dashboard/community/view?id=${user.communityId}`}>View</DropdownItem>
-                <DropdownItem href={`/dashboard/community/update?id=${user.communityId}`}>Edit</DropdownItem>
+                <DropdownItem onPress={() => navigate(`/dashboard/community/view?id=${user.communityId}`)}>View</DropdownItem>
+                <DropdownItem onPress={() => navigate(`/dashboard/community/update?id=${user.communityId}`)}>Edit</DropdownItem>
                 <DropdownItem onPress={() => { setSelectedCommunity(user.communityId); onOpen(); }}>Delete</DropdownItem>
               </DropdownMenu>
             </Dropdown>
