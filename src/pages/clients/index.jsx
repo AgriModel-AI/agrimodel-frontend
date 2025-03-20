@@ -101,7 +101,7 @@ export default function Disease() {
     
 
     return filteredUsers;
-  }, [clients, filterValue, statusFilter]);
+  }, [clients, filterValue, hasSearchFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 

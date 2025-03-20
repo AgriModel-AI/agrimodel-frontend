@@ -153,7 +153,7 @@ const MobileNav = ({ onOpen, ...rest }) => {
       />
 
       <Image 
-        src='../../assets/logo_black.png' 
+        src='../../assets/logoBlack.png' 
         width={130} 
         display={{ base: 'flex', md: 'none' }}
         mt={1}

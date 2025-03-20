@@ -756,7 +756,7 @@ const ModernNavbar = ({ text, currentLanguage, handleLanguageChange }) => {
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
             {navbarBackground ? (
-              <Image src="../../assets/logo_black.png" width={150} alt="AgriModel Logo" />
+              <Image src="../../assets/logoBlack.png" width={150} alt="AgriModel Logo" />
             ) : (
               <Image src="../../assets/logo.png" width={150} alt="AgriModel Logo" />
             )}
@@ -921,7 +921,7 @@ const ModernNavbar = ({ text, currentLanguage, handleLanguageChange }) => {
             >
               <div className="flex items-center justify-between p-5 border-b">
                 <div className="flex-1">
-                  <Image src="../../assets/logo_black.png" width={120} alt="AgriModel Logo" />
+                  <Image src="../../assets/logoBlack.png" width={120} alt="AgriModel Logo" />
                 </div>
                 <button 
                   onClick={() => setMobileMenuOpen(false)}
