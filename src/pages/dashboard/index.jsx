@@ -6,13 +6,14 @@ import MarkerClusterGroup from 'react-leaflet-markercluster';
 import 'leaflet/dist/leaflet.css';
 import { Icon, divIcon, point } from "leaflet";
 import 'animate.css';
-import { Card, CardBody, CardHeader, Modal, ModalBody, ModalContent, ModalHeader, Spinner, User, Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, useDisclosure } from "@nextui-org/react";
+import { Card, CardBody, CardHeader, Modal, ModalBody, ModalContent, ModalHeader, Spinner, User, Button } from "@nextui-org/react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/react";
 import { Link } from 'react-router-dom';
 import { fetchDashboardStats, fetchDashboardRecentActivities } from '../../redux/slices/dashboardStatsSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { FiDownload, FiCalendar, FiBarChart2, FiTrendingUp, FiPieChart, FiRefreshCw, FiUsers, FiShield, FiLayers } from 'react-icons/fi';
+import { FiBarChart2, FiTrendingUp, FiPieChart, FiRefreshCw, FiUsers, FiShield, FiLayers } from 'react-icons/fi';
 import { motion } from 'framer-motion';
+import axiosInstance from '../../utils/axiosConfig';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -84,7 +85,6 @@ const Dashboard = () => {
   const [timeFilter, setTimeFilter] = useState("This Month");
   const [refreshing, setRefreshing] = useState(false);
   const [chartType, setChartType] = useState("bar");
-  const { isOpen: isExportOpen, onOpen: onExportOpen, onClose: onExportClose } = useDisclosure();
 
   useEffect(() => {
     if(!hasFetched) {
@@ -110,14 +110,73 @@ const Dashboard = () => {
       });
   };
 
-  const handleExportData = (format) => {
-    // Simulate export functionality
-    console.log(`Exporting data in ${format} format`);
-    // In a real app, you would generate and download the file
-    setTimeout(() => {
-      onExportClose();
-      // Show success notification
-    }, 500);
+  const [exportModal, setExportModal] = useState({ isOpen: false, reportType: "" });
+  const [exportLoading, setExportLoading] = useState(false);
+
+  // const handleExportData = async (format, type) => {
+  //   try {
+  //     const response = await axiosInstance.get(
+  //       `/dashboard/reports/${type}?format=${format}`,
+  //       {
+  //         responseType: 'blob', // Ensures the response is treated as a file
+  //       }
+  //     );
+  
+  //     // Create a Blob URL and trigger download
+  //     const url = window.URL.createObjectURL(new Blob([response.data]));
+  //     const link = document.createElement('a');
+  //     link.href = url;
+  //     link.setAttribute(
+  //       'download',
+  //       `${type}_${new Date().toISOString().slice(0, 10)}.${format}`
+  //     );
+  //     document.body.appendChild(link);
+  //     link.click();
+  
+  //     // Cleanup
+  //     link.remove();
+  //     window.URL.revokeObjectURL(url);
+  //   } catch (error) {
+  //     console.error('Error downloading the report:', error);
+  //   }
+  // };
+
+  const handleExportData = async (format, type) => {
+    setExportLoading(true);
+    
+    try {
+      const response = await axiosInstance.get(
+        `/dashboard/reports/${type}?format=${format}`,
+        {
+          responseType: 'blob',
+        }
+      );
+    
+      // Create a Blob URL and trigger download
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute(
+        'download',
+        `${type}_${new Date().toISOString().slice(0, 10)}.${format}`
+      );
+      document.body.appendChild(link);
+      link.click();
+    
+      // Cleanup
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Error downloading the report:', error);
+    } finally {
+      setExportLoading(false);
+      setExportModal({ isOpen: false, reportType: "" });
+    }
+  };
+  
+  // Function to open the export modal
+  const openExportModal = (reportType) => {
+    setExportModal({ isOpen: true, reportType });
   };
 
   const chartData = React.useMemo(() => {
@@ -230,33 +289,6 @@ const Dashboard = () => {
         </div>
         
         <div className="flex flex-wrap gap-2">
-          <Dropdown>
-            <DropdownTrigger>
-              <Button variant="flat" startContent={<FiCalendar />} className="bg-white">
-                {timeFilter}
-              </Button>
-            </DropdownTrigger>
-            <DropdownMenu 
-              aria-label="Time filter"
-              onAction={(key) => setTimeFilter(key)}
-            >
-              <DropdownItem key="Today">Today</DropdownItem>
-              <DropdownItem key="This Week">This Week</DropdownItem>
-              <DropdownItem key="This Month">This Month</DropdownItem>
-              <DropdownItem key="This Year">This Year</DropdownItem>
-              <DropdownItem key="All Time">All Time</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-          
-          <Button 
-            color="primary" 
-            startContent={<FiDownload />}
-            onClick={onExportOpen}
-            className="bg-green-600 text-white"
-          >
-            Export Data
-          </Button>
-
           <Button
             isIconOnly
             variant="flat"
@@ -497,7 +529,7 @@ const Dashboard = () => {
                     variant="flat" 
                     className="h-auto py-4 px-3 flex-col items-start justify-start text-left"
                     startContent={<FiBarChart2 className="text-green-600" size={24} />}
-                    onClick={() => handleExportData('pdf')}
+                    onClick={() => openExportModal('disease_prevalence')}
                   >
                     <div>
                       <div className="font-semibold text-gray-800">Disease Prevalence</div>
@@ -509,7 +541,7 @@ const Dashboard = () => {
                     variant="flat" 
                     className="h-auto py-4 px-3 flex-col items-start justify-start text-left"
                     startContent={<FiUsers className="text-blue-600" size={24} />}
-                    onClick={() => handleExportData('pdf')}
+                    onClick={() => openExportModal('client_activity')}
                   >
                     <div>
                       <div className="font-semibold text-gray-800">Client Activity</div>
@@ -521,7 +553,7 @@ const Dashboard = () => {
                     variant="flat" 
                     className="h-auto py-4 px-3 flex-col items-start justify-start text-left"
                     startContent={<FiTrendingUp className="text-orange-600" size={24} />}
-                    onClick={() => handleExportData('pdf')}
+                    onClick={() => openExportModal('growth_analysis')}
                   >
                     <div>
                       <div className="font-semibold text-gray-800">Growth Analysis</div>
@@ -626,55 +658,49 @@ const Dashboard = () => {
           </ModalBody>
         </ModalContent>
       </Modal>
-      
-      {/* Export Data Modal */}
-      <Modal isOpen={isExportOpen} onClose={onExportClose}>
-        <ModalContent>
-          <ModalHeader>Export Dashboard Data</ModalHeader>
-          <ModalBody className="gap-5">
-            <p className="text-gray-600 mb-4">Choose a format to export your dashboard data:</p>
-            <div className="grid grid-cols-2 gap-3">
-              <Button 
-                variant="flat" 
-                className="h-24 flex-col"
-                onClick={() => handleExportData('pdf')}
-              >
-                <div className="text-xl font-bold text-red-500 mb-1">PDF</div>
-                <div className="text-xs text-gray-500">Portable Document Format</div>
-              </Button>
-              <Button 
-                variant="flat" 
-                className="h-24 flex-col"
-                onClick={() => handleExportData('excel')}
-              >
-                <div className="text-xl font-bold text-green-600 mb-1">Excel</div>
-                <div className="text-xs text-gray-500">Microsoft Excel Spreadsheet</div>
-              </Button>
-              <Button 
-                variant="flat" 
-                className="h-24 flex-col"
-                onClick={() => handleExportData('csv')}
-              >
-                <div className="text-xl font-bold text-gray-700 mb-1">CSV</div>
-                <div className="text-xs text-gray-500">Comma Separated Values</div>
-              </Button>
-              <Button 
-                variant="flat" 
-                className="h-24 flex-col"
-                onClick={() => handleExportData('json')}
-              >
-                <div className="text-xl font-bold text-blue-500 mb-1">JSON</div>
-                <div className="text-xs text-gray-500">JavaScript Object Notation</div>
-              </Button>
-            </div>
-            <div className="flex justify-end mt-4">
-              <Button color="danger" variant="light" onClick={onExportClose} className="mr-2">
-                Cancel
-              </Button>
-            </div>
+
+      <Modal isOpen={exportModal.isOpen} onClose={() => setExportModal({ isOpen: false, reportType: "" })}>
+      <ModalContent>
+          <ModalHeader className="flex flex-col gap-1">
+            Export Report
+          </ModalHeader>
+          <ModalBody>
+            {exportLoading ? (
+              <div className="flex flex-col items-center justify-center py-8">
+                <Spinner color="success" size="lg" className="mb-4" />
+                <p className="text-gray-700 font-medium">Please wait, we're generating your document...</p>
+                <p className="text-gray-500 text-sm mt-2">This may take a few moments</p>
+              </div>
+            ) : (
+              <>
+                <p className="text-gray-600 mb-4">Select a format to download your report:</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <Button 
+                    color="primary" 
+                    variant="flat"
+                    startContent={<span className="text-xl">📄</span>}
+                    className="justify-start"
+                    onClick={() => handleExportData('pdf', exportModal.reportType)}
+                  >
+                    PDF Document
+                  </Button>
+                  
+                  <Button 
+                    color="success" 
+                    variant="flat"
+                    startContent={<span className="text-xl">📊</span>}
+                    className="justify-start"
+                    onClick={() => handleExportData('excel', exportModal.reportType)}
+                  >
+                    Excel Spreadsheet
+                  </Button>
+                </div>
+              </>
+            )}
           </ModalBody>
         </ModalContent>
       </Modal>
+      
     </div>
   );
 };
