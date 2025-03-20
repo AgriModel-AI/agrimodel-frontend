@@ -22,6 +22,7 @@ const DiseaseForm = () => {
   const toast = useToast();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { crops, hasFetched } = useSelector((state) => state.crops);
 
@@ -91,6 +92,7 @@ const DiseaseForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
+      setIsSubmitting(true);
       const payload = new FormData();
       payload.append("name", formData.name);
       payload.append("description", formData.description);
@@ -124,6 +126,7 @@ const DiseaseForm = () => {
           duration: 3000,
           isClosable: true,
         });
+        setIsSubmitting(false);
       }
     } else {
       toast({
@@ -268,8 +271,14 @@ const DiseaseForm = () => {
 
             {/* Submit Button */}
             <Spacer y={1} />
-            <Button color="primary" type="submit" className="w-full">
-              Submit
+            <Button 
+              color="primary" 
+              type="submit" 
+              className="w-full"
+              isDisabled={isSubmitting}
+              isLoading={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Submit"}
             </Button>
           </form>
         </Card>

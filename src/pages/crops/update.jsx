@@ -23,6 +23,7 @@ const CropUdate = () => {
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("id");
   const { crops, hasFetched } = useSelector((state) => state.crops);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -92,6 +93,7 @@ const CropUdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
+      setIsSubmitting(true);
       const payload = new FormData();
       payload.append("name", formData.name);
       payload.append("description", formData.description);
@@ -119,6 +121,7 @@ const CropUdate = () => {
           duration: 3000,
           isClosable: true,
         });
+        setIsSubmitting(false);
       }
     } else {
       toast({
@@ -201,7 +204,16 @@ const CropUdate = () => {
               minRows={2}
             />
             <Spacer y={1} />
-            <Button color="primary" type="submit" className="w-full">Update</Button>
+            {/* <Button color="primary" type="submit" className="w-full">Update</Button> */}
+            <Button 
+              color="primary" 
+              type="submit" 
+              className="w-full"
+              isDisabled={isSubmitting}
+              isLoading={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Update"}
+            </Button>
           </form>
         </Card>
       </div>

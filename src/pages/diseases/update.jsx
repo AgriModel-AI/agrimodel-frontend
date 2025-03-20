@@ -26,6 +26,7 @@ const DiseaseUpdate = () => {
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("id");
   const { diseases, hasFetched } = useSelector((state) => state.diseases);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { crops, hasFetched: hasFetchedCrops } = useSelector((state) => state.crops);
   
@@ -121,6 +122,7 @@ const DiseaseUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
+      setIsSubmitting(true);
       const payload = new FormData();
       payload.append("name", formData.name);
       payload.append("description", formData.description);
@@ -152,6 +154,7 @@ const DiseaseUpdate = () => {
           duration: 3000,
           isClosable: true,
         });
+        setIsSubmitting(false);
       }
     } else {
       toast({
@@ -286,7 +289,16 @@ const DiseaseUpdate = () => {
             />
 
             <Spacer y={1} />
-            <Button color="primary" type="submit" className="w-full">Update</Button>
+            {/* <Button color="primary" type="submit" className="w-full">Update</Button> */}
+            <Button 
+              color="primary" 
+              type="submit" 
+              className="w-full"
+              isDisabled={isSubmitting}
+              isLoading={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Update"}
+            </Button>
           </form>
         </Card>
       </div>

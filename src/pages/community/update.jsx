@@ -25,6 +25,7 @@ const CommunityUpdate = () => {
   const queryParams = new URLSearchParams(location.search);
   const id = queryParams.get("id");
   const { communities, hasFetched } = useSelector((state) => state.communities);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -84,6 +85,7 @@ const CommunityUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
+      setIsSubmitting(true);
       const payload = {
         "name": formData.name,
         "description": formData.description
@@ -109,6 +111,7 @@ const CommunityUpdate = () => {
           duration: 3000,
           isClosable: true,
         });
+        setIsSubmitting(false);
       }
     } else {
       toast({
@@ -124,6 +127,7 @@ const CommunityUpdate = () => {
   const handleImageSubmit = async (e) => {
     e.preventDefault();
     if (img != null) {
+      setIsSubmitting(true);
       const payload = new FormData();
       payload.append("image", img);
       
@@ -149,6 +153,7 @@ const CommunityUpdate = () => {
           duration: 3000,
           isClosable: true,
         });
+        setIsSubmitting(false);
       }
     } else {
       toast({
@@ -199,8 +204,11 @@ const CommunityUpdate = () => {
               helperText="You can upload a single image."
               className="mt-2"
             />
-            <Button color="secondary" size="sm" className="w-full mt-2" onClick={handleImageSubmit}>
-              Update Image
+            <Button color="secondary" size="sm" className="w-full mt-2" onClick={handleImageSubmit}
+              isDisabled={isSubmitting}
+              isLoading={isSubmitting}
+            >
+              {isSubmitting ? "Updating..." : "Update Image"}
             </Button>
           </div>
 
@@ -231,8 +239,14 @@ const CommunityUpdate = () => {
           />
 
           <Spacer y={1} />
-          <Button color="primary" type="submit" className="w-full">
-            Update
+          <Button 
+            color="primary" 
+            type="submit" 
+            className="w-full"
+            isDisabled={isSubmitting}
+            isLoading={isSubmitting}
+          >
+            {isSubmitting ? "Submitting..." : "Updating"}
           </Button>
         </form>
       </Card>

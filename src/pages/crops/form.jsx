@@ -19,6 +19,7 @@ const CropForm = () => {
   const toast = useToast();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -65,6 +66,8 @@ const CropForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
+      setIsSubmitting(true);
+      
       const payload = new FormData();
       payload.append("name", formData.name);
       payload.append("description", formData.description);
@@ -94,6 +97,7 @@ const CropForm = () => {
           duration: 3000,
           isClosable: true,
         });
+        setIsSubmitting(false); // Reset submitting state on error
       }
     } else {
       toast({
@@ -102,6 +106,7 @@ const CropForm = () => {
         duration: 3000,
         isClosable: true,
       });
+      
     }
   };
 
@@ -127,6 +132,7 @@ const CropForm = () => {
               onChange={handleImageChange}
               helperText="You can upload multiple images."
               multiple
+              isDisabled={isSubmitting}
             />
 
             {/* Crop Name */}
@@ -140,6 +146,7 @@ const CropForm = () => {
               helperText={errors.name}
               helperColor="error"
               clearable
+              isDisabled={isSubmitting}
             />
 
             {/* Crop Description */}
@@ -153,6 +160,7 @@ const CropForm = () => {
               helperText={errors.description}
               helperColor="error"
               minRows={3}
+              isDisabled={isSubmitting}
             />
 
             {/* growingConditions */}
@@ -166,6 +174,7 @@ const CropForm = () => {
               helperText={errors.growingConditions}
               helperColor="error"
               minRows={2}
+              isDisabled={isSubmitting}
             />
 
             {/* harvestTime */}
@@ -179,12 +188,19 @@ const CropForm = () => {
               helperText={errors.harvestTime}
               helperColor="error"
               minRows={2}
+              isDisabled={isSubmitting}
             />
 
             {/* Submit Button */}
             <Spacer y={1} />
-            <Button color="primary" type="submit" className="w-full">
-              Submit
+            <Button 
+              color="primary" 
+              type="submit" 
+              className="w-full"
+              isDisabled={isSubmitting}
+              isLoading={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Submit"}
             </Button>
           </form>
         </Card>

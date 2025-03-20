@@ -11,6 +11,7 @@ const CommunityForm = () => {
   const toast = useToast();
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
@@ -53,6 +54,7 @@ const CommunityForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
+      setIsSubmitting(true);
       const payload = new FormData();
       payload.append("name", formData.name);
       payload.append("description", formData.description);
@@ -80,6 +82,7 @@ const CommunityForm = () => {
           duration: 3000,
           isClosable: true,
         });
+        setIsSubmitting(false);
       }
     } else {
       toast({
@@ -142,8 +145,14 @@ const CommunityForm = () => {
 
             {/* Submit Button */}
             <Spacer y={1} />
-            <Button color="primary" type="submit" className="w-full">
-              Submit
+            <Button 
+              color="primary" 
+              type="submit" 
+              className="w-full"
+              isDisabled={isSubmitting}
+              isLoading={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Submit"}
             </Button>
           </form>
         </Card>

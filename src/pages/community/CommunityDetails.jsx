@@ -115,7 +115,7 @@ const CommunityDetails = () => {
 
                 {/* Created At Section */}
                 <div className="bg-white p-6 rounded-lg shadow-sm border border-slate-100">
-                  <h2 className="text-lg font-medium text-slate-900 mb-4">Community Age</h2>
+                  <h2 className="text-lg font-medium text-slate-900 mb-4">Create At</h2>
                   <div className="flex flex-col items-center text-center p-3 bg-purple-50 rounded-lg">
                     <FaCalendarAlt className="h-8 w-8 text-purple-500 mb-2" />
                     <div>
