@@ -644,7 +644,7 @@ const LandingPage = () => {
         <div className="max-w-6xl mx-auto px-8">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
             <div>
-              <Image src="../../assets/logo.png" width={160} className="mb-6" alt="AgriModel Logo" />
+              <Image src="/../../assets/logo.png" width={160} className="mb-6" alt="AgriModel Logo" />
               <p className="mb-4">Making agriculture smarter, one plant at a time.</p>
               <div className="flex gap-4">
                 <a href="#" className="text-white hover:text-green-300 transition-colors">
@@ -756,9 +756,9 @@ const ModernNavbar = ({ text, currentLanguage, handleLanguageChange }) => {
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
             {navbarBackground ? (
-              <Image src="../../assets/logoBlack.png" width={150} alt="AgriModel Logo" />
+              <Image src="/../../assets/logoBlack.png" width={150} alt="AgriModel Logo" />
             ) : (
-              <Image src="../../assets/logo.png" width={150} alt="AgriModel Logo" />
+              <Image src="/../../assets/logo.png" width={150} alt="AgriModel Logo" />
             )}
           </motion.div>
           
@@ -921,7 +921,7 @@ const ModernNavbar = ({ text, currentLanguage, handleLanguageChange }) => {
             >
               <div className="flex items-center justify-between p-5 border-b">
                 <div className="flex-1">
-                  <Image src="../../assets/logoBlack.png" width={120} alt="AgriModel Logo" />
+                  <Image src="/../../assets/logoBlack.png" width={120} alt="AgriModel Logo" />
                 </div>
                 <button 
                   onClick={() => setMobileMenuOpen(false)}
