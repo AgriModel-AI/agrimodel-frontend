@@ -14,6 +14,18 @@ export const fetchDashboardStats = createAsyncThunk(
   }
 );
 
+export const fetchDashboardRecentActivities = createAsyncThunk(
+  'dashboardStats/fetchDashboardRecentActivities',
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await axiosInstance.get('/dashboard/activity/recent?limit=5');
+      return response.data.data; // Assuming API response contains the required data
+    } catch (error) {
+      return rejectWithValue(error.response?.data || "Error fetching dashboard stats");
+    }
+  }
+);
+
 // Dashboard stats slice
 const dashboardStatSlice = createSlice({
   name: 'dashboardStats',
@@ -29,9 +41,12 @@ const dashboardStatSlice = createSlice({
       },
       diseaseCases: []
     },
+    recentActivities: [],
     loading: false,
+    loadingRecent: false,
     error: null,
-    hasFetched: false, // Tracks if data has been fetched
+    hasFetchedRecent: false,
+    hasFetched: false,
   },
   reducers: {
     resetDashboardStats(state) {
@@ -46,8 +61,12 @@ const dashboardStatSlice = createSlice({
         },
         diseaseCases: []
       };
+      state.recentActivities = [];
+      state.hasFetchedRecent = false;
       state.error = null;
       state.hasFetched = false;
+      state.loading = false;
+      state.loadingRecent = false;
     },
   },
   extraReducers: (builder) => {
@@ -64,6 +83,22 @@ const dashboardStatSlice = createSlice({
       })
       .addCase(fetchDashboardStats.rejected, (state, action) => {
         state.loading = false;
+        state.error = action.payload;
+      });
+
+    // Handle fetch recent activities with separate loading state
+    builder
+      .addCase(fetchDashboardRecentActivities.pending, (state) => {
+        state.loadingRecent = true;
+        state.error = null;
+      })
+      .addCase(fetchDashboardRecentActivities.fulfilled, (state, action) => {
+        state.loadingRecent = false;
+        state.recentActivities = action.payload;
+        state.hasFetchedRecent = true;
+      })
+      .addCase(fetchDashboardRecentActivities.rejected, (state, action) => {
+        state.loadingRecent = false;
         state.error = action.payload;
       });
   },

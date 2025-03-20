@@ -9,7 +9,7 @@ import 'animate.css';
 import { Card, CardBody, CardHeader, Modal, ModalBody, ModalContent, ModalHeader, Spinner, User, Button, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, useDisclosure } from "@nextui-org/react";
 import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from "@nextui-org/react";
 import { Link } from 'react-router-dom';
-import { fetchDashboardStats } from '../../redux/slices/dashboardStatsSlice';
+import { fetchDashboardStats, fetchDashboardRecentActivities } from '../../redux/slices/dashboardStatsSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { FiDownload, FiCalendar, FiBarChart2, FiTrendingUp, FiPieChart, FiRefreshCw, FiUsers, FiShield, FiLayers } from 'react-icons/fi';
 import { motion } from 'framer-motion';
@@ -78,7 +78,7 @@ const fadeInUp = {
 
 const Dashboard = () => {
   const dispatch = useDispatch();
-  const { stats, loading, hasFetched } = useSelector((state) => state.dashboardStats);
+  const { stats, loading, hasFetched, recentActivities, hasFetchedRecent } = useSelector((state) => state.dashboardStats);
   
   const [imageModal, setImageModal] = useState({ isOpen: false, src: "" });
   const [timeFilter, setTimeFilter] = useState("This Month");
@@ -91,6 +91,14 @@ const Dashboard = () => {
       dispatch(fetchDashboardStats());
     }
   }, [dispatch, hasFetched]);
+
+  console.log(recentActivities)
+
+  useEffect(() => {
+    if(!hasFetchedRecent) {
+      dispatch(fetchDashboardRecentActivities());
+    }
+  }, [dispatch, hasFetchedRecent]);
 
   const onCloseModal = () => setImageModal({ isOpen: false, src: "" });
 
@@ -583,41 +591,26 @@ const Dashboard = () => {
               </CardHeader>
               <CardBody className="p-0">
                 <ul className="divide-y divide-gray-100">
-                  {[1, 2, 3, 4].map((_, index) => (
+                  {recentActivities.map((recentActivity, index) => (
                     <li key={index} className="px-5 py-3 hover:bg-gray-50 transition-colors">
                       <div className="flex items-start gap-3">
-                        <div className={`mt-1 w-2 h-2 rounded-full ${['bg-green-500', 'bg-blue-500', 'bg-yellow-500', 'bg-purple-500'][index % 4]}`}></div>
+                        <div className={`mt-1 w-2 h-2 rounded-full ${['bg-green-500', 'bg-blue-500', 'bg-yellow-500', 'bg-purple-500', 'bg-orange-500'][index % 5]}`}></div>
                         <div>
                           <p className="text-sm text-gray-800">
-                            {[
-                              "New disease diagnosis submitted from Kigali",
-                              "Disease data updated for Eastern Province",
-                              "New community member joined from Western Province",
-                              "Support request resolved for farmer in Southern Province"
-                            ][index % 4]}
+                            {
+                              recentActivity.message
+                            }
                           </p>
                           <p className="text-xs text-gray-500 mt-1">
-                            {[
-                              "10 minutes ago",
-                              "2 hours ago",
-                              "Yesterday, 10:45 PM",
-                              "2 days ago"
-                            ][index % 4]}
+                            {
+                              recentActivity.time_ago
+                            }
                           </p>
                         </div>
                       </div>
                     </li>
                   ))}
                 </ul>
-                <div className="px-5 py-3 text-center border-t border-gray-100">
-                  <Button
-                    variant="light"
-                    size="sm"
-                    className="text-green-600 font-medium"
-                  >
-                    View All Activity
-                  </Button>
-                </div>
               </CardBody>
             </Card>
           </motion.div>
