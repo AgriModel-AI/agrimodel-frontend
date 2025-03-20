@@ -1,5 +1,5 @@
 'use client'
-
+import React, { useEffect } from 'react';
 import {
   Box,
   CloseButton,
@@ -17,6 +17,8 @@ import NavItem from './NavItem';
 import { FiHome, FiClipboard, FiActivity, FiHelpCircle, FiUsers, FiUser } from 'react-icons/fi';
 import { RiSeedlingLine } from "react-icons/ri";
 import { Link, useLocation } from 'react-router-dom';
+import { fetchDashboardStats } from '../../redux/slices/dashboardStatsSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const MotionBox = motion(Box);
 
@@ -32,6 +34,14 @@ const LinkItems = [
 
 const SidebarContent = ({ onClose, ...rest }) => {
   const location = useLocation();
+  const dispatch = useDispatch();
+  const { stats, loading, hasFetched } = useSelector((state) => state.dashboardStats);
+
+    useEffect(() => {
+      if(!hasFetched) {
+        dispatch(fetchDashboardStats());
+      }
+    }, [dispatch, hasFetched]);
   
   return (
     <MotionBox
@@ -77,7 +87,7 @@ const SidebarContent = ({ onClose, ...rest }) => {
               Today's Analysis
             </Text>
             <Text fontSize="md" fontWeight="semibold">
-              124 Diagnoses
+              {loading ? '.' : stats.todaysCases } Diagnoses
             </Text>
           </Box>
         </Flex>

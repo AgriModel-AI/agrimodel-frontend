@@ -92,8 +92,6 @@ const Dashboard = () => {
     }
   }, [dispatch, hasFetched]);
 
-  console.log(recentActivities)
-
   useEffect(() => {
     if(!hasFetchedRecent) {
       dispatch(fetchDashboardRecentActivities());
@@ -112,34 +110,6 @@ const Dashboard = () => {
 
   const [exportModal, setExportModal] = useState({ isOpen: false, reportType: "" });
   const [exportLoading, setExportLoading] = useState(false);
-
-  // const handleExportData = async (format, type) => {
-  //   try {
-  //     const response = await axiosInstance.get(
-  //       `/dashboard/reports/${type}?format=${format}`,
-  //       {
-  //         responseType: 'blob', // Ensures the response is treated as a file
-  //       }
-  //     );
-  
-  //     // Create a Blob URL and trigger download
-  //     const url = window.URL.createObjectURL(new Blob([response.data]));
-  //     const link = document.createElement('a');
-  //     link.href = url;
-  //     link.setAttribute(
-  //       'download',
-  //       `${type}_${new Date().toISOString().slice(0, 10)}.${format}`
-  //     );
-  //     document.body.appendChild(link);
-  //     link.click();
-  
-  //     // Cleanup
-  //     link.remove();
-  //     window.URL.revokeObjectURL(url);
-  //   } catch (error) {
-  //     console.error('Error downloading the report:', error);
-  //   }
-  // };
 
   const handleExportData = async (format, type) => {
     setExportLoading(true);

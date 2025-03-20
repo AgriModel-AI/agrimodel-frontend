@@ -83,6 +83,7 @@ const PersonalInfo = () => {
   const [confirmationModalOpen, setConfirmationModalOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { userDetails, loading, error, hasFetched } = useSelector((state) => state.userDetails);
   const { provinces, hasFetched: hasFetchedProvince } = useSelector((state) => state.provinces);
@@ -165,21 +166,23 @@ const PersonalInfo = () => {
       return;
     }
 
-  const data = new FormData();
-  data.append("names", formData.names);
-  data.append("national_id", formData.national_id);
-  data.append("phone_number", formData.phone_number);
-  data.append("district", formData.district);
-  data.append("address", formData.address);
-  data.append("gender", formData.gender);
-  data.append("dob", formData.dob);
-
-  console.log(formData)
-
-  // Only append profilePicture if it has changed
-  if (formData.imageChanged) {
-    data.append("profilePicture", formData.profilePicture);
-  }
+    
+    const data = new FormData();
+    data.append("names", formData.names);
+    data.append("national_id", formData.national_id);
+    data.append("phone_number", formData.phone_number);
+    data.append("district", formData.district);
+    data.append("address", formData.address);
+    data.append("gender", formData.gender);
+    data.append("dob", formData.dob);
+    
+    console.log(formData)
+    
+    // Only append profilePicture if it has changed
+    if (formData.imageChanged) {
+      data.append("profilePicture", formData.profilePicture);
+    }
+    setIsSubmitting(true);
   // Dispatch addUserDetail thunk
   dispatch(addUserDetail(data))
     .unwrap()
@@ -197,6 +200,7 @@ const PersonalInfo = () => {
         status: "error",
       });
     });
+    setIsSubmitting(false);
   };
 
   const handleDelete = async () => {
@@ -335,8 +339,11 @@ const PersonalInfo = () => {
           />
         </div>
 
-        <Button type="submit" color="primary" auto className="w-full mt-6">
-          Save
+        <Button type="submit" color="primary" auto className="w-full mt-6"
+          isDisabled={isSubmitting}
+          isLoading={isSubmitting}
+          >
+            {isSubmitting ? "Submitting..." : "Submit"}
         </Button>
       </form>
 
