@@ -38,10 +38,11 @@ import { useToast } from "@chakra-ui/react";
 import { FiActivity } from 'react-icons/fi';
 
 
-const INITIAL_VISIBLE_COLUMNS = ["name", "description", "symptoms", "treatment", "prevention", "actions"];
+const INITIAL_VISIBLE_COLUMNS = ["name", "description", "cropName", "symptoms", "treatment", "prevention", "actions"];
 
 const columns = [
   { name: "Name", uid: "name", sortable: true },
+  { name: "Crop Name", uid: "cropName", sortable: true },
   { name: "Description", uid: "description", sortable: true },
   { name: "Symptoms", uid: "symptoms", sortable: true },
   { name: "Treatment", uid: "treatment", sortable: true },
@@ -98,7 +99,7 @@ export default function Disease() {
     }
 
     return filteredUsers;
-  }, [diseases, filterValue]);
+  }, [diseases, filterValue, hasSearchFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -164,6 +165,7 @@ export default function Disease() {
         </User>
       );
     case "description":
+    case "cropName":
     case "symptoms":
     case "treatment":
     case "prevention":
@@ -266,14 +268,7 @@ export default function Disease() {
         </div>
       </div>
     );
-  }, [
-    filterValue,
-    visibleColumns,
-    onRowsPerPageChange,
-    diseases.length,
-    onSearchChange,
-    hasSearchFilter,
-  ]);
+  }, [filterValue, onSearchChange, diseases.length, onRowsPerPageChange, onClear, navigate]);
 
   const bottomContent = React.useMemo(() => {
     return (
@@ -302,7 +297,7 @@ export default function Disease() {
         </div>
       </div>
     );
-  }, [selectedKeys, items.length, page, pages, hasSearchFilter]);
+  }, [selectedKeys, filteredItems.length, page, pages, onPreviousPage, onNextPage]);
 
   return (
     <div className="px-4 sm:px-2 md:px-10 lg:px-20 mt-4">

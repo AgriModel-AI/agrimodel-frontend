@@ -7,12 +7,15 @@ import {
   Spacer,
   Breadcrumbs,
   BreadcrumbItem,
+  Select,
+  SelectItem
 } from "@nextui-org/react";
 import { useMediaQuery } from "react-responsive";
 import { useToast } from "@chakra-ui/react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDisease, fetchDiseases } from "../../redux/slices/diseaseSlice";
 import { useLocation, useNavigate } from "react-router-dom";
+import { fetchCrop } from "../../redux/slices/cropSlice";
 
 const DiseaseUpdate = () => {
   const isSmallScreen = useMediaQuery({ maxWidth: 640 });
@@ -24,9 +27,20 @@ const DiseaseUpdate = () => {
   const id = queryParams.get("id");
   const { diseases, hasFetched } = useSelector((state) => state.diseases);
 
+  const { crops, hasFetched: hasFetchedCrops } = useSelector((state) => state.crops);
+  
+  useEffect(() => {
+    if (!hasFetchedCrops) {
+      dispatch(fetchCrop());
+    }
+  }, [hasFetchedCrops, dispatch]);
+  
+
   const [formData, setFormData] = useState({
     name: "",
     description: "",
+    label: "",
+    cropId: "",
     symptoms: "",
     treatment: "",
     prevention: "",
@@ -52,6 +66,8 @@ const DiseaseUpdate = () => {
         setFormData({
           name: existingDisease.name || "",
           description: existingDisease.description || "",
+          label: existingDisease.label || "",
+          cropId: existingDisease.cropId || "",
           symptoms: existingDisease.symptoms || "",
           treatment: existingDisease.treatment || "",
           prevention: existingDisease.prevention || "",
@@ -84,6 +100,8 @@ const DiseaseUpdate = () => {
     let tempErrors = {};
     if (!formData.name.trim()) tempErrors.name = "Disease name is required.";
     if (!formData.description.trim()) tempErrors.description = "Description is required.";
+    if (!formData.label.trim()) tempErrors.label = "label is required.";
+    if (!formData.cropId) tempErrors.cropId = "cropId is required.";
     if (!formData.symptoms.trim()) tempErrors.symptoms = "Symptoms are required.";
     if (!formData.treatment.trim()) tempErrors.treatment = "Treatment is required.";
     if (!formData.prevention.trim()) tempErrors.prevention = "Prevention is required.";
@@ -92,12 +110,22 @@ const DiseaseUpdate = () => {
     return Object.keys(tempErrors).length === 0;
   };
 
+  const handleSelectChange = (e) => {
+    console.log(e.target.value)
+    setFormData((prevData) => ({
+      ...prevData,
+      cropId: e.target.value
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validate()) {
       const payload = new FormData();
       payload.append("name", formData.name);
       payload.append("description", formData.description);
+      payload.append("label", formData.label);
+      payload.append("cropId", parseInt(formData.cropId));
       payload.append("symptoms", formData.symptoms);
       payload.append("treatment", formData.treatment);
       payload.append("prevention", formData.prevention);
@@ -181,6 +209,35 @@ const DiseaseUpdate = () => {
               helperColor="error"
               minRows={3}
             />
+
+            <Input
+              label="Label"
+              placeholder="Enter label"
+              fullWidth
+              name="label"
+              value={formData.label}
+              onChange={handleChange}
+              helperText={errors.label}
+              helperColor="error"
+              clearable
+            />
+
+            <Select
+              label="Crop"
+              placeholder="Select a crop"
+              fullWidth
+              value={formData.cropId}
+              onChange={handleSelectChange}
+              helperText={errors.cropId}
+              helperColor="error"
+            >
+              {crops.map((crop) => (
+                <SelectItem key={crop.cropId} value={crop.cropId}>
+                  {crop.name}
+                </SelectItem>
+              ))}
+            </Select>
+            
 
             <Textarea
               label="Symptoms"

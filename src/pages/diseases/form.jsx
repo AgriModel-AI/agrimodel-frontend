@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Input,
@@ -7,12 +7,15 @@ import {
   Spacer,
   Breadcrumbs,
   BreadcrumbItem,
+  Select,
+  SelectItem
 } from "@nextui-org/react";
 import { useMediaQuery } from "react-responsive";
 import { useToast } from "@chakra-ui/react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addDisease } from "../../redux/slices/diseaseSlice"; // Update with correct path
 import { useNavigate } from "react-router-dom";
+import { fetchCrop } from "../../redux/slices/cropSlice";
 
 const DiseaseForm = () => {
   const isSmallScreen = useMediaQuery({ maxWidth: 640 });
@@ -20,10 +23,20 @@ const DiseaseForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  const { crops, hasFetched } = useSelector((state) => state.crops);
+
+  useEffect(() => {
+    if (!hasFetched) {
+      dispatch(fetchCrop());
+    }
+  }, [hasFetched, dispatch]);
+
   // Form state
   const [formData, setFormData] = useState({
     name: "",
     description: "",
+    label: "",
+    cropId: "",
     symptoms: "",
     treatment: "",
     prevention: "",
@@ -56,12 +69,22 @@ const DiseaseForm = () => {
     let tempErrors = {};
     if (!formData.name.trim()) tempErrors.name = "Disease name is required.";
     if (!formData.description.trim()) tempErrors.description = "Description is required.";
+    if (!formData.label.trim()) tempErrors.label = "label is required.";
+    if (!formData.cropId) tempErrors.cropId = "cropId is required.";
     if (!formData.symptoms.trim()) tempErrors.symptoms = "Symptoms are required.";
     if (!formData.treatment.trim()) tempErrors.treatment = "Treatment is required.";
     if (!formData.prevention.trim()) tempErrors.prevention = "Prevention is required.";
 
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
+  };
+
+  const handleSelectChange = (e) => {
+    console.log(e.target.value)
+    setFormData((prevData) => ({
+      ...prevData,
+      cropId: e.target.value
+    }));
   };
 
   // Handle form submission
@@ -71,6 +94,8 @@ const DiseaseForm = () => {
       const payload = new FormData();
       payload.append("name", formData.name);
       payload.append("description", formData.description);
+      payload.append("label", formData.label);
+      payload.append("cropId", parseInt(formData.cropId));
       payload.append("symptoms", formData.symptoms);
       payload.append("treatment", formData.treatment);
       payload.append("prevention", formData.prevention);
@@ -159,6 +184,34 @@ const DiseaseForm = () => {
               helperColor="error"
               minRows={3}
             />
+
+            <Input
+              label="Label"
+              placeholder="Enter label"
+              fullWidth
+              name="label"
+              value={formData.label}
+              onChange={handleChange}
+              helperText={errors.label}
+              helperColor="error"
+              clearable
+            />
+
+            <Select
+              label="Crop"
+              placeholder="Select a crop"
+              fullWidth
+              value={formData.cropId}
+              onChange={handleSelectChange}
+              helperText={errors.cropId}
+              helperColor="error"
+            >
+              {crops.map((crop) => (
+                <SelectItem key={crop.cropId} value={crop.cropId}>
+                  {crop.name}
+                </SelectItem>
+              ))}
+            </Select>
 
             {/* Symptoms */}
             <Textarea
