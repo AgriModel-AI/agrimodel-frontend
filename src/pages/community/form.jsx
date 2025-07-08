@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Input, Button, Textarea, Select, Spacer, Breadcrumbs, BreadcrumbItem, SelectItem } from "@nextui-org/react";
+import { Card, Input, Button, Textarea, Spacer, Breadcrumbs, BreadcrumbItem } from "@nextui-org/react";
 import { useMediaQuery } from 'react-responsive';
 import { useToast } from "@chakra-ui/react";
 import { useDispatch } from "react-redux";

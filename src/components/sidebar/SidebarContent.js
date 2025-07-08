@@ -14,7 +14,7 @@ import { motion } from 'framer-motion';
 
 import NavItem from './NavItem';
 
-import { FiHome, FiClipboard, FiActivity, FiHelpCircle, FiUsers, FiUser } from 'react-icons/fi';
+import { FiHome, FiClipboard, FiActivity, FiHelpCircle, FiUsers, FiUser, FiDatabase, FiPackage, FiSearch } from 'react-icons/fi';
 import { RiSeedlingLine } from "react-icons/ri";
 import { Link, useLocation } from 'react-router-dom';
 import { fetchDashboardStats } from '../../redux/slices/dashboardStatsSlice';
@@ -25,12 +25,16 @@ const MotionBox = motion(Box);
 const LinkItems = [
   { name: 'Dashboard', icon: FiHome, url: '/dashboard' },
   { name: 'Crops', icon: RiSeedlingLine, url: '/dashboard/crops' },
+  { name: 'Model', icon: FiDatabase, url: '/dashboard/model' },
+  { name: 'Subscriptions', icon: FiPackage, url: '/dashboard/subscriptions/plans' },
+  { name: 'Explore', icon: FiSearch, url: '/dashboard/explore' },
   { name: 'Diseases', icon: FiActivity, url: '/dashboard/diseases' },
   { name: 'Diagnosis Results', icon: FiClipboard, url: '/dashboard/diagnosis' },
   { name: 'Users', icon: FiUser, url: '/dashboard/clients' },
   { name: 'Community', icon: FiUsers, url: '/dashboard/community' },
   { name: 'Support Requests', icon: FiHelpCircle, url: '/dashboard/support' },
 ];
+
 
 const SidebarContent = ({ onClose, ...rest }) => {
   const location = useLocation();

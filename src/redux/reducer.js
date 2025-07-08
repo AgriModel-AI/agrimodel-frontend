@@ -3,6 +3,7 @@ import userReducer from './slices/userSlice';
 import userDetailsReducer from './slices/userDetailsSlice';
 import diseaseReducer from './slices/diseaseSlice';
 import cropReducer from './slices/cropSlice';
+import exploreReducer from './slices/exploreSlice';
 import clientReducer from './slices/clientsSlice';
 import communitiesReducer from './slices/communitySlice';
 import supportRequestReducer from './slices/supportRequestSlice';
@@ -10,6 +11,8 @@ import provinceReducer from './slices/provincesSlice';
 import diagnosisReducer from './slices/diagnosisResult';
 import DashboardStatsReducer from './slices/dashboardStatsSlice';
 import NotificationReducer from './slices/notificationSlice';
+import subscriptionPlans from './slices/subscriptionPlanSlice';
+import subscriptionsReducer from './slices/subscriptionSlice';
 
 
 const appReducer = combineReducers({
@@ -24,6 +27,9 @@ const appReducer = combineReducers({
   diagnosis: diagnosisReducer,
   dashboardStats: DashboardStatsReducer,
   notifications: NotificationReducer,
+  explore: exploreReducer,
+  subscriptionPlans: subscriptionPlans,
+  subscriptions: subscriptionsReducer
 });
 
 const rootReducer = (state, action) => {

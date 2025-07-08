@@ -10,6 +10,16 @@ import Diseases from './pages/diseases/index';
 import DiseasesAdd from './pages/diseases/form';
 import Crops from './pages/crops/index';
 import CropsAdd from './pages/crops/form';
+import CropUpdate from './pages/crops/update';
+import Explore from './pages/explore/index';
+import ExploreAdd from './pages/explore/form';
+import ExploreUpdate from './pages/explore/update';
+import ExploreView from './pages/explore/view';
+import SubscriptionPlanList from './pages/subscription';
+import SubscriptionPlanForm from './pages/subscription/form';
+import SubscriptionPlanUpdate from './pages/subscription/update';
+import SubscriptionPlanView from './pages/subscription/view';
+import SubscriptionsList from './pages/subscription/SubscriptionsList';
 import Diagnosis from './pages/diagnosis/index';
 import Clients from './pages/clients/index';
 import Community from './pages/community/index';
@@ -28,7 +38,6 @@ import ForbiddenPage from './pages/403';
 import VerifyAccount from './components/auth/verifyAccount';
 import GoogleAuthCallback from './components/auth/GoogleAuthCallback';
 import DiseaseUpdate from './pages/diseases/update';
-import CropUpdate from './pages/crops/update';
 import AccountBlocked from './pages/auth/AccountBlocked';
 import CommunityUpdate from './pages/community/update';
 import CommunityDetails from './pages/community/CommunityDetails';
@@ -60,6 +69,16 @@ export default function App() {
             <Route path="/dashboard/crops" element={<Crops />} />
             <Route path="/dashboard/crops/add" element={<CropsAdd />} />
             <Route path="/dashboard/crops/update" element={<CropUpdate />} />
+            <Route path="/dashboard/model" element={<Crops />} />
+            <Route path="/dashboard/explore" element={<Explore />} />
+            <Route path="/dashboard/explore/add" element={<ExploreAdd />} />
+            <Route path="/dashboard/explore/view/:id" element={<ExploreView />} />
+            <Route path="/dashboard/explore/update/:id" element={<ExploreUpdate />} />
+            <Route path="/dashboard/subscriptions/plans" element={<SubscriptionPlanList />} />
+            <Route path="/dashboard/subscriptions" element={<SubscriptionsList />} />
+            <Route path="/dashboard/subscriptions/plans/add" element={<SubscriptionPlanForm />} />
+            <Route path="/dashboard/subscriptions/plans/view/:id" element={<SubscriptionPlanView />} />
+            <Route path="/dashboard/subscriptions/plans/update/:id" element={<SubscriptionPlanUpdate />} />
             <Route path="/dashboard/diagnosis" element={<Diagnosis />} />
             <Route path="/dashboard/clients" element={<Clients />} />
             <Route path="/dashboard/clients/view" element={<ClientDetails />} />
