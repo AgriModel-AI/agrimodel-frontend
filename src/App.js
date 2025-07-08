@@ -20,6 +20,9 @@ import SubscriptionPlanForm from './pages/subscription/form';
 import SubscriptionPlanUpdate from './pages/subscription/update';
 import SubscriptionPlanView from './pages/subscription/view';
 import SubscriptionsList from './pages/subscription/SubscriptionsList';
+import ModelList from './pages/model';
+import ModelForm from './pages/model/form';
+import ModelView from './pages/model/view';
 import Diagnosis from './pages/diagnosis/index';
 import Clients from './pages/clients/index';
 import Community from './pages/community/index';
@@ -69,7 +72,6 @@ export default function App() {
             <Route path="/dashboard/crops" element={<Crops />} />
             <Route path="/dashboard/crops/add" element={<CropsAdd />} />
             <Route path="/dashboard/crops/update" element={<CropUpdate />} />
-            <Route path="/dashboard/model" element={<Crops />} />
             <Route path="/dashboard/explore" element={<Explore />} />
             <Route path="/dashboard/explore/add" element={<ExploreAdd />} />
             <Route path="/dashboard/explore/view/:id" element={<ExploreView />} />
@@ -79,6 +81,9 @@ export default function App() {
             <Route path="/dashboard/subscriptions/plans/add" element={<SubscriptionPlanForm />} />
             <Route path="/dashboard/subscriptions/plans/view/:id" element={<SubscriptionPlanView />} />
             <Route path="/dashboard/subscriptions/plans/update/:id" element={<SubscriptionPlanUpdate />} />
+            <Route path="/dashboard/models" element={<ModelList />} />
+            <Route path="/dashboard/models/add" element={<ModelForm />} />
+            <Route path="/dashboard/models/view/:id" element={<ModelView />} />
             <Route path="/dashboard/diagnosis" element={<Diagnosis />} />
             <Route path="/dashboard/clients" element={<Clients />} />
             <Route path="/dashboard/clients/view" element={<ClientDetails />} />

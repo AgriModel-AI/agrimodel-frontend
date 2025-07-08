@@ -25,7 +25,7 @@ const MotionBox = motion(Box);
 const LinkItems = [
   { name: 'Dashboard', icon: FiHome, url: '/dashboard' },
   { name: 'Crops', icon: RiSeedlingLine, url: '/dashboard/crops' },
-  { name: 'Model', icon: FiDatabase, url: '/dashboard/model' },
+  { name: 'Model', icon: FiDatabase, url: '/dashboard/models' },
   { name: 'Subscriptions', icon: FiPackage, url: '/dashboard/subscriptions/plans' },
   { name: 'Explore', icon: FiSearch, url: '/dashboard/explore' },
   { name: 'Diseases', icon: FiActivity, url: '/dashboard/diseases' },

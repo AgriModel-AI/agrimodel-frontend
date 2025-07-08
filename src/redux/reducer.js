@@ -13,6 +13,7 @@ import DashboardStatsReducer from './slices/dashboardStatsSlice';
 import NotificationReducer from './slices/notificationSlice';
 import subscriptionPlans from './slices/subscriptionPlanSlice';
 import subscriptionsReducer from './slices/subscriptionSlice';
+import modelReducer from './slices/modelSlice';
 
 
 const appReducer = combineReducers({
@@ -29,7 +30,8 @@ const appReducer = combineReducers({
   notifications: NotificationReducer,
   explore: exploreReducer,
   subscriptionPlans: subscriptionPlans,
-  subscriptions: subscriptionsReducer
+  subscriptions: subscriptionsReducer,
+  models: modelReducer,
 });
 
 const rootReducer = (state, action) => {
