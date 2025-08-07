@@ -15,11 +15,6 @@ import Explore from './pages/explore/index';
 import ExploreAdd from './pages/explore/form';
 import ExploreUpdate from './pages/explore/update';
 import ExploreView from './pages/explore/view';
-import SubscriptionPlanList from './pages/subscription';
-import SubscriptionPlanForm from './pages/subscription/form';
-import SubscriptionPlanUpdate from './pages/subscription/update';
-import SubscriptionPlanView from './pages/subscription/view';
-import SubscriptionsList from './pages/subscription/SubscriptionsList';
 import ModelList from './pages/model';
 import ModelForm from './pages/model/form';
 import ModelView from './pages/model/view';
@@ -76,11 +71,6 @@ export default function App() {
             <Route path="/dashboard/explore/add" element={<ExploreAdd />} />
             <Route path="/dashboard/explore/view/:id" element={<ExploreView />} />
             <Route path="/dashboard/explore/update/:id" element={<ExploreUpdate />} />
-            <Route path="/dashboard/subscriptions/plans" element={<SubscriptionPlanList />} />
-            <Route path="/dashboard/subscriptions" element={<SubscriptionsList />} />
-            <Route path="/dashboard/subscriptions/plans/add" element={<SubscriptionPlanForm />} />
-            <Route path="/dashboard/subscriptions/plans/view/:id" element={<SubscriptionPlanView />} />
-            <Route path="/dashboard/subscriptions/plans/update/:id" element={<SubscriptionPlanUpdate />} />
             <Route path="/dashboard/models" element={<ModelList />} />
             <Route path="/dashboard/models/add" element={<ModelForm />} />
             <Route path="/dashboard/models/view/:id" element={<ModelView />} />

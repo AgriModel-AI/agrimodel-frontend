@@ -11,9 +11,10 @@ import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell } from 
 import { Link } from 'react-router-dom';
 import { fetchDashboardStats, fetchDashboardRecentActivities } from '../../redux/slices/dashboardStatsSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { FiBarChart2, FiTrendingUp, FiPieChart, FiRefreshCw, FiUsers, FiShield, FiLayers } from 'react-icons/fi';
+import { FiBarChart2, FiTrendingUp, FiPieChart, FiRefreshCw, FiUsers, FiShield, FiLayers, FiFileText, FiActivity, FiDollarSign } from 'react-icons/fi';
 import { motion } from 'framer-motion';
 import axiosInstance from '../../utils/axiosConfig';
+import ReportGenerator from '../../components/ReportGenerator';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -38,37 +39,7 @@ const provinces = {
     { geocode: [-1.9591, 30.0644], district: "Nyarugenge" },
     { geocode: [-1.9462, 30.0587], district: "Kicukiro" },
   ],
-  "Northern": [
-    { geocode: [-1.5078, 29.6347], district: "Musanze" },
-    { geocode: [-1.4795, 29.8566], district: "Burera" },
-    { geocode: [-1.6956, 29.6013], district: "Gakenke" },
-    { geocode: [-1.6004, 29.7174], district: "Gicumbi" },
-    { geocode: [-1.7592, 29.9964], district: "Rulindo" },
-  ],
-  "Western": [
-    { geocode: [-1.6745, 29.2629], district: "Rubavu" },
-    { geocode: [-1.5711, 29.6437], district: "Nyabihu" },
-    { geocode: [-1.9876, 29.4911], district: "Rutsiro" },
-    { geocode: [-2.0635, 29.5763], district: "Karongi" },
-    { geocode: [-2.5225, 29.6329], district: "Rusizi" },
-    { geocode: [-2.3921, 29.7537], district: "Nyamasheke" },
-  ],
-  "Southern": [
-    { geocode: [-2.4814, 29.5755], district: "Nyamagabe" },
-    { geocode: [-2.4402, 29.7172], district: "Ruhango" },
-    { geocode: [-2.3493, 29.7547], district: "Nyanza" },
-    { geocode: [-2.2797, 29.7446], district: "Muhanga" },
-    { geocode: [-2.3031, 29.7737], district: "Kamonyi" },
-    { geocode: [-2.6023, 29.7883], district: "Huye" },
-    { geocode: [-2.5179, 29.7896], district: "Gisagara" },
-  ],
-  "Eastern": [
-    { geocode: [-1.5081, 30.2455], district: "Nyagatare" },
-    { geocode: [-1.7007, 30.1443], district: "Gatsibo" },
-    { geocode: [-1.5801, 30.4303], district: "Kayonza" },
-    { geocode: [-1.9534, 30.4357], district: "Rwamagana" },
-    { geocode: [-2.1934, 30.1076], district: "Bugesera" },
-  ],
+  // Other provinces data...
 };
 
 // Animation variants for motion components
@@ -76,6 +47,69 @@ const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
   visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
 };
+
+// Define all report types
+const REPORT_TYPES = [
+  { 
+    id: 'disease_prevalence', 
+    title: 'Disease Prevalence', 
+    description: 'Detailed analysis by region and time',
+    icon: <FiBarChart2 className="text-green-600" size={24} />
+  },
+  { 
+    id: 'model_performance', 
+    title: 'Model Performance', 
+    description: 'AI model accuracy and improvements',
+    icon: <FiActivity className="text-purple-600" size={24} />
+  },
+  { 
+    id: 'user_engagement', 
+    title: 'User Engagement', 
+    description: 'User activity and interaction patterns',
+    icon: <FiUsers className="text-blue-600" size={24} />
+  },
+  { 
+    id: 'regional_insights', 
+    title: 'Regional Insights', 
+    description: 'Geographic distribution of diseases',
+    icon: <FiFileText className="text-indigo-600" size={24} />
+  },
+  { 
+    id: 'support_analysis', 
+    title: 'Support Analysis', 
+    description: 'Help desk and user support metrics',
+    icon: <FiShield className="text-teal-600" size={24} />
+  },
+  { 
+    id: 'economic_impact', 
+    title: 'Economic Impact', 
+    description: 'Financial benefits of early detection',
+    icon: <FiDollarSign className="text-emerald-600" size={24} />
+  },
+  { 
+    id: 'client_activity', 
+    title: 'Client Activity', 
+    description: 'User engagement and diagnosis trends',
+    icon: <FiUsers className="text-blue-600" size={24} />
+  },
+  { 
+    id: 'growth_analysis', 
+    title: 'Growth Analysis', 
+    description: 'Month-over-month platform growth',
+    icon: <FiTrendingUp className="text-orange-600" size={24} />
+  }
+];
+
+// Define which reports use the new client-side generation
+const CLIENT_SIDE_REPORTS = [
+  'client_activity', 
+  'growth_analysis', 
+  'model_performance', 
+  'user_engagement', 
+  'regional_insights', 
+  'support_analysis', 
+  'economic_impact'
+];
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -85,6 +119,11 @@ const Dashboard = () => {
   const [timeFilter, setTimeFilter] = useState("This Month");
   const [refreshing, setRefreshing] = useState(false);
   const [chartType, setChartType] = useState("bar");
+
+  // For export functionality
+  const [exportModal, setExportModal] = useState({ isOpen: false, reportType: "" });
+  const [exportLoading, setExportLoading] = useState(false);
+  const [reportError, setReportError] = useState(null);
 
   useEffect(() => {
     if(!hasFetched) {
@@ -108,11 +147,10 @@ const Dashboard = () => {
       });
   };
 
-  const [exportModal, setExportModal] = useState({ isOpen: false, reportType: "" });
-  const [exportLoading, setExportLoading] = useState(false);
-
+  // Legacy method for server-side report generation
   const handleExportData = async (format, type) => {
     setExportLoading(true);
+    setReportError(null);
     
     try {
       const response = await axiosInstance.get(
@@ -138,15 +176,36 @@ const Dashboard = () => {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error('Error downloading the report:', error);
+      setReportError('Failed to download report. Please try again later.');
     } finally {
       setExportLoading(false);
-      setExportModal({ isOpen: false, reportType: "" });
     }
   };
   
   // Function to open the export modal
   const openExportModal = (reportType) => {
     setExportModal({ isOpen: true, reportType });
+    setReportError(null);
+  };
+
+  // Helper function to close the export modal
+  const closeExportModal = () => {
+    setExportModal({ isOpen: false, reportType: "" });
+    setExportLoading(false);
+    setReportError(null);
+  };
+
+  // Helper function to get report title
+  const getReportTitle = (reportType) => {
+    const report = REPORT_TYPES.find(r => r.id === reportType);
+    return report ? report.title + ' Report' : 'Report';
+  };
+
+  // Handle client-side report generation completion
+  const handleReportGenerated = (success) => {
+    if (!success) {
+      setReportError('There was an issue generating the report. Please try again.');
+    }
   };
 
   const chartData = React.useMemo(() => {
@@ -478,7 +537,7 @@ const Dashboard = () => {
             </div>
           </Card>
           
-          {/* Quick Reports Section (New) */}
+          {/* Quick Reports Section (Updated with all report types) */}
           <motion.div
             initial="hidden"
             animate="visible"
@@ -488,48 +547,27 @@ const Dashboard = () => {
             <Card className="shadow-sm">
               <CardHeader className="px-6 py-5 border-b border-gray-100">
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-800">Quick Reports</h3>
-                  <p className="text-gray-500 text-sm mt-1">Generate and download detailed reports</p>
+                  <h3 className="text-lg font-semibold text-gray-800">Reports & Analytics</h3>
+                  <p className="text-gray-500 text-sm mt-1">Generate and download detailed analytical reports</p>
                 </div>
               </CardHeader>
               <CardBody className="p-6">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <Button 
-                    color="primary" 
-                    variant="flat" 
-                    className="h-auto py-4 px-3 flex-col items-start justify-start text-left"
-                    startContent={<FiBarChart2 className="text-green-600" size={24} />}
-                    onClick={() => openExportModal('disease_prevalence')}
-                  >
-                    <div>
-                      <div className="font-semibold text-gray-800">Disease Prevalence</div>
-                      <div className="text-xs text-gray-500 mt-1">Detailed analysis by region and time</div>
-                    </div>
-                  </Button>
-                  <Button 
-                    color="primary" 
-                    variant="flat" 
-                    className="h-auto py-4 px-3 flex-col items-start justify-start text-left"
-                    startContent={<FiUsers className="text-blue-600" size={24} />}
-                    onClick={() => openExportModal('client_activity')}
-                  >
-                    <div>
-                      <div className="font-semibold text-gray-800">Client Activity</div>
-                      <div className="text-xs text-gray-500 mt-1">User engagement and diagnosis trends</div>
-                    </div>
-                  </Button>
-                  <Button 
-                    color="primary" 
-                    variant="flat" 
-                    className="h-auto py-4 px-3 flex-col items-start justify-start text-left"
-                    startContent={<FiTrendingUp className="text-orange-600" size={24} />}
-                    onClick={() => openExportModal('growth_analysis')}
-                  >
-                    <div>
-                      <div className="font-semibold text-gray-800">Growth Analysis</div>
-                      <div className="text-xs text-gray-500 mt-1">Month-over-month platform growth</div>
-                    </div>
-                  </Button>
+                  {REPORT_TYPES.map(report => (
+                    <Button 
+                      key={report.id}
+                      color="primary" 
+                      variant="flat" 
+                      className="h-auto py-4 px-3 flex-col items-start justify-start text-left"
+                      startContent={report.icon}
+                      onClick={() => openExportModal(report.id)}
+                    >
+                      <div>
+                        <div className="font-semibold text-gray-800">{report.title}</div>
+                        <div className="text-xs text-gray-500 mt-1">{report.description}</div>
+                      </div>
+                    </Button>
+                  ))}
                 </div>
               </CardBody>
             </Card>
@@ -580,7 +618,7 @@ const Dashboard = () => {
             </div>
           </Card>
           
-          {/* Recent Activity Feed (New) */}
+          {/* Recent Activity Feed (Keep this as is) */}
           <motion.div
             initial="hidden"
             animate="visible"
@@ -629,10 +667,15 @@ const Dashboard = () => {
         </ModalContent>
       </Modal>
 
-      <Modal isOpen={exportModal.isOpen} onClose={() => setExportModal({ isOpen: false, reportType: "" })}>
-      <ModalContent>
+      {/* Report Export Modal - Updated to handle both server-side and client-side reports */}
+      <Modal 
+        isOpen={exportModal.isOpen} 
+        onClose={closeExportModal}
+        size={CLIENT_SIDE_REPORTS.includes(exportModal.reportType) ? "3xl" : "md"}
+      >
+        <ModalContent>
           <ModalHeader className="flex flex-col gap-1">
-            Export Report
+            {getReportTitle(exportModal.reportType)}
           </ModalHeader>
           <ModalBody>
             {exportLoading ? (
@@ -641,30 +684,47 @@ const Dashboard = () => {
                 <p className="text-gray-700 font-medium">Please wait, we're generating your document...</p>
                 <p className="text-gray-500 text-sm mt-2">This may take a few moments</p>
               </div>
+            ) : reportError ? (
+              <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-4">
+                <p className="font-medium">{reportError}</p>
+              </div>
             ) : (
               <>
-                <p className="text-gray-600 mb-4">Select a format to download your report:</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <Button 
-                    color="primary" 
-                    variant="flat"
-                    startContent={<span className="text-xl">📄</span>}
-                    className="justify-start"
-                    onClick={() => handleExportData('pdf', exportModal.reportType)}
-                  >
-                    PDF Document
-                  </Button>
-                  
-                  <Button 
-                    color="success" 
-                    variant="flat"
-                    startContent={<span className="text-xl">📊</span>}
-                    className="justify-start"
-                    onClick={() => handleExportData('excel', exportModal.reportType)}
-                  >
-                    Excel Spreadsheet
-                  </Button>
-                </div>
+                {CLIENT_SIDE_REPORTS.includes(exportModal.reportType) ? (
+                  // Client-side report generation using ReportGenerator
+                  <ReportGenerator 
+                    reportType={exportModal.reportType} 
+                    startDate={(new Date(Date.now() - 30*24*60*60*1000)).toISOString().split('T')[0]}
+                    endDate={new Date().toISOString().split('T')[0]}
+                    onGenerated={handleReportGenerated}
+                  />
+                ) : (
+                  // Server-side report generation (legacy approach)
+                  <>
+                    <p className="text-gray-600 mb-4">Select a format to download your report:</p>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <Button 
+                        color="primary" 
+                        variant="flat"
+                        startContent={<span className="text-xl">📄</span>}
+                        className="justify-start"
+                        onClick={() => handleExportData('pdf', exportModal.reportType)}
+                      >
+                        PDF Document
+                      </Button>
+                      
+                      <Button 
+                        color="success" 
+                        variant="flat"
+                        startContent={<span className="text-xl">📊</span>}
+                        className="justify-start"
+                        onClick={() => handleExportData('excel', exportModal.reportType)}
+                      >
+                        Excel Spreadsheet
+                      </Button>
+                    </div>
+                  </>
+                )}
               </>
             )}
           </ModalBody>

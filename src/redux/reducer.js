@@ -11,8 +11,6 @@ import provinceReducer from './slices/provincesSlice';
 import diagnosisReducer from './slices/diagnosisResult';
 import DashboardStatsReducer from './slices/dashboardStatsSlice';
 import NotificationReducer from './slices/notificationSlice';
-import subscriptionPlans from './slices/subscriptionPlanSlice';
-import subscriptionsReducer from './slices/subscriptionSlice';
 import modelReducer from './slices/modelSlice';
 
 
@@ -29,8 +27,6 @@ const appReducer = combineReducers({
   dashboardStats: DashboardStatsReducer,
   notifications: NotificationReducer,
   explore: exploreReducer,
-  subscriptionPlans: subscriptionPlans,
-  subscriptions: subscriptionsReducer,
   models: modelReducer,
 });
 

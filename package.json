@@ -20,7 +20,10 @@
     "chart.js": "^4.4.6",
     "date-fns": "^4.1.0",
     "dot-env": "^0.0.1",
+    "file-saver": "^2.0.5",
     "framer-motion": "^12.5.0",
+    "jspdf": "^3.0.1",
+    "jspdf-autotable": "^5.0.2",
     "leaflet": "^1.9.4",
     "lucide-react": "^0.454.0",
     "next-themes": "^0.3.0",
@@ -36,7 +39,8 @@
     "react-scripts": "5.0.1",
     "react-step-progress-bar": "^1.0.3",
     "socket.io-client": "^4.8.1",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "react-scripts start",

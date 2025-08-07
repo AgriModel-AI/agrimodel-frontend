@@ -27,7 +27,6 @@ const ModelForm = () => {
   const [formData, setFormData] = useState({
     version: "",
     model_file: null,
-    config_file: null,
     accuracy: "",
   });
 
@@ -83,9 +82,6 @@ const ModelForm = () => {
       const payload = new FormData();
       payload.append("version", formData.version);
       payload.append("model_file", formData.model_file);
-      if (formData.config_file) {
-        payload.append("config_file", formData.config_file);
-      }
       if (formData.accuracy) {
         payload.append("accuracy", formData.accuracy);
       }
@@ -172,18 +168,6 @@ const ModelForm = () => {
               isDisabled={isSubmitting}
               accept=".tflite,.pb,.h5,.onnx,.pt,.pth"
               description="Upload the trained model file (.tflite, .pb, .h5, .onnx, .pt, .pth)"
-            />
-
-            {/* Config File (optional) */}
-            <Input
-              type="file"
-              label="Config File (Optional)"
-              fullWidth
-              name="config_file"
-              onChange={handleFileChange}
-              isDisabled={isSubmitting}
-              accept=".json,.yaml,.yml,.txt"
-              description="Upload configuration file if needed (.json, .yaml, .yml, .txt)"
             />
 
             {/* Accuracy */}

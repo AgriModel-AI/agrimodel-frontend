@@ -3,7 +3,6 @@ import React, { useEffect, useState } from "react";
 import {
   Card,
   Button,
-  Spacer,
   Breadcrumbs,
   BreadcrumbItem,
   Chip,
@@ -31,6 +30,7 @@ const ModelView = () => {
   const toast = useToast();
   
   const modelsState = useSelector((state) => state.models) || {};
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const models = modelsState.models || [];
   const loading = modelsState.loading || false;
 
@@ -193,11 +193,6 @@ const ModelView = () => {
                 <h3 className="text-sm font-medium text-gray-500">File Size</h3>
                 <p className="text-lg">{formatFileSize(model.fileSize)}</p>
               </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Config Size</h3>
-                <p className="text-lg">{formatFileSize(model.configSize)}</p>
-              </div>
             </div>
             
             <div className="space-y-3">
@@ -209,11 +204,6 @@ const ModelView = () => {
               <div>
                 <h3 className="text-sm font-medium text-gray-500">File Hash</h3>
                 <p className="text-sm font-mono break-all text-gray-600">{model.fileHash}</p>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-gray-500">Config Hash</h3>
-                <p className="text-sm font-mono break-all text-gray-600">{model.configHash}</p>
               </div>
             </div>
           </div>
@@ -268,7 +258,7 @@ const ModelView = () => {
                   <TableColumn>USER</TableColumn>
                   <TableColumn>RATING</TableColumn>
                   <TableColumn>FEEDBACK</TableColumn>
-                  <TableColumn>DIAGNOSIS</TableColumn>
+                  <TableColumn>PREDICTION ACCURATE</TableColumn>
                   <TableColumn>DATE</TableColumn>
                 </TableHeader>
                 <TableBody items={paginatedRatings}>
@@ -298,8 +288,6 @@ const ModelView = () => {
                           <p className="max-w-xs truncate">{rating.feedback || "No feedback provided"}</p>
                         </TableCell>
                         <TableCell>
-                          <div>
-                            <p className="text-sm">{rating.diagnosisResult || "N/A"}</p>
                             <Chip 
                               size="sm" 
                               color={rating.diagnosisCorrect ? "success" : "danger"} 
@@ -307,7 +295,6 @@ const ModelView = () => {
                             >
                               {rating.diagnosisCorrect ? "Correct" : "Incorrect"}
                             </Chip>
-                          </div>
                         </TableCell>
                         <TableCell>
                           <p className="text-sm text-gray-500">{formatDate(rating.createdAt)}</p>
