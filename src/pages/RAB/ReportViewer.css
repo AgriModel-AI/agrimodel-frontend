@@ -1,0 +1,78 @@
+.report-viewer {
+  width: 100%;
+}
+
+.no-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  font-size: 1.2rem;
+  color: #666;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Animation for loading transition */
+.report-viewer-enter {
+  opacity: 0;
+}
+
+.report-viewer-enter-active {
+  opacity: 1;
+  transition: opacity 300ms ease-in;
+}
+
+.report-viewer-exit {
+  opacity: 1;
+}
+
+.report-viewer-exit-active {
+  opacity: 0;
+  transition: opacity 300ms ease-out;
+}
+
+/* Styles for maps in reports */
+.leaflet-container {
+  height: 100%;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.leaflet-popup-content {
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.leaflet-popup-content strong {
+  display: block;
+  margin-bottom: 5px;
+  color: #2e7d32;
+}
+
+.leaflet-popup-content hr {
+  margin: 8px 0;
+  border: none;
+  border-top: 1px solid #eee;
+}
+
+/* Print styles */
+@media print {
+  .report-viewer {
+    overflow: visible !important;
+  }
+  
+  .chart-container {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  
+  .report-section {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    box-shadow: none;
+    border: 1px solid #ddd;
+  }
+}

@@ -1,0 +1,635 @@
+/* ReportsDashboard.css */
+.reports-dashboard {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+}
+
+.report-content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* Report Header */
+.report-header {
+  display: flex;
+  overflow: visible !important;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.report-title-container {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.report-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background-color: #e8f5e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2e7d32;
+  font-size: 24px;
+}
+
+.report-title {
+  display: flex;
+  flex-direction: column;
+}
+
+.report-title h1 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.date-range {
+  margin: 4px 0 0;
+  font-size: 14px;
+  color: #6c757d;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.preview-badge {
+  padding: 4px 12px;
+  background-color: #ff9800;
+  color: white;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.report-actions {
+  display: flex;
+  gap: 12px;
+}
+
+/* Date Picker */
+.date-picker-container {
+  position: relative;
+}
+
+.date-picker-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #424242;
+  transition: all 0.2s ease;
+}
+
+.date-picker-button:hover {
+  border-color: #2e7d32;
+  color: #2e7d32;
+  background-color: #f1f8e9;
+}
+
+.date-picker-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 8px;
+  z-index: 9999;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background-color: white;
+  /* overflow: hidden; */
+  min-width: 500px;
+}
+
+.date-range-picker {
+  padding: 16px;
+}
+
+.date-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.date-picker-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6c757d;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: #212529;
+}
+
+.date-picker-inputs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.date-picker-input {
+  flex: 1;
+}
+
+.date-picker-input label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.date-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #212529;
+  transition: border-color 0.2s ease;
+}
+
+.date-input:focus {
+  border-color: #2e7d32;
+  outline: none;
+}
+
+.apply-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.apply-button:hover {
+  background-color: #1b5e20;
+}
+
+/* Export Buttons */
+.export-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.export-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+}
+
+.export-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.export-button.pdf {
+  background-color: #e53935;
+  color: white;
+}
+
+.export-button.pdf:hover:not(:disabled) {
+  background-color: #c62828;
+}
+
+.export-button.excel {
+  background-color: #2e7d32;
+  color: white;
+}
+
+.export-button.excel:hover:not(:disabled) {
+  background-color: #1b5e20;
+}
+
+.export-button.refresh {
+  background-color: #f5f5f5;
+  color: #424242;
+  padding: 8px;
+}
+
+.export-button.refresh:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.spinning {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Report Container */
+.report-container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  padding: 24px;
+  min-height: 500px;
+}
+
+/* Loading State */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  min-height: 400px;
+}
+
+.spinner {
+  margin-bottom: 16px;
+}
+
+.spinner-border {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #e8f5e9;
+  border-top-color: #2e7d32;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+.loading-container p {
+  font-size: 16px;
+  color: #6c757d;
+  font-weight: 500;
+  margin: 0;
+}
+
+/* Error State */
+.error-container {
+  display: flex;
+  padding: 32px;
+  background-color: #fef2f2;
+  border-radius: 12px;
+  border-left: 4px solid #ef4444;
+  margin-bottom: 24px;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.error-icon {
+  font-size: 32px;
+  color: #ef4444;
+}
+
+.error-content {
+  flex: 1;
+}
+
+.error-content h3 {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: #b91c1c;
+}
+
+.error-content p {
+  margin: 0 0 16px 0;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.retry-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: white;
+  border: 1px solid #ef4444;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #ef4444;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.retry-button:hover {
+  background-color: #ef4444;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 992px) {
+  .report-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .report-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .date-picker-dropdown {
+    width: calc(100vw - 48px);
+    min-width: auto;
+    left: 0;
+    right: auto;
+  }
+  
+  .date-picker-inputs {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  .report-content {
+    padding: 16px;
+  }
+  
+  .export-button span {
+    display: none;
+  }
+  
+  .export-button {
+    padding: 8px;
+  }
+  
+  .date-picker-button span {
+    display: none;
+  }
+}
+
+/* Print styles */
+@media print {
+  .reports-sidebar,
+  .report-header,
+  .date-picker-dropdown {
+    display: none !important;
+  }
+  
+  .report-content {
+    padding: 0;
+  }
+  
+  .report-container {
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+  }
+}
+
+/* Date Picker */
+.date-picker-container {
+  position: relative;
+}
+
+.date-picker-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #424242;
+  transition: all 0.2s ease;
+}
+
+.date-picker-button:hover {
+  border-color: #2e7d32;
+  color: #2e7d32;
+  background-color: #f1f8e9;
+}
+
+.date-picker-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  background-color: white;
+  min-width: 500px;
+}
+
+.date-range-picker {
+  padding: 16px;
+}
+
+.date-picker-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.date-picker-header h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.close-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6c757d;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.close-button:hover {
+  color: #212529;
+}
+
+.date-picker-inputs {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.date-picker-input {
+  flex: 1;
+  position: relative;
+}
+
+.date-picker-input label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  color: #6c757d;
+  font-weight: 500;
+}
+
+.date-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #212529;
+  transition: border-color 0.2s ease;
+}
+
+.date-input:focus {
+  border-color: #2e7d32;
+  outline: none;
+}
+
+/* React DatePicker Specific Styles */
+.react-datepicker-wrapper {
+  width: 100%;
+  display: block;
+}
+
+.react-datepicker-popper {
+  z-index: 1100 !important; /* Ensure higher z-index */
+}
+
+.react-datepicker {
+  font-family: inherit !important;
+  border-radius: 8px !important;
+  border: 1px solid #e0e0e0 !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1) !important;
+}
+
+.react-datepicker__header {
+  background-color: #f8f9fa !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+}
+
+.react-datepicker__day--selected, 
+.react-datepicker__day--in-selecting-range, 
+.react-datepicker__day--in-range {
+  background-color: #2e7d32 !important;
+  color: white !important;
+}
+
+.react-datepicker__day--keyboard-selected {
+  background-color: rgba(46, 125, 50, 0.2) !important;
+  color: #2e7d32 !important;
+}
+
+.react-datepicker__day:hover {
+  background-color: rgba(46, 125, 50, 0.1) !important;
+}
+
+.react-datepicker__day--in-selecting-range:not(.react-datepicker__day--in-range) {
+  background-color: rgba(46, 125, 50, 0.5) !important;
+}
+
+.react-datepicker__current-month, 
+.react-datepicker-time__header, 
+.react-datepicker-year-header {
+  font-weight: 600 !important;
+  color: #212529 !important;
+}
+
+.apply-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  background-color: #2e7d32;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.apply-button:hover {
+  background-color: #1b5e20;
+}
+
+
+.date-range {
+  font-size: 14px;
+  color: #555;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: normal; /* allow wrapping */
+  line-height: 1.4;
+}
+
+.report-title-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap; /* allow items to move on small screens */
+}
+
+.report-title h1 {
+  font-size: 20px;
+  font-weight: 600;
+  margin: 0;
+  color: #222;
+}
+
+.report-title {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .report-title-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .date-range {
+    font-size: 13px;
+  }
+}

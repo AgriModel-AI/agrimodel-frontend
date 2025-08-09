@@ -34,13 +34,23 @@ import ProfileManagement from './pages/profile/ProfileManagement';
 import NotFoundPage from './pages/404';
 import ForbiddenPage from './pages/403';
 import VerifyAccount from './components/auth/verifyAccount';
-import GoogleAuthCallback from './components/auth/GoogleAuthCallback';
 import DiseaseUpdate from './pages/diseases/update';
 import AccountBlocked from './pages/auth/AccountBlocked';
 import CommunityUpdate from './pages/community/update';
 import CommunityDetails from './pages/community/CommunityDetails';
 import TokenExpiredPage from './pages/auth/TokenExpiredPage';
 import CreateAdminUserPage from './pages/clients/CreateAdminUserPage';
+
+import ReportsDashboard from './pages/RAB/ReportsDashboard';
+import UserEngagementReport from './pages/RAB/reports/UserEngagementReport';
+import CommunityInteractionsReport from './pages/RAB/reports/CommunityInteractionsReport';
+import PlatformHealthReport from './pages/RAB/reports/PlatformHealthReport';
+import DiseaseAnalyticsReport from './pages/RAB/reports/DiseaseAnalyticsReport';
+import CropMonitoringReport from './pages/RAB/reports/CropMonitoringReport';
+import GeographicalInsightsReport from './pages/RAB/reports/GeographicalInsightsReport';
+import InterventionAnalysisReport from './pages/RAB/reports/InterventionAnalysisReport';
+import KnowledgeImpactReport from './pages/RAB/reports/KnowledgeImpactReport';
+import EarlyWarningReport from './pages/RAB/reports/EarlyWarningReport';
 
 export default function App() {
   return (
@@ -52,7 +62,6 @@ export default function App() {
           <Route path="/token-expired" element={<TokenExpiredPage />} />
           <Route path="/signup" element={<SignUp />} />
           <Route path="/verify-account" element={<VerifyAccount />} />
-          <Route path="/google-auth" element={<GoogleAuthCallback />} />
           <Route path="/account-block" element={<AccountBlocked />} />
           <Route path="/forgot-password" element={<ForgotPass />} />
           <Route path="/reset-password" element={<Resetpassword />} />
@@ -84,6 +93,23 @@ export default function App() {
             <Route path="/dashboard/community/update" element={<CommunityUpdate />} />
             <Route path="/dashboard/support" element={<Support />} />
           </Route>
+
+          {/* Reports Section */}
+            <Route path="/dashboard/reports" element={<ReportsDashboard />} />
+            <Route path="/dashboard/reports/:reportType" element={<ReportsDashboard />} />
+            <Route path="/user_engagement" element={<UserEngagementReport />} />
+            <Route path="/community-interactions" element={<CommunityInteractionsReport />} />
+            <Route path="/platform-health" element={<PlatformHealthReport />} />
+            <Route path="/disease-analytics" element={<DiseaseAnalyticsReport />} />
+            <Route path="/crop-monitoring" element={<CropMonitoringReport />} />
+            <Route path="/geographical-insights" element={<GeographicalInsightsReport />} />
+            <Route path="/intervention-analysis" element={<InterventionAnalysisReport />} />
+            <Route path="/knowledge-impact" element={<KnowledgeImpactReport />} />
+            <Route path="/early-warning" element={<EarlyWarningReport />} />
+          
+
+          {/* Keep this alternative route for backward compatibility or direct access */}
+          <Route path="/reports/:reportType?" element={<ReportsDashboard />} />
 
           <Route path="/forbidden-page" element={<ForbiddenPage />} />
           <Route path="*" element={<NotFoundPage />} />
