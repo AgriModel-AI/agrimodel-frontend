@@ -35,7 +35,7 @@ const ReportsDashboard = () => {
         const response = await axiosInstance.get('/dashboard/reports-new');
         setAvailableReports(response.data.report_types);
         if (!reportType && response.data.report_types.length > 0) {
-          navigate(`/dashboard/reports/${response.data.report_types[0].id}`);
+          navigate(`/reports/${response.data.report_types[0].id}`);
         }
       } catch (error) {
         console.error('Error fetching report types:', error);
@@ -79,7 +79,7 @@ const ReportsDashboard = () => {
     setReportData(null);
     setLoading(true);
     setError(null);
-    navigate(`/dashboard/reports/${reportId}`);
+    navigate(`/reports/${reportId}`);
   };
   
   const downloadPDF = () => {

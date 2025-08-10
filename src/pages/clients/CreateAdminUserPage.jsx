@@ -35,9 +35,10 @@ const CreateAdminUserPage = () => {
     address: "",
     gender: "",
     dob: "",
+    role: "", // Added role field
   });
   const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false); // New state for tracking submission
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -62,6 +63,7 @@ const CreateAdminUserPage = () => {
         tempErrors.phone_number = "Phone number must start with +250 and be followed by 9 digits.";
       }
       if (!formData.names) tempErrors.names = "Names are required.";
+      if (!formData.role) tempErrors.role = "Role is required."; // Added role validation
     } else if (step === 1) {
       if (!formData.national_id) {
         tempErrors.national_id = "National ID is required.";
@@ -110,7 +112,7 @@ const CreateAdminUserPage = () => {
   };
 
   const handleSubmit = async () => {
-    setLoading(true); // Disable the submit button
+    setLoading(true);
     try {
       await dispatch(addAdminUser(formData)).unwrap();
       toast({
@@ -130,7 +132,7 @@ const CreateAdminUserPage = () => {
         isClosable: true,
       });
     } finally {
-      setLoading(false); // Re-enable the submit button
+      setLoading(false);
     }
   };
 
@@ -218,6 +220,19 @@ const CreateAdminUserPage = () => {
                 errorMessage={errors.phone_number}
                 isInvalid={!!errors.phone_number}
               />
+              <Select
+                label="Role"
+                placeholder="Select role"
+                name="role"
+                value={formData.role}
+                onChange={(e) => setFormData((prevData) => ({ ...prevData, role: e.target.value }))}
+                className="mb-3"
+                errorMessage={errors.role}
+                isInvalid={!!errors.role}
+              >
+                <SelectItem key="admin" value="admin">Admin</SelectItem>
+                <SelectItem key="rab" value="rab">RAB</SelectItem>
+              </Select>
             </CardBody>
           )}
 
@@ -235,25 +250,25 @@ const CreateAdminUserPage = () => {
                 isInvalid={!!errors.national_id}
               />
               <Autocomplete
-  label="Districts"
-  placeholder="Search a district"
-  defaultItems={provinces} 
-  selectedKey={formData.district}
-  onSelectionChange={(value) => setFormData({ ...formData, district: value })}
-  errorMessage={errors.district}
-  isInvalid={!!errors.district}
-  className="mb-3"
->
-  {(item) => (
-    <AutocompleteSection title={item.name} key={item.id} >
-      {item.districts.map((district) => (
-        <AutocompleteItem key={district.id} value={district.id}>
-          {district.name}
-        </AutocompleteItem>
-      ))}
-    </AutocompleteSection>
-  )}
-</Autocomplete>
+                label="Districts"
+                placeholder="Search a district"
+                defaultItems={provinces} 
+                selectedKey={formData.district}
+                onSelectionChange={(value) => setFormData({ ...formData, district: value })}
+                errorMessage={errors.district}
+                isInvalid={!!errors.district}
+                className="mb-3"
+              >
+                {(item) => (
+                  <AutocompleteSection title={item.name} key={item.id} >
+                    {item.districts.map((district) => (
+                      <AutocompleteItem key={district.id} value={district.id}>
+                        {district.name}
+                      </AutocompleteItem>
+                    ))}
+                  </AutocompleteSection>
+                )}
+              </Autocomplete>
               <Input
                 label="Address"
                 placeholder="Enter address"

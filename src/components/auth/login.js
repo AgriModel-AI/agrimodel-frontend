@@ -100,9 +100,9 @@ const Login = () => {
         email,
         password,
       });
-      const { access_token, refresh_token } = response.data;
+      const { access_token, refresh_token, role } = response.data;
 
-      dispatch(login({ access_token, refresh_token }));
+      dispatch(login({ access_token, refresh_token, role }));
       toast({
         title: 'Login successful!',
         description: 'You are now logged in.',
@@ -111,7 +111,13 @@ const Login = () => {
         isClosable: true,
         position: 'top',
       });
-      navigate('/dashboard');
+
+      if(role === "admin"){
+        navigate('/dashboard');
+
+      }else{
+        navigate('/reports');
+      }
     } catch (error) {
       toast({
         title: 'Login failed',

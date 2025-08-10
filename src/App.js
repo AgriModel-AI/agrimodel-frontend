@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Provider } from 'react-redux';
 import store from './redux/store'; 
-
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation, Outlet } from "react-router-dom";
+import { useSelector } from 'react-redux';
 import SidebarWithHeader from "./components/sidebar/SidebarWithHeader";
 import Home from './pages/home/index';
 import Dashboard from './pages/dashboard/index';
@@ -42,21 +42,53 @@ import TokenExpiredPage from './pages/auth/TokenExpiredPage';
 import CreateAdminUserPage from './pages/clients/CreateAdminUserPage';
 
 import ReportsDashboard from './pages/RAB/ReportsDashboard';
-import UserEngagementReport from './pages/RAB/reports/UserEngagementReport';
-import CommunityInteractionsReport from './pages/RAB/reports/CommunityInteractionsReport';
-import PlatformHealthReport from './pages/RAB/reports/PlatformHealthReport';
-import DiseaseAnalyticsReport from './pages/RAB/reports/DiseaseAnalyticsReport';
-import CropMonitoringReport from './pages/RAB/reports/CropMonitoringReport';
-import GeographicalInsightsReport from './pages/RAB/reports/GeographicalInsightsReport';
-import InterventionAnalysisReport from './pages/RAB/reports/InterventionAnalysisReport';
-import KnowledgeImpactReport from './pages/RAB/reports/KnowledgeImpactReport';
-import EarlyWarningReport from './pages/RAB/reports/EarlyWarningReport';
+
+// Protected route component for admin-only routes
+const AdminRoute = () => {
+  const location = useLocation();
+  const role = localStorage.getItem('role');
+  const jwtToken = localStorage.getItem('jwtToken');
+  
+  if (!jwtToken) {
+    // Not logged in, redirect to login
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  
+  if (role !== 'admin') {
+    // Not an admin, redirect to forbidden page
+    return <Navigate to="/forbidden-page" replace />;
+  }
+  
+  // User is admin, render the route
+  return <Outlet />;
+};
+
+// Protected route component for routes accessible by both admin and RAB users
+const ProtectedRoute = () => {
+  const location = useLocation();
+  const role = localStorage.getItem('role');
+  const jwtToken = localStorage.getItem('jwtToken');
+  
+  if (!jwtToken) {
+    // Not logged in, redirect to login
+    return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+  
+  if (role !== 'admin' && role !== 'rab') {
+    // Neither admin nor RAB, redirect to forbidden page
+    return <Navigate to="/forbidden-page" replace />;
+  }
+  
+  // User is admin or RAB, render the route
+  return <Outlet />;
+};
 
 export default function App() {
   return (
     <Provider store={store}>
       <Router>
         <Routes>
+          {/* Public routes */}
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Signin />} />
           <Route path="/token-expired" element={<TokenExpiredPage />} />
@@ -66,52 +98,43 @@ export default function App() {
           <Route path="/forgot-password" element={<ForgotPass />} />
           <Route path="/reset-password" element={<Resetpassword />} />
           <Route path="/reset-password-successful" element={<ResetPasswordSuccessful />} />
-
-          <Route element={<SidebarWithHeader />}>
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/dashboard/profile" element={<ProfileManagement />} />
-            <Route path="/dashboard/diseases" element={<Diseases />} />
-            <Route path="/dashboard/diseases/add" element={<DiseasesAdd />} />
-            <Route path="/dashboard/diseases/update" element={<DiseaseUpdate />} />
-            <Route path="/dashboard/crops" element={<Crops />} />
-            <Route path="/dashboard/crops/add" element={<CropsAdd />} />
-            <Route path="/dashboard/crops/update" element={<CropUpdate />} />
-            <Route path="/dashboard/explore" element={<Explore />} />
-            <Route path="/dashboard/explore/add" element={<ExploreAdd />} />
-            <Route path="/dashboard/explore/view/:id" element={<ExploreView />} />
-            <Route path="/dashboard/explore/update/:id" element={<ExploreUpdate />} />
-            <Route path="/dashboard/models" element={<ModelList />} />
-            <Route path="/dashboard/models/add" element={<ModelForm />} />
-            <Route path="/dashboard/models/view/:id" element={<ModelView />} />
-            <Route path="/dashboard/diagnosis" element={<Diagnosis />} />
-            <Route path="/dashboard/clients" element={<Clients />} />
-            <Route path="/dashboard/clients/view" element={<ClientDetails />} />
-            <Route path="/dashboard/clients/create-admin" element={<CreateAdminUserPage />} />
-            <Route path="/dashboard/community" element={<Community />} />
-            <Route path="/dashboard/community/view" element={<CommunityDetails />} />
-            <Route path="/dashboard/community/add" element={<CommunityForm />} />
-            <Route path="/dashboard/community/update" element={<CommunityUpdate />} />
-            <Route path="/dashboard/support" element={<Support />} />
+          <Route path="/forbidden-page" element={<ForbiddenPage />} />
+          
+          {/* Admin-only routes */}
+          <Route element={<AdminRoute />}>
+            <Route element={<SidebarWithHeader />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/dashboard/profile" element={<ProfileManagement />} />
+              <Route path="/dashboard/diseases" element={<Diseases />} />
+              <Route path="/dashboard/diseases/add" element={<DiseasesAdd />} />
+              <Route path="/dashboard/diseases/update" element={<DiseaseUpdate />} />
+              <Route path="/dashboard/crops" element={<Crops />} />
+              <Route path="/dashboard/crops/add" element={<CropsAdd />} />
+              <Route path="/dashboard/crops/update" element={<CropUpdate />} />
+              <Route path="/dashboard/explore" element={<Explore />} />
+              <Route path="/dashboard/explore/add" element={<ExploreAdd />} />
+              <Route path="/dashboard/explore/view/:id" element={<ExploreView />} />
+              <Route path="/dashboard/explore/update/:id" element={<ExploreUpdate />} />
+              <Route path="/dashboard/models" element={<ModelList />} />
+              <Route path="/dashboard/models/add" element={<ModelForm />} />
+              <Route path="/dashboard/models/view/:id" element={<ModelView />} />
+              <Route path="/dashboard/diagnosis" element={<Diagnosis />} />
+              <Route path="/dashboard/clients" element={<Clients />} />
+              <Route path="/dashboard/clients/view" element={<ClientDetails />} />
+              <Route path="/dashboard/clients/create-admin" element={<CreateAdminUserPage />} />
+              <Route path="/dashboard/community" element={<Community />} />
+              <Route path="/dashboard/community/view" element={<CommunityDetails />} />
+              <Route path="/dashboard/community/add" element={<CommunityForm />} />
+              <Route path="/dashboard/community/update" element={<CommunityUpdate />} />
+              <Route path="/dashboard/support" element={<Support />} />
+            </Route>
+          </Route>
+          
+          {/* Routes accessible by both admin and RAB users */}
+          <Route element={<ProtectedRoute />}>
+            <Route path="/reports/:reportType?" element={<ReportsDashboard />} />
           </Route>
 
-          {/* Reports Section */}
-            <Route path="/dashboard/reports" element={<ReportsDashboard />} />
-            <Route path="/dashboard/reports/:reportType" element={<ReportsDashboard />} />
-            <Route path="/user_engagement" element={<UserEngagementReport />} />
-            <Route path="/community-interactions" element={<CommunityInteractionsReport />} />
-            <Route path="/platform-health" element={<PlatformHealthReport />} />
-            <Route path="/disease-analytics" element={<DiseaseAnalyticsReport />} />
-            <Route path="/crop-monitoring" element={<CropMonitoringReport />} />
-            <Route path="/geographical-insights" element={<GeographicalInsightsReport />} />
-            <Route path="/intervention-analysis" element={<InterventionAnalysisReport />} />
-            <Route path="/knowledge-impact" element={<KnowledgeImpactReport />} />
-            <Route path="/early-warning" element={<EarlyWarningReport />} />
-          
-
-          {/* Keep this alternative route for backward compatibility or direct access */}
-          <Route path="/reports/:reportType?" element={<ReportsDashboard />} />
-
-          <Route path="/forbidden-page" element={<ForbiddenPage />} />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </Router>

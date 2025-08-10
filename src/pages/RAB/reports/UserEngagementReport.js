@@ -9,9 +9,6 @@ const UserEngagementReport = ({ data }) => {
   const verificationChartRef = useRef(null);
   
   useEffect(() => {
-    console.log("++++++++++++++++++++++++++++++")
-    console.log(data)
-    console.log("++++++++++++++++++++++++++++++")
     if (data) {
       renderNewUsersChart();
       renderActiveUsersChart();
@@ -178,7 +175,7 @@ const UserEngagementReport = ({ data }) => {
   if(!data){
     return <div><h2>Loading</h2></div>
   }
-  
+
   return (
     <div className="report">
       <div className="report-section">
