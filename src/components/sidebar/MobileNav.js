@@ -167,26 +167,6 @@ const MobileNav = ({ onOpen, ...rest }) => {
               icon={
                 <>
                   <FiBell size={20} />
-                  {/* {notifications.filter(notification => !notification.isRead).length > 0 && (
-                    <Box
-                      position="absolute"
-                      top="-2px"
-                      right="-2px"
-                      bg="red.500"
-                      color="white"
-                      borderRadius="full"
-                      fontSize="10px"
-                      fontWeight="bold"
-                      w="18px"
-                      h="18px"
-                      display="flex"
-                      alignItems="center"
-                      justifyContent="center"
-                      border="2px solid white"
-                    >
-                      {notifications.filter(notification => !notification.isRead).length}
-                    </Box>
-                  )} */}
                 </>
               }
               variant="ghost"
@@ -360,9 +340,6 @@ const MobileNav = ({ onOpen, ...rest }) => {
                             {/* Center: Content */}
                             <Box flex="1">
                               <Flex align="center" mb={0.5}>
-                                <Text fontSize="sm" fontWeight={!notification.isRead ? "semibold" : "medium"} noOfLines={1}>
-                                  Notification #{notification.notificationId}
-                                </Text>
                                 {!notification.isRead && (
                                   <Box 
                                     ml={2} 
