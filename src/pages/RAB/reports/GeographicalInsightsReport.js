@@ -10,6 +10,57 @@ const GeographicalInsightsReport = ({ data }) => {
   const activeDistrictsChartRef = useRef(null);
   const [mapReady, setMapReady] = useState(false);
   
+  // Rwanda district coordinates
+  const provinces = {
+    "Kigali": [
+      { geocode: [-1.9706, 30.1044], district: "Gasabo" },
+      { geocode: [-1.9591, 30.0644], district: "Nyarugenge" },
+      { geocode: [-1.9462, 30.0587], district: "Kicukiro" },
+    ],
+    "Northern": [
+      { geocode: [-1.5078, 29.6347], district: "Musanze" },
+      { geocode: [-1.4795, 29.8566], district: "Burera" },
+      { geocode: [-1.6956, 29.6013], district: "Gakenke" },
+      { geocode: [-1.6004, 29.7174], district: "Gicumbi" },
+      { geocode: [-1.7592, 29.9964], district: "Rulindo" },
+    ],
+    "Western": [
+      { geocode: [-1.6745, 29.2629], district: "Rubavu" },
+      { geocode: [-1.5711, 29.6437], district: "Nyabihu" },
+      { geocode: [-1.9876, 29.4911], district: "Rutsiro" },
+      { geocode: [-2.0635, 29.5763], district: "Karongi" },
+      { geocode: [-2.5225, 29.6329], district: "Rusizi" },
+      { geocode: [-2.3921, 29.7537], district: "Nyamasheke" },
+    ],
+    "Southern": [
+      { geocode: [-2.4814, 29.5755], district: "Nyamagabe" },
+      { geocode: [-2.4402, 29.7172], district: "Ruhango" },
+      { geocode: [-2.3493, 29.7547], district: "Nyanza" },
+      { geocode: [-2.2797, 29.7446], district: "Muhanga" },
+      { geocode: [-2.3031, 29.7737], district: "Kamonyi" },
+      { geocode: [-2.6023, 29.7883], district: "Huye" },
+      { geocode: [-2.5179, 29.7896], district: "Gisagara" },
+    ],
+    "Eastern": [
+      { geocode: [-1.5081, 30.2455], district: "Nyagatare" },
+      { geocode: [-1.7007, 30.1443], district: "Gatsibo" },
+      { geocode: [-1.5801, 30.4303], district: "Kayonza" },
+      { geocode: [-1.9534, 30.4357], district: "Rwamagana" },
+      { geocode: [-2.1934, 30.1076], district: "Bugesera" },
+    ],
+  };
+  
+  // Create a district-to-geocode mapping for easier lookup
+  const districtGeocode = {};
+  Object.keys(provinces).forEach(province => {
+    provinces[province].forEach(item => {
+      districtGeocode[item.district.toLowerCase()] = {
+        geocode: item.geocode,
+        province: province
+      };
+    });
+  });
+  
   useEffect(() => {
     if (data) {
       renderTopDistrictsChart();
@@ -242,56 +293,56 @@ const GeographicalInsightsReport = ({ data }) => {
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
               />
               
-              {/* In a real app, we would use actual district coordinates */}
-              {/* This is a simplified placeholder that creates random markers */}
-              {data.district_distribution.filter((v, i, a) => 
-                a.findIndex(t => t.district_name === v.district_name) === i
-              ).map((district, index) => {
-                // Create semi-random coordinates around Rwanda center
-                const angle = (index / data.district_distribution.length) * Math.PI * 2;
-                const radius = 0.5 + Math.random() * 0.5;
-                const lat = -1.9403 + Math.cos(angle) * radius;
-                const lng = 29.8739 + Math.sin(angle) * radius;
-                
-                // Calculate disease count for this district
-                const districtItems = data.district_distribution.filter(
-                  item => item.district_name === district.district_name
-                );
-                const totalCount = districtItems.reduce((sum, item) => sum + item.count, 0);
-                
-                // Determine color intensity based on disease count
-                const maxCount = Math.max(...Object.values(
-                  data.district_distribution.reduce((acc, item) => {
-                    acc[item.district_name] = (acc[item.district_name] || 0) + item.count;
-                    return acc;
-                  }, {})
-                ));
-                const intensity = Math.min(0.9, 0.3 + (totalCount / maxCount) * 0.7);
-                const color = `rgba(220, 53, 69, ${intensity})`;
-                
-                return (
-                  <CircleMarker
-                    key={index}
-                    center={[lat, lng]}
-                    radius={10 + (totalCount / maxCount) * 20}
-                    fillColor={color}
-                    color="#fff"
-                    weight={1}
-                    opacity={1}
-                    fillOpacity={0.8}
-                  >
-                    <Popup>
-                      <strong>{district.district_name}, {district.province_name}</strong><br />
-                      Total detections: {totalCount}<br />
-                      <hr />
-                      <strong>Top diseases:</strong><br />
-                      {districtItems.slice(0, 3).map((item, i) => (
-                        <div key={i}>{item.disease_name}: {item.count}</div>
-                      ))}
-                    </Popup>
-                  </CircleMarker>
-                );
-              })}
+              {data.district_distribution
+                .filter((v, i, a) => 
+                  a.findIndex(t => t.district_name === v.district_name) === i
+                )
+                .map((district, index) => {
+                  // Find the district in our geocode mapping
+                  const districtInfo = districtGeocode[district.district_name.toLowerCase()];
+                  
+                  // Skip districts we don't have coordinates for
+                  if (!districtInfo) return null;
+                  
+                  // Calculate disease count for this district
+                  const districtItems = data.district_distribution.filter(
+                    item => item.district_name === district.district_name
+                  );
+                  const totalCount = districtItems.reduce((sum, item) => sum + item.count, 0);
+                  
+                  // Determine color intensity based on disease count
+                  const maxCount = Math.max(...Object.values(
+                    data.district_distribution.reduce((acc, item) => {
+                      acc[item.district_name] = (acc[item.district_name] || 0) + item.count;
+                      return acc;
+                    }, {})
+                  ));
+                  const intensity = Math.min(0.9, 0.3 + (totalCount / maxCount) * 0.7);
+                  const color = `rgba(220, 53, 69, ${intensity})`;
+                  
+                  return (
+                    <CircleMarker
+                      key={index}
+                      center={districtInfo.geocode}
+                      radius={10 + (totalCount / maxCount) * 20}
+                      fillColor={color}
+                      color="#fff"
+                      weight={1}
+                      opacity={1}
+                      fillOpacity={0.8}
+                    >
+                      <Popup>
+                        <strong>{district.district_name}, {districtInfo.province}</strong><br />
+                        Total detections: {totalCount}<br />
+                        <hr />
+                        <strong>Top diseases:</strong><br />
+                        {districtItems.slice(0, 3).map((item, i) => (
+                          <div key={i}>{item.disease_name}: {item.count}</div>
+                        ))}
+                      </Popup>
+                    </CircleMarker>
+                  );
+                })}
             </MapContainer>
           )}
         </div>
@@ -379,12 +430,11 @@ const GeographicalInsightsReport = ({ data }) => {
           <div className="col-md-12">
             <div className="alert alert-warning">
               <i className="bi bi-exclamation-triangle-fill"></i>
-              <strong>Potential Disease Hotspots</strong>
-              <ul className="mb-0 mt-2">
+              <strong>Potential Disease Hotspots:</strong>
+              <ul className="mb-0 ml-4">
                 {hotspots.map((hotspot, index) => (
                   <li key={index}>
-                    <strong>{hotspot.disease}</strong> in {hotspot.district} 
-                    with {hotspot.count} detections
+                    <strong>{hotspot.disease}</strong> in {hotspot.district} with {hotspot.count} detections
                   </li>
                 ))}
               </ul>

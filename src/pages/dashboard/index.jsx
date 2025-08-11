@@ -39,7 +39,37 @@ const provinces = {
     { geocode: [-1.9591, 30.0644], district: "Nyarugenge" },
     { geocode: [-1.9462, 30.0587], district: "Kicukiro" },
   ],
-  // Other provinces data...
+  "Northern": [
+    { geocode: [-1.5078, 29.6347], district: "Musanze" },
+    { geocode: [-1.4795, 29.8566], district: "Burera" },
+    { geocode: [-1.6956, 29.6013], district: "Gakenke" },
+    { geocode: [-1.6004, 29.7174], district: "Gicumbi" },
+    { geocode: [-1.7592, 29.9964], district: "Rulindo" },
+  ],
+  "Western": [
+    { geocode: [-1.6745, 29.2629], district: "Rubavu" },
+    { geocode: [-1.5711, 29.6437], district: "Nyabihu" },
+    { geocode: [-1.9876, 29.4911], district: "Rutsiro" },
+    { geocode: [-2.0635, 29.5763], district: "Karongi" },
+    { geocode: [-2.5225, 29.6329], district: "Rusizi" },
+    { geocode: [-2.3921, 29.7537], district: "Nyamasheke" },
+  ],
+  "Southern": [
+    { geocode: [-2.4814, 29.5755], district: "Nyamagabe" },
+    { geocode: [-2.4402, 29.7172], district: "Ruhango" },
+    { geocode: [-2.3493, 29.7547], district: "Nyanza" },
+    { geocode: [-2.2797, 29.7446], district: "Muhanga" },
+    { geocode: [-2.3031, 29.7737], district: "Kamonyi" },
+    { geocode: [-2.6023, 29.7883], district: "Huye" },
+    { geocode: [-2.5179, 29.7896], district: "Gisagara" },
+  ],
+  "Eastern": [
+    { geocode: [-1.5081, 30.2455], district: "Nyagatare" },
+    { geocode: [-1.7007, 30.1443], district: "Gatsibo" },
+    { geocode: [-1.5801, 30.4303], district: "Kayonza" },
+    { geocode: [-1.9534, 30.4357], district: "Rwamagana" },
+    { geocode: [-2.1934, 30.1076], district: "Bugesera" },
+  ],
 };
 
 // Animation variants for motion components
@@ -96,13 +126,13 @@ const REPORT_TYPES = [
 
 // Define which reports use the new client-side generation
 const CLIENT_SIDE_REPORTS = [
+  'disease_prevalence',
   'client_activity', 
   'growth_analysis', 
   'model_performance', 
   'user_engagement', 
   'regional_insights', 
-  'support_analysis', 
-  'economic_impact'
+  'support_analysis'
 ];
 
 const Dashboard = () => {
@@ -684,41 +714,12 @@ const Dashboard = () => {
               </div>
             ) : (
               <>
-                {CLIENT_SIDE_REPORTS.includes(exportModal.reportType) ? (
-                  // Client-side report generation using ReportGenerator
                   <ReportGenerator 
                     reportType={exportModal.reportType} 
                     startDate={(new Date(Date.now() - 30*24*60*60*1000)).toISOString().split('T')[0]}
                     endDate={new Date().toISOString().split('T')[0]}
                     onGenerated={handleReportGenerated}
                   />
-                ) : (
-                  // Server-side report generation (legacy approach)
-                  <>
-                    <p className="text-gray-600 mb-4">Select a format to download your report:</p>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      <Button 
-                        color="primary" 
-                        variant="flat"
-                        startContent={<span className="text-xl">📄</span>}
-                        className="justify-start"
-                        onClick={() => handleExportData('pdf', exportModal.reportType)}
-                      >
-                        PDF Document
-                      </Button>
-                      
-                      <Button 
-                        color="success" 
-                        variant="flat"
-                        startContent={<span className="text-xl">📊</span>}
-                        className="justify-start"
-                        onClick={() => handleExportData('excel', exportModal.reportType)}
-                      >
-                        Excel Spreadsheet
-                      </Button>
-                    </div>
-                  </>
-                )}
               </>
             )}
           </ModalBody>

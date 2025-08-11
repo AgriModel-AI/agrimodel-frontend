@@ -1076,7 +1076,7 @@ const ReportGenerator = ({ reportType, startDate, endDate }) => {
   // Display report preview and generation buttons
   if (reportData) {
     return (
-      <Card className="shadow-sm">
+      <Card className="shadow-sm max-h-[90vh]">
         <CardHeader className="flex justify-between items-center border-b border-gray-100 bg-gray-50">
           <div>
             <h2 className="text-xl font-bold text-gray-800">{reportData.title}</h2>
@@ -1113,7 +1113,7 @@ const ReportGenerator = ({ reportType, startDate, endDate }) => {
             selectedKey={activeTab}
             onSelectionChange={setActiveTab}
             color="success"
-            className="p-0"
+            className="p-0 mt-5"
           >
             <Tab
               key="summary"

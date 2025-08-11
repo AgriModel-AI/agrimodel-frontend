@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { saveAs } from 'file-saver';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import ReportViewer from './ReportViewer';
@@ -12,6 +11,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import './ReportsDashboard.css';
 import axiosInstance from '../../utils/axiosConfig';
 import { logout } from '../../redux/slices/userSlice';
+import { Button } from "@nextui-org/react";
+import { FiRefreshCw } from 'react-icons/fi';
 
 const ReportsDashboard = () => {
   const { reportType } = useParams();
@@ -105,27 +106,6 @@ const ReportsDashboard = () => {
       .from(reportElement)
       .save()
       .then(() => setIsExporting(false));
-  };
-  
-  const downloadExcel = () => {
-    setIsExporting(true);
-    axiosInstance({
-      url: `/api/reports/${reportType}/excel`,
-      method: 'GET',
-      responseType: 'blob',
-      params: {
-        start_date: formatDate(startDate),
-        end_date: formatDate(endDate)
-      }
-    })
-    .then((response) => {
-      saveAs(new Blob([response.data]), `AgriModel_${reportType}_Report.xlsx`);
-      setIsExporting(false);
-    })
-    .catch(err => {
-      console.error('Error downloading Excel:', err);
-      setIsExporting(false);
-    });
   };
 
   const currentReport = availableReports.find(r => r.id === reportType) || { name: 'Loading...' };
@@ -231,21 +211,15 @@ const ReportsDashboard = () => {
                 <i className="bi bi-file-pdf"></i>
                 <span>PDF</span>
               </button>
-              <button 
-                className="export-button excel" 
-                onClick={downloadExcel}
-                disabled={isExporting || loading || !reportData}
-              >
-                <i className="bi bi-file-excel"></i>
-                <span>Excel</span>
-              </button>
-              <button 
-                className="export-button refresh" 
+              <Button
+                isIconOnly
+                variant="flat"
                 onClick={fetchReportData}
-                disabled={loading}
+                className="bg-blue-100 mr-16"
+                isLoading={loading}
               >
-                <i className={`bi bi-arrow-clockwise ${loading ? 'spinning' : ''}`}>Refresh</i>
-              </button>
+                {!loading && <FiRefreshCw />}
+              </Button>
               <button 
                 className="export-button logout bg-red-600" 
                 onClick={handleLogout}
