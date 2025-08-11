@@ -7,11 +7,12 @@ export const store = configureStore({
 
 const jwtToken = localStorage.getItem('jwtToken');
 const refreshToken = localStorage.getItem('refreshToken');
+const role = localStorage.getItem('role');
 
 if (jwtToken && refreshToken) {
   store.dispatch({
     type: 'user/login',
-    payload: { access_token: jwtToken, refresh_token: refreshToken },
+    payload: { access_token: jwtToken, refresh_token: refreshToken, role: role },
   });
 }
 

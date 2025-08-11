@@ -6,7 +6,7 @@ const ForbiddenPage = () => {
   const navigate = useNavigate();
 
   const handleHomeRedirect = () => {
-    navigate("/");
+    navigate("/login");
   };
 
   const handleBack = () => {
@@ -34,7 +34,7 @@ const ForbiddenPage = () => {
             Go Back
           </Button>
           <Button auto onPress={handleHomeRedirect} color="primary">
-            Go to Home
+            Go to Login
           </Button>
         </div>
       </Card>

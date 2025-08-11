@@ -81,12 +81,6 @@ const REPORT_TYPES = [
     icon: <FiShield className="text-teal-600" size={24} />
   },
   { 
-    id: 'economic_impact', 
-    title: 'Economic Impact', 
-    description: 'Financial benefits of early detection',
-    icon: <FiDollarSign className="text-emerald-600" size={24} />
-  },
-  { 
     id: 'client_activity', 
     title: 'Client Activity', 
     description: 'User engagement and diagnosis trends',

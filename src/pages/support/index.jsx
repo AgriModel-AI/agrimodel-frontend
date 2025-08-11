@@ -171,7 +171,7 @@ const ReportCard = ({ requestId, title, description, date, status, user, type, o
                 className={`ml-2 ${statusConfig.bgColor} ${statusConfig.textColor}`}
                 startContent={statusConfig.icon}
               >
-                {selectedStatus}
+                {selectedStatus.replace('_', ' ').toLowerCase().replace(/\b\w/g, ch => ch.toUpperCase())}
               </Chip>
             </div>
             <p className={`text-sm text-gray-600 mt-1 ${isExpanded ? '' : 'line-clamp-2'}`}>
@@ -249,7 +249,7 @@ const ReportCard = ({ requestId, title, description, date, status, user, type, o
               <ModalHeader className="flex flex-col gap-1">
                 Confirm Status Change
                 <p className="text-sm text-gray-500 font-normal">
-                  Change status to <span className="font-medium">{statusToConfirm}</span>
+                  Change status to <span className="font-medium">{statusToConfirm.replace('_', ' ').toLowerCase().replace(/\b\w/g, ch => ch.toUpperCase())}</span>
                 </p>
               </ModalHeader>
               <ModalBody>
@@ -270,7 +270,7 @@ const ReportCard = ({ requestId, title, description, date, status, user, type, o
                     />
                   </>
                 ) : (
-                  <p>Are you sure you want to change the status to <strong>{statusToConfirm}</strong>?</p>
+                  <p>Are you sure you want to change the status to <strong>{statusToConfirm.replace('_', ' ').toLowerCase().replace(/\b\w/g, ch => ch.toUpperCase())}</strong>?</p>
                 )}
               </ModalBody>
               <ModalFooter>

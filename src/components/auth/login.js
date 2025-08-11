@@ -27,7 +27,7 @@ import { AiOutlineGoogle } from 'react-icons/ai';
 import { motion } from 'framer-motion';
 
 const MotionBox = motion(Box);
-const imageUrl = './assets/adult-harvesting-coffee.jpg';
+const imageUrl = './assets/login.jpg';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -324,39 +324,7 @@ const Login = () => {
                     Sign in
                   </MotionBox>
                 </VStack>
-              </form>
-
-              <Flex align="center" width="100%" my={2}>
-                <Divider borderColor="gray.300" />
-                <Text px={3} color="gray.500" fontSize="sm" fontWeight="medium">
-                  OR
-                </Text>
-                <Divider borderColor="gray.300" />
-              </Flex>
-
-              {/* Google Sign-In Button */}
-              <MotionBox
-                as={Button}
-                variant="outline"
-                width="100%"
-                height="42px"
-                leftIcon={<AiOutlineGoogle size="20px" />}
-                onClick={() => window.location.href = `${process.env.REACT_APP_BACKEND_URL}/api/v1/auth/google-auth`}
-                borderRadius="lg"
-                borderWidth="1px"
-                borderColor={borderColor}
-                color="gray.700"
-                _hover={{
-                  bg: 'gray.50',
-                  borderColor: 'gray.400'
-                }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                Sign in with Google
-              </MotionBox>
-
-              
+              </form>            
             </VStack>
           </Flex>
         </Box>
