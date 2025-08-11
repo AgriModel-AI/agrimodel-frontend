@@ -59,8 +59,6 @@ const ExploreView = () => {
         return 'primary';
       case 'ONLINE_SERVICES':
         return 'success';
-      case 'DISEASE_LIBRARY':
-        return 'warning';
       default:
         return 'default';
     }

@@ -26,8 +26,7 @@ const ExploreForm = () => {
 
   const exploreTypes = [
     { value: 'UPDATES', label: 'Updates' },
-    { value: 'ONLINE_SERVICES', label: 'Online Services' },
-    { value: 'DISEASE_LIBRARY', label: 'Disease Library' }
+    { value: 'ONLINE_SERVICES', label: 'Online Services' }
   ];
 
   // Form state
