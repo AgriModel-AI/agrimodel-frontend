@@ -151,29 +151,6 @@ const downloadPDF = async () => {
       setIsExporting(false);
     }
   };
-  const downloadExcel = async () => {
-    if (!reportType) return;
-    try {
-      const response = await axiosInstance.get(
-        `/dashboard/reports-excel/${reportType}`,
-        {
-          params: {
-            start_date: formatDate(startDate),
-            end_date: formatDate(endDate)
-          },
-          responseType: 'blob'
-        }
-      );
-
-      const blob = new Blob([response.data], {
-        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-      });
-      saveAs(blob, `AgriModel_${reportType}_Report.xlsx`);
-    } catch (error) {
-      console.error('Error downloading Excel:', error);
-      setError('Failed to download Excel file. Please try again later.');
-    }
-  };
 
   const currentReport = availableReports.find(r => r.id === reportType) || { name: 'Loading...' };
   
@@ -277,14 +254,6 @@ const downloadPDF = async () => {
               >
                 <i className="bi bi-file-pdf"></i>
                 <span>PDF</span>
-              </button>
-               <button
-                className="export-button excel"
-                onClick={downloadExcel}
-                disabled={loading || !reportData}
-              >
-                <i className="bi bi-file-earmark-excel"></i>
-                <span>Excel</span>
               </button>
               <Button
                 isIconOnly
