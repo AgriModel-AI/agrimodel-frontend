@@ -7,6 +7,7 @@ import ReportViewer from './ReportViewer';
 import ReportsSidebar from './ReportsSidebar';
 import { formatDate } from '../../utils/dateUtils';
 import html2pdf from 'html2pdf.js';
+import { saveAs } from 'file-saver';
 import { motion, AnimatePresence } from 'framer-motion';
 import './ReportsDashboard.css';
 import axiosInstance from '../../utils/axiosConfig';
@@ -91,21 +92,87 @@ const ReportsDashboard = () => {
     navigate(`/reports/${reportId}`);
   };
   
-  const downloadPDF = () => {
-    setIsExporting(true);
-    const reportElement = document.getElementById('report-container');
-    const options = {
-      margin: 10,
-      filename: `AgriModel_${reportType}_Report.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    html2pdf()
-      .set(options)
-      .from(reportElement)
-      .save()
-      .then(() => setIsExporting(false));
+// const downloadPDF = () => {
+//   setIsExporting(true);
+  
+//   const reportElement = document.getElementById('report-container');
+
+//   // Ensure the element is fully visible & expanded
+//   reportElement.style.width = '100%';
+//   reportElement.style.overflow = 'visible';
+
+//   const options = {
+//     margin: [10, 10, 10, 10], // top, left, bottom, right in mm
+//     filename: `AgriModel_${reportType}_Report.pdf`,
+//     image: { type: 'jpeg', quality: 1 }, // max image quality
+//     html2canvas: {
+//       scale: 1, // higher = sharper output
+//       useCORS: true,
+//       logging: false,
+//       letterRendering: true, // improves font sharpness
+//       removeContainer: true
+//     },
+//     jsPDF: {
+//       unit: 'mm',
+//       format: 'a4',
+//       orientation: 'portrait'
+//     },
+//     pagebreak: { mode: ['avoid-all', 'css', 'legacy'] } // prevent cutting between elements
+//   };
+
+//   html2pdf()
+//     .set(options)
+//     .from(reportElement)
+//     .save()
+//     .then(() => setIsExporting(false));
+// };
+
+const downloadPDF = async () => {
+    if (!reportType) return;
+    try {
+      setIsExporting(true);
+      const response = await axiosInstance.get(
+        `/dashboard/reports-pdf/${reportType}`,
+        {
+          params: {
+            start_date: formatDate(startDate),
+            end_date: formatDate(endDate)
+          },
+          responseType: 'blob' // Important for binary files
+        }
+      );
+
+      const blob = new Blob([response.data], { type: 'application/pdf' });
+      saveAs(blob, `AgriModel_${reportType}_Report.pdf`);
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      setError('Failed to download PDF. Please try again later.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+  const downloadExcel = async () => {
+    if (!reportType) return;
+    try {
+      const response = await axiosInstance.get(
+        `/dashboard/reports-excel/${reportType}`,
+        {
+          params: {
+            start_date: formatDate(startDate),
+            end_date: formatDate(endDate)
+          },
+          responseType: 'blob'
+        }
+      );
+
+      const blob = new Blob([response.data], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+      });
+      saveAs(blob, `AgriModel_${reportType}_Report.xlsx`);
+    } catch (error) {
+      console.error('Error downloading Excel:', error);
+      setError('Failed to download Excel file. Please try again later.');
+    }
   };
 
   const currentReport = availableReports.find(r => r.id === reportType) || { name: 'Loading...' };
@@ -210,6 +277,14 @@ const ReportsDashboard = () => {
               >
                 <i className="bi bi-file-pdf"></i>
                 <span>PDF</span>
+              </button>
+               <button
+                className="export-button excel"
+                onClick={downloadExcel}
+                disabled={loading || !reportData}
+              >
+                <i className="bi bi-file-earmark-excel"></i>
+                <span>Excel</span>
               </button>
               <Button
                 isIconOnly

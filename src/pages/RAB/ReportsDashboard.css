@@ -633,3 +633,30 @@
     font-size: 13px;
   }
 }
+
+
+.pdf-export {
+  width: 210mm !important;
+  height: auto !important;
+  overflow: visible !important;
+  background-color: white !important;
+}
+
+.pdf-export .chart-container {
+  page-break-inside: avoid;
+  margin-bottom: 20px;
+}
+
+.pdf-export table {
+  page-break-inside: avoid;
+}
+
+.pdf-export .report-section {
+  page-break-inside: avoid;
+}
+
+@media print {
+  .pdf-export {
+    width: 100% !important;
+  }
+}
