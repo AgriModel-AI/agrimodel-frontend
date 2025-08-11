@@ -101,9 +101,9 @@ const ReportCard = ({ requestId, title, description, date, status, user, type, o
   };
 
   const handleModalSubmit = async () => {
-    const updateData = statusToConfirm === 'closed'
-      ? { status: 'closed', title: modalTitle, description: modalDescription }
-      : { status: statusToConfirm };
+    const updateData = statusToConfirm === 'in_progress'
+    ? { status: statusToConfirm }
+    : { status: statusToConfirm, title: modalTitle, description: modalDescription };
 
     setIsLoading(true); // Set loading state to true
 
@@ -253,7 +253,7 @@ const ReportCard = ({ requestId, title, description, date, status, user, type, o
                 </p>
               </ModalHeader>
               <ModalBody>
-                {statusToConfirm === 'closed' ? (
+                {(statusToConfirm === 'closed' || statusToConfirm === 'resolved' ) ? (
                   <>
                     <Input
                       label="Title"
@@ -390,7 +390,7 @@ const ReportList = () => {
                 variant={selectedFilter !== 'all' ? 'flat' : 'bordered'}
                 color={getFilterColor(selectedFilter)}
               >
-                {selectedFilter === 'all' ? 'Filter by Status' : `Status: ${selectedFilter}`}
+                {selectedFilter === 'all' ? 'Filter by Status' : `Status: ${selectedFilter.replace('_', ' ').toLowerCase().replace(/\b\w/g, ch => ch.toUpperCase())}`}
               </Button>
             </DropdownTrigger>
             <DropdownMenu

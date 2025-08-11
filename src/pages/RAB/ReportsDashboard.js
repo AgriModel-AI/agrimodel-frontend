@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
 import { saveAs } from 'file-saver';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -10,10 +11,12 @@ import html2pdf from 'html2pdf.js';
 import { motion, AnimatePresence } from 'framer-motion';
 import './ReportsDashboard.css';
 import axiosInstance from '../../utils/axiosConfig';
+import { logout } from '../../redux/slices/userSlice';
 
 const ReportsDashboard = () => {
   const { reportType } = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [loading, setLoading] = useState(true);
   const [reportData, setReportData] = useState(null);
   const [availableReports, setAvailableReports] = useState([]);
@@ -22,6 +25,11 @@ const ReportsDashboard = () => {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [error, setError] = useState(null);
   const [isExporting, setIsExporting] = useState(false);
+  
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate('/login');
+  };
   
   useEffect(() => {
     setReportData(null);
@@ -236,7 +244,14 @@ const ReportsDashboard = () => {
                 onClick={fetchReportData}
                 disabled={loading}
               >
-                <i className={`bi bi-arrow-clockwise ${loading ? 'spinning' : ''}`}></i>
+                <i className={`bi bi-arrow-clockwise ${loading ? 'spinning' : ''}`}>Refresh</i>
+              </button>
+              <button 
+                className="export-button logout bg-red-600" 
+                onClick={handleLogout}
+              >
+                <i className="bi bi-box-arrow-right"></i>
+                <span className='text-white'>Logout</span>
               </button>
             </div>
           </div>
